@@ -1,7 +1,7 @@
 if(!dir.exists("results"))
   dir.create("results")
-if(!dir.exists("results/fst"))
-  dir.create("results/fst")
+if(!dir.exists("results/dfa"))
+  dir.create("results/dfa")
 library(rjdfilters)
 library(AQLThesis)
 library("future")
@@ -16,38 +16,38 @@ reload <- FALSE
 
 for(degree in list_degree){
   print(degree)
-  all_coefs <- readRDS(sprintf("filters/fst_pdegree%i.RDS",degree))
+  all_coefs <- readRDS(sprintf("filters/dfa_pdegree%i.RDS",degree))
   weights = all_coefs$weights
   all_coefs = all_coefs$coefs
   
-  if(!dir.exists(sprintf("results/fst/fst%i",degree)))
-    dir.create(sprintf("results/fst/fst%i",degree))
+  if(!dir.exists(sprintf("results/dfa/dfa%i",degree)))
+    dir.create(sprintf("results/dfa/dfa%i",degree))
   for(i in seq_along(all_coefs)){
     print(i)
     for(s in list_series){
       name_file <- gsub(".RDS$", "", basename(s))
       data <- readRDS(s)
       data_info <- readRDS(sub("byseries", "byseriesinfo", s))
-      nom_f_s <- sprintf("results/fst/fst%i/%s_degree%s_weight%i.RDS",
+      nom_f_s <- sprintf("results/dfa/dfa%i/%s_degree%s_weight%i.RDS",
                          degree,
                          name_file,
                          degree,
                          i
       )
-      nom_f_s_tp <- sprintf("results/fst/fst%i/%s_degree%s_weight%i_tp.RDS",
+      nom_f_s_tp <- sprintf("results/dfa/dfa%i/%s_degree%s_weight%i_tp.RDS",
                             degree,
                             name_file,
                             degree,
                             i
       )
       
-      nom_f_s_rev_fe <- sprintf("results/fst/fst%i/%s_degree%s_weight%i_fe_rev.RDS",
+      nom_f_s_rev_fe <- sprintf("results/dfa/dfa%i/%s_degree%s_weight%i_fe_rev.RDS",
                                 degree,
                                 name_file,
                                 degree,
                                 i
       )
-      nom_f_s_rev_ce <- sprintf("results/fst/fst%i/%s_degree%s_weight%i_ce_rev.RDS",
+      nom_f_s_rev_ce <- sprintf("results/dfa/dfa%i/%s_degree%s_weight%i_ce_rev.RDS",
                                 degree,
                                 name_file,
                                 degree,
