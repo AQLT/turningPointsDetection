@@ -8,6 +8,7 @@ all_files <- list.files("results/lp/",pattern = "_tp",full.names = TRUE)
 all_files <- grep(paste(sprintf("(%s)",series_with_tp), collapse = "|"),
                   all_files, value = TRUE)
 
+
 all_tp_lp <- lapply(seq_along(all_files), function(i){
   print(i)
   f = all_files[i]
@@ -45,10 +46,11 @@ full_names <- gsub("_tp.RDS$", "", basename(all_files))
 split <- strsplit(full_names, "_")
 series <- sapply(split, `[`, 1)
 method <- sapply(split, `[`, 2)
+kernel = "henderson"
 all_t <- data.frame(t(sapply(all_tp_rkhs,`[[`,"troughs")),
-                    series, method)
+                    series, kernel, method)
 all_p <- data.frame(t(sapply(all_tp_rkhs,`[[`,"peaks")),
-                    series, method)
+                    series, kernel, method)
 rownames(all_t) <- rownames(all_p) <- full_names
 
 saveRDS(all_t, "results/compile_tp/troughs_rkhs.RDS")
@@ -79,6 +81,14 @@ for(degree in 0:3){
   saveRDS(all_t, sprintf("results/compile_tp/troughs_dfa%i.RDS", degree))
   saveRDS(all_p, sprintf("results/compile_tp/peaks_dfa%i.RDS", degree))
 }
+saveRDS(do.call(rbind,
+                lapply(sprintf("results/compile_tp/troughs_dfa%i.RDS", 0:3),
+                       readRDS)),
+        "results/compile_tp/troughs_dfa.RDS")
+saveRDS(do.call(rbind,
+                lapply(sprintf("results/compile_tp/peaks_dfa%i.RDS", 0:3),
+                       readRDS)),
+        "results/compile_tp/peaks_dfa.RDS")
 
 
 for(degree in 0:3){
@@ -106,3 +116,12 @@ for(degree in 0:3){
   saveRDS(all_t, sprintf("results/compile_tp/troughs_fst%i.RDS", degree))
   saveRDS(all_p, sprintf("results/compile_tp/peaks_fst%i.RDS", degree))
 }
+
+saveRDS(do.call(rbind,
+                lapply(sprintf("results/compile_tp/troughs_fst%i.RDS", 0:3),
+                       readRDS)),
+        "results/compile_tp/troughs_fst.RDS")
+saveRDS(do.call(rbind,
+                lapply(sprintf("results/compile_tp/peaks_fst%i.RDS", 0:3),
+                       readRDS)),
+        "results/compile_tp/peaks_fst.RDS")
