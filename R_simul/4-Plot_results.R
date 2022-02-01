@@ -10,8 +10,8 @@ all_tp <- select_var(all_tp)
 
 all_tp_rkhs <- select_var(
   merge(readRDS("results_simul/compile_tp/troughs_rkhs.RDS"),
-                readRDS("results_simul/compile_tp/peaks_rkhs.RDS"),
-                by=c("series","kernel", "method"))
+        readRDS("results_simul/compile_tp/peaks_rkhs.RDS"),
+        by=c("series","kernel", "method"))
   )
 all_tp_rkhs <- rbind(all_tp_rkhs,all_tp %>% filter(kernel == "henderson",method=="ql"))
 all_rev_rkhs_fe <- select_var(readRDS("results_simul/compile_revisions/rkhs_fe_rev.RDS"))
