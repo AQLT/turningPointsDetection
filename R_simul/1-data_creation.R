@@ -13,12 +13,17 @@ series = list(
   highvariability1 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.40,lambda = 60,rho = 0.5),
   highvariability2 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.40,lambda = 60,rho = 0.7),
   highvariability3 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.40,lambda = 60,rho = 0.8),
+  mediumvariability1 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.30,lambda = 60,rho = 1),
+  mediumvariability2 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.30,lambda = 60,rho = 2),
+  mediumvariability3 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.30,lambda = 60,rho = 3),
   lowvariability1 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.20,lambda = 60,rho = 3),
   lowvariability2 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.20,lambda = 60,rho = 3.5),
   lowvariability3 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.20,lambda = 60,rho = 4)
               )
 series = lapply(series,ts, start = start, frequency = frequency)
 
+# AQLThesis::selectFilter(ts(simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.30,lambda = 60,rho = 4),
+#    start = start, frequency = frequency))
 tp = turning_points(series[[6]][,"cycle"])
 first_date = time(series[[6]][,"cycle"])[25]
 tp = lapply(tp, function(x)x[x>=first_date])
