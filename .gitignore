@@ -3,3 +3,8 @@
 .RData
 .Ruserdata
 data/
+filters/dfa/
+filters/fst/
+*.zip
+results*
+data_simul/
