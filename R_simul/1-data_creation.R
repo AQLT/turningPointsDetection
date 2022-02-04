@@ -6,19 +6,18 @@ if(!dir.exists("data_simul/byseriesinfo"))
   dir.create("data_simul/byseriesinfo")
 library(AQLThesis)
 set.seed(100)
-start = 1948
+start = 1960
 frequency = 12
-time = seq_along(seq(start, 2000+11/12, by = 1/12))
+time = seq_along(seq(start, 2019+11/12, by = 1/12))
 series = list(
-  highvariability1 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.40,lambda = 60,rho = 0.5),
-  highvariability2 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.40,lambda = 60,rho = 0.7),
-  highvariability3 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.40,lambda = 60,rho = 0.8),
-  mediumvariability1 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.30,lambda = 60,rho = 1),
-  mediumvariability2 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.30,lambda = 60,rho = 2),
-  mediumvariability3 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.30,lambda = 60,rho = 3),
-  lowvariability1 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.20,lambda = 60,rho = 3),
-  lowvariability2 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.20,lambda = 60,rho = 3.5),
-  lowvariability3 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.20,lambda = 60,rho = 4)
+  highvariability1 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.40,lambda = 72,rho = 0.5),
+  highvariability2 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.40,lambda = 72,rho = 0.7),
+  highvariability3 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.40,lambda = 72,rho = 1),
+  mediumvariability2 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.30,lambda = 72,rho = 2),
+  mediumvariability3 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.30,lambda = 72,rho = 3),
+  lowvariability1 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.20,lambda = 72,rho = 3),
+  lowvariability2 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.20,lambda = 72,rho = 3.5),
+  lowvariability3 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.20,lambda = 72,rho = 4)
               )
 series = lapply(series,ts, start = start, frequency = frequency)
 
@@ -62,6 +61,12 @@ for(s in list.files("data_simul/byseries",full.names = TRUE)){
   })
 }
 vs <- lapply(fs, value)
+
+last_icr <- do.call(rbind, lapply(lapply(list.files("data_simul/byseriesinfo",full.names = TRUE), readRDS),
+                                   \(x) x[[length(x)]]))
+rownames(last_icr) <- list.files("data_simul/byseriesinfo",full.names = FALSE)
+
+round(last_icr,1)
 
 do.call(rbind,readRDS(sprintf("data_simul/byseriesinfo/%s.RDS", "highvariability1")))
 tail(do.call(rbind,readRDS(sprintf("data_simul/byseriesinfo/%s.RDS", "lowvariability3"))))
