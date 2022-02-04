@@ -9,7 +9,7 @@ library("future")
 plan(multisession)
 
 list_series <- list.files("data_simul/byseries", full.names = TRUE)
-list_method <- c("phase", "frf", "smoothness", "accuracy")
+list_method <- names(rkhs_f$`h=6`)
 s = list_series[1]
 method = "phase"
 fs <- list()
