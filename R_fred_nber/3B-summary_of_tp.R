@@ -2,8 +2,6 @@ library(AQLThesis)
 if(!dir.exists("results_nber/compile_tp"))
   dir.create("results_nber/compile_tp")
 
-tp = readRDS("data_nber/tp_nber1.RDS")
-
 
 all_files <- list.files("results_nber/lp/",pattern = "_tp",full.names = TRUE)
 

@@ -2,7 +2,6 @@ library(AQLThesis)
 if(!dir.exists("results_nber/compile_revisions"))
   dir.create("results_nber/compile_revisions")
 
-tp = readRDS("data_nber/tp_nber1.RDS")
 suffix = "_fe_rev"
 for(suffix in c("_fe_rev", "_ce_rev")){
   
