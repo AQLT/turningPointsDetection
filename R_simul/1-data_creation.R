@@ -13,6 +13,7 @@ series = list(
   highvariability1 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.40,lambda = 72,rho = 0.5),
   highvariability2 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.40,lambda = 72,rho = 0.7),
   highvariability3 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.40,lambda = 72,rho = 1),
+  mediumvariability1 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.30,lambda = 72,rho = 1.5),
   mediumvariability2 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.30,lambda = 72,rho = 2),
   mediumvariability3 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.30,lambda = 72,rho = 3),
   lowvariability1 = simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.20,lambda = 72,rho = 3),
