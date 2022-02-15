@@ -1,0 +1,48 @@
+--- 
+title: "Détection en temps réels des points de retournement : apport de l’utilisation des filtres asymétriques dans l'analyse conjoncturelle"
+author: "Alain Quartier-la-Tente"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: article
+link-citations: yes
+description: "Journées de méthodologie statistique de l'Insee (JMS) / Mars 2022 / PARIS"
+themeoptions: "coding=utf8,language=french"
+classoption: '12pt,a4paper'
+lang: "fr"
+fontsize: 11pt
+bibliography: [biblio.bib]
+biblio-style: authoryear
+urlcolor: blue
+geometry: hmargin = 25mm, vmargin = 25mm
+always_allow_html: true
+---
+
+```{r, eval = FALSE}
+local({
+    hook_plot <- knitr::knit_hooks$get('plot')
+    knitr::knit_hooks$set(plot = function(x, options) {
+        if(is.null(options$fig.cap) & is.null(options$fig.source))
+            return(hook_plot(x, options))
+        if(is_latex){
+            res <-  knitr:::hook_plot_tex(x, options)
+            # res <- add_footnote_latex(res, options)
+        }else if(is_html){
+            res <- hook_plot(x, options)
+            # res <- add_footnote_html(res, options)
+        }else{
+            res <-  hook_plot(x, options)
+        }
+        res <- add_footnote(res, options)
+        res
+    })
+})
+```
+
+```{r child = 'abstract/abstract.rmd', eval = !is_latex}
+```
+
+```{r,eval=is_latex, include = FALSE, cache = FALSE}
+rmarkdown::render(input = 'abstract/abstract.rmd',
+                  rmarkdown::latex_fragment(),
+                  quiet = TRUE)
+```
