@@ -1,0 +1,238 @@
+# Filtres et Reproducing Kernel Hilbert Space (RKHS) {#sec-rkhs}
+
+## Approche de Dagum et Bianconcini
+
+La théorie des *Reproducing Kernel Hilbert Space* (RKHS) --- espaces de Hilbert à noyau reproduisant --- est une théorie générale dans l'apprentissage statistique non-paramétrique qui permet d'englober un grand nombre de méthodes.
+C'est par exemple le cas des méthodes de régression par moindres carrés pénalisés, des Support Vector Machine (SVM), du filtre d'Hodrick-Prescott (utilisé pour décomposer tendance et cycle) ou encore des moyennes mobiles telles que celle d'Henderson.
+Ainsi, @dagumbianconcini2008 utilise la théorie des RKHS pour approcher le filtre d'Henderson et en dériver des filtres asymétriques associés.
+
+Un RKHS $\mathbb{L}^{2}(f_{0})$ est un espace de Hilbert caractérisé par un noyau qui permet de reproduire toutes les fonctions de cet espace.
+Il est caractérisé par une fonction de densité $f_0$ et un produit scalaire $\ps{\cdot}{\cdot}$ définit par :
+$$
+\left\langle U(t),V(t)\right\rangle =\E{U(t)V(t)}=\int_{\R}U(t)V(t)f_{0}(t)\ud t\quad
+\forall U,V\in\mathbb{L}^{2}(f_{0}).
+$$
+La fonction $f_0$ pondère donc chaque valeur en fonction de sa position temporelle : il s'agit de la version continue des noyaux définis dans la partie \@ref(sec-kernels).
+
+Dans notre cas, on suppose que notre série initiale $y_t$ est désaisonnalisée et peut s'écrire comme la somme d'une tendance-cycle, $TC_t$, et d'une composante irrégulière, $I_t$ (qui peut être un bruit blanc ou suivre un modèle ARIMA) :
+$$
+y_t=TC_t+I_t.
+$$
+La tendance-cycle peut être déterministe ou stochastique. On suppose que c'est une fonction régulière du temps, elle peut être localement approchée par un polynôme de degré $d$ :
+$$
+TC_{t+j}=TC_t(j)=a_0+a_1j+\dots+a_dj^d+\varepsilon_{t+j},\quad
+j\in\llbracket-h,h\rrbracket,
+$$
+où $\varepsilon_t$ est un bruit blanc non corrélé à $I_t$.
+
+Les coefficients $a_0,\dots,a_d$ peuvent être estimés par projection des observations au voisinage de $y_t$ sur le sous-espace $\mathbb P_d$ des polynômes de degré $d$, ou, de manière équivalente, par minimisation de la distance entre $y_t$ et $TC_t(j)$ :
+\begin{equation}
+\underset{TC\in\mathbb P_d}{\min}\lVert y -TC \rVert^2 = 
+\underset{TC\in\mathbb P_d}{\min}\int_\R (y(t+s)-TC_t(s))^2f_0(s)\ud s.
+(\#eq:mintcrkhs)
+\end{equation}
+L'espace $\mathbb P_d$ étant un espace de Hilbert à dimension finie, il admet un noyau reproduisant (voir, par exemple, @berlinet2004). 
+Il existe ainsi une fonction $R_d(\cdot,\cdot)$ telle que :
+$$
+\forall P\in \mathbb P_d: \forall t:
+R_d(t,\cdot)\in\mathbb P_d\quad\text{et}\quad
+P(t)=\ps{R_d(t,\cdot)}{P(\cdot)}.
+$$
+
+Le problème \@ref(eq:mintcrkhs) admet une solution unique qui dépend d'une fonction $K_{d+1}$, appelée *fonction de noyau* (*kernel function*). 
+Cette fonction est dite d'ordre $d+1$ car elle conserve les polynômes de degré $d$^[
+C'est-à-dire $\int_\R K_{d+1}(s)\ud s = 1$ et $\int_\R K_{d+1}(s) s^i\ud s = 1$ pour $i\in \llbracket 1, d\rrbracket$.
+]. 
+Cette  solution s'écrit :
+\begin{equation}
+\widehat{TC}(t)=\int_\R y(t-s)K_{d+1}(s) \ud s.
+(\#eq:rkhssoltc)
+\end{equation}
+Généralement $f_0(t) = 0$ pour $\lvert t \rvert>1$. 
+Cette solution s'écrit alors :
+\begin{equation}
+\widehat{TC}(t)=\int_{[-1,1]} y(t-s)K_{d+1}(s) \ud s.
+(\#eq:rkhssoltc2)
+\end{equation}
+On peut, par ailleurs, montrer que $K_{d+1}$ s'écrit en fonction $f_0$ et du noyau reproduisant $K(\cdot,\cdot)$ et que ce dernier peut s'écrire en fonction de polynômes $(P_i)_{i\in \llbracket 0, d-1 \rrbracket}$ qui forme une base orthonormée de $\mathbb L^2(f_0)$ (voir par exemple @berlinet1993) :
+$$
+K_{d+1}(t) = R_d(t,0)f_0(t) = \sum_{i=0}^dP_i(t)P_i(0)f_0(t).
+$$
+
+De plus, dans le cas discret, la solution \@ref(eq:rkhssoltc2) s'écrit comme une somme pondérée au voisinage de $y_t$ :
+\begin{equation}
+\widehat{TC}_t=\sum_{j=-h}^h w_j y_{t+j}\quad
+\text{où} \quad
+w_j=\frac{K_{d+1}(j/b)}{\sum_{i=-h}^{^h}K_{d+1}(i/b)}.
+(\#eq:rkhssym)
+\end{equation}
+Le paramètre $b$ est choisi de sorte que les $2h+1$ points autour de $y_t$ soient utilisés avec un poids non nul.
+
+Pour les filtres asymétriques, la formule \@ref(eq:rkhssym) est simplement adaptée au nombre d'observations connues :
+\begin{equation}
+\forall j\in\left\llbracket -h,q\right\rrbracket\::\: w_{a,j}=\frac{K_{d+1}(j/b)}{\sum_{i=-h}^{^q}K_{d+1}(i/b)}.
+(\#eq:rkhsasym)
+\end{equation}
+En utilisant $b=h+1$ on retrouve les filtres symétriques obtenues par polynômes locaux.
+
+Comme notamment montré par @dagumbianconcini2016seasonal, $K_{d+1}$ peut s'exprimer simplement à partir des moments de $f_0$^[
+Cela vient en fait du procédé d'orthonomalisation de Gram-Schmidt.
+]. 
+Ainsi, notons $H_{d+1}$ la matrice de Hankel associée aux moments de $f_0$ : 
+$$
+\forall i,j\in \llbracket 0, d\rrbracket:
+\left(H_{d+1}\right)_{i,j}=\ps{X^i}{X^j}=\int s^{i+j}f_0(s)\ud s.
+$$
+Notons également $H_{d+1}[1,t]$ la matrice obtenue en remplaçant la première ligne de $H_{d+1}$ par $\begin{pmatrix} 1 & t & t^2 & \dots & t^d\end{pmatrix}$. 
+On a :
+\begin{equation}
+K_{d+1}(t)=\frac{\det{H_{d+1}[1,t]}}{\det{H_{d+1}}}f_0(t).
+(\#eq:rkhskernelfun)
+\end{equation}
+C'est cette formule qui est utilisée dans le package `rjdfilters` pour calculer les différentes moyennes mobiles.
+
+Comme discuté dans la partie \@ref(sec-proietti), le noyau d'Henderson dépend de la fenêtre utilisée.
+Ainsi, tous les moments de l'équation \@ref(eq:rkhskernelfun) doivent être recalculés pour chaque valeur de $h$.
+Pour éviter cela, @dagumbianconcini2008 suggèrent d'utiliser le noyau quadratique (*biweight*) pour approcher le noyau d'Henderson lorsque $h$ est petit ($h< 24$) et le noyau cubique (*triweight*) lorsque $h$ est grand $h\geq 24$.
+
+Dans @dagumbianconcini2015new, les auteures suggèrent de faire une sélection optimale du paramètre $b$, par exemple en minimisant l'erreur quadratique moyenne (option `"frequencyresponse"` dans `rjdfilters::rkhs_filter`) :
+$$
+b_{q,\gamma}=\underset{b_q\in[h; 3h]}{\min}
+2\int_{0}^{\pi}
+\lvert \Gamma_s(\omega)-\Gamma_\theta(\omega)\rvert^2\ud \omega.
+$$
+Cela suppose en fait que la série entrée $y_t$ est un bruit blanc. 
+En supposant $y_t$ stationnaire, les critères définis dans l'article originel peuvent donc être étendus en multipliant les quantités sous les intégrales par la densité spectrale de $y_t$ notée $h$ :
+$$
+b_{q,\gamma}=\underset{b_q\in[h; 3h]}{\min}
+2\int_{0}^{\pi}
+\lvert \Gamma_s(\omega)-\Gamma_\theta(\omega)\rvert^2h(\omega)\ud \omega.
+$$
+Cette erreur quadratique moyenne peut également se décomposer en plusieurs termes (voir équation \@ref(eq:msedef) de la section \@ref(sec-WildiMcLeroy)) qui peuvent également être minimisés :
+
+- l'*accuracy* qui correspond à la part de la révision liée aux différences de fonction de gain dans les fréquences liées à la tendance-cycle
+$$
+b_{q,G}=\underset{b_q\in[h; 3h]}{\min}
+2\int_{0}^{\omega_1}
+\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2} h(\omega)\ud \omega
+$$
+
+- la *smoothness* qui correspond à la part de la révision liée aux différences de fonction de gain dans les fréquences liées aux résidus
+$$
+b_{q,s}=\underset{b_q\in[h; 3h]}{\min}
+2\int_{\omega_1}^{\pi}
+\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2} h(\omega)\ud \omega
+$$
+
+- la *timeliness* qui correspond à la part de la révision liée au déphasage
+$$
+b_{q,\varphi}=\underset{b_q\in[h; 3h]}{\min}
+8\int_{0}^{\omega_1}
+\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud \omega
+$$
+Dans `rjdfilters` $h$ peut être fixée à la densité spectrale d'un bruit blanc ($h_{WN}(x)=1$) ou d'une marche aléatoire ($h_{RW}(x)=\frac{1}{2(1-\cos(x))}$).
+
+:::: {.remarque data-latex=""}
+Pour assurer une cohérence dans les définitions entre les différentes sections, les définitions de $b_{q,G}$, $b_{q,\gamma}$ et $b_{q,\varphi}$ ont été légèrement modifiées par rapport à celles définies dans @dagumbianconcini2015new où :
+
+- dans $b_{q,G}$ le terme à minimiser est sous une racine carrée (sans impact sur le minimum) :
+$$
+b_{q,G}=\underset{b_q}{\min}\sqrt{
+2\int_{0}^{\pi}
+\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}\ud \omega}
+$$
+
+- $b_{q,s}$ n'est pas considéré et $b_{q,G}$ est défini par $\omega_1=\pi$ et :
+$$
+b_{q,G}=\underset{b_q\in[h; 3h]}{\min}
+\sqrt{2\int_{0}^{\pi}
+\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2} \ud \omega}.
+$$
+
+- $b_{q,\varphi}$ est défini par :
+$$
+b_{q,\varphi}=\underset{b_q}{\min}
+\sqrt{2\int_{\Omega_S}
+\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)\ud \omega}
+$$
+où $\Omega_S=[0,2\pi/36]$ est l'intervalle de fréquences associées aux cycles d'au moins 16 mois.
+
+- une formule différente est utilisée pour la fonction de réponse  ($\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}$), ce qui conduit à des bornes d'intégrales légèrement différentes, sans effet sur le résultat.
+::::
+
+
+Un des inconvénients de cette méthode est qu'il n'y a pas unicité de la solution et donc qu'il y a parfois plusieurs extremum (voir annexe \@ref(an-minrkhs), graphiques \@ref(fig:rkhstimeliness4wn), \@ref(fig:rkhstimeliness6wn) et \@ref(fig:rkhstimeliness11wn) sur la *timeliness*).
+Cela affecte uniquement les filtres qui minimisent la timeliness et uniquement pour certaines valeurs de $q$ (par exemple $q=5$ pour un filtre symétrique de 13 termes).
+Comme notamment montré dans @JSM2021AQLTLQ, la valeur optimal retenue par défaut par `rjdfilters` produit des discontinuités dans l'estimation de la tendance-cycle : dans les cas où il y a plusieurs extremum, il serait donc préférable de retenir celui pour lequel $b$ est maximal. 
+C'est ce qui a été retenu dans la suite de ce rapport, c'est également cohérent avec les valeurs optimales présentés dans @dagumbianconcini2015new.
+
+<!-- The table \@ref(tab:criteriarkhs) shows the quality criteria of the RKHS filters. -->
+<!-- Even if the symmetric filter preserves quadratic trends, this is not the case of the asymmetric filters: they only preserve constant trends. -->
+<!-- The more data is available (i.e.: $q$ increases), the less the asymmetric filters distort polynomial trends (for example, for $q=2$, $b_l\simeq0$ for $b_{q,G}$). -->
+
+<!-- ```{r criteriarkhs, echo = FALSE} -->
+<!-- library(kableExtra) -->
+<!-- rkhs_diagnostics <- readRDS("data/rkhs_diagnostics.RDS") -->
+<!-- title <- "Critères de qualité de qualité des filtres asymétriques ($q=0,1,2$) calculés à partir des RKHS pour $h=6$." -->
+<!-- colnames(rkhs_diagnostics) <- gsub(" ?\\$ ?","$",colnames(rkhs_diagnostics)) -->
+<!-- rkhs_diagnostics[,1] <- gsub(" ?\\$ ?","$",rkhs_diagnostics[,1]) -->
+<!-- groupement <- table(rkhs_diagnostics[,1]) -->
+<!-- rkhs_diagnostics[,-1] %>%  -->
+<!--   kable(format.args = list(digits = 3), align = "c", booktabs = T, row.names = FALSE, -->
+<!--         escape = FALSE,caption = title) %>%  -->
+<!--   kable_styling(latex_options=c(#"striped",  -->
+<!--                                 "scale_down", "hold_position")) %>% -->
+<!--   pack_rows(index = groupement, escape = FALSE) -->
+<!-- ``` -->
+
+:::: {.summary_box data-latex="{RKHS filters --- Dagum et Bianconcini (2008)}"}
+`r if (is_html) '
+:::{.title #testrkhs}
+RKHS filters - @dagumbianconcini2008
+:::
+'`
+**Avantages** :
+
+- Le filtre asymétrique est indépendant des données et de la date d'estimation.
+
+- La méthode est généralisable à des séries avec des fréquences irrégulières (par exemple avec beaucoup de valeurs manquantes).
+
+**Inconvénient** :
+
+- Il peut y avoir des problèmes de minimisation (notamment en minimisant la *timeliness*).
+::::
+
+Tous les critères utilisés de la sélection optimale du paramètre $b$ pouvant s'écrire comme cas particuliers du critère $J$ défini dans l'équation \@ref(eq:theoriegen1) (voir section \@ref(sec-WildiMcLeroy)), cette méthode s'inscrit dans le cadre de la théorie générale définie dans la section \@ref(subsec-theoriegen) en imposant comme contrainte linéaire que les coefficients soient sous la forme $w_j=\frac{K_{d+1}(j/b)}{\sum_{i=-h}^{^p}K_{d+1}(i/b)}$.
+
+## RKHS et polynômes locaux
+
+Comme montré dans la section précédente, la théorie des espaces de Hilbert à noyau reproduisant permet de reproduire les filtres symétriques par approximation polynomiale locale.
+Comme le montrent @LuatiProietti2011, cette théorie permet donc également de reproduire les filtres directs asymétriques (DAF), qui sont équivalents à l'approximation polynomiale locale mais en utilisant une fenêtre d'estimation asymétrique.
+Cependant, ils ne peuvent pas être obtenus par la formalisation de  @dagumbianconcini2008 mais par une discrétisation différente de la formule \@ref(eq:rkhskernelfun) :
+$$
+K_{d+1}(t)=\frac{\det{H_{d+1}[1,t]}}{\det{H_{d+1}}}f_0(t).
+$$
+Dans le cas discret, $f_0(t)$ est remplacé par $\kappa_j$ et en remplaçant les moments théoriques par les moments empiriques $H_{d+1}$ devient $X'_pK_pX_p$ et les coefficients du filtre asymétrique sont obtenus en utilisant la formule :
+$$
+w_{a,j}=\frac{\det{X'_pK_pX_p[1,j]}
+}{
+\det{X'_pK_pX_p}
+}\kappa_j.
+$$
+En effet, la règle de Cramer permet de trouver une solution explicite à l'équation des moindres carrés $(X'_pK_pX_p)\hat \beta=X'_pK_py_p$ où $\hat \beta_0=\hat m_t$ :
+$$
+\hat \beta_0 = \frac{\det{X'_pK_pX_p[1,b]}}{\det{X'_pK_pX_p}}f_0(t)
+\quad\text{où}\quad b=X'_pK_py_p.
+$$
+Comme $b=\sum_{j=-h}^qx_j\kappa_jy_{t+j}$ il vient :
+$$
+\det{X'_pK_pX_p[1,b]} = \sum_{j=-h}^q\det{X'_pK_pX_p[1,x_j]}\kappa_jy_{t+j}.
+$$
+Et enfin :
+$$
+\hat \beta_0 = \hat m_t= \sum_{j=-h}^q\frac{\det{X'_pK_pX_p[1,j]}
+}{
+\det{X'_pK_pX_p}
+}\kappa_j y_{t+j}.
+$$
+

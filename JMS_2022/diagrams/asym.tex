@@ -1,0 +1,299 @@
+\begin{tikzpicture}
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Theorie gen %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+\node at (3,0) [generalbox, max width=8cm] (theoriegen){
+\[
+\begin{cases}
+I(\theta,q,y_t,u_t)=\E{(\Delta^{q}M_\theta y_t-u_t)^{2}} \\
+J(\theta, f, \omega_1,\omega_2)=\int_{\omega_1}^{\omega_2} f\left[\phi_\theta(\omega), \varphi_\theta (\omega)\right] \ud \omega
+\end{cases}
+\]
+\begin{align*}
+\hat\theta\in\argmin &\sum\alpha_i I(\theta,q_i,y_t,u_t^{(i)})+\beta_iJ(\theta, f_i,\omega_{1}^{(i)}, \omega_{2}^{(i)})\\
+&sc.\quad C\theta=a&
+\end{align*}%
+};
+\node[generaltitle] at (theoriegen.north) (theriegentitle) {Théorie générale};
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Gray Thompson%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%
+\node (graythomsonA) at (-4,  9.7) {};
+\node (graythomsonB) at (4.5,  5.3) {};
+\node (graythomsonequiv) at (-3.7, 5.3) {};
+\draw[multimodelbox] (graythomsonA) rectangle (graythomsonB);
+\node[boxtitle2, below right] at (graythomsonA) (graythompsontitle) {Gray, Thompson (1996)};
+\node at (0,9) [box, below, max width=6cm] (graythompson){
+    Minimisation des révisions au filtre symétrique sous contrainte
+};
+%\node[boxtitle] at (graythompson.north) (graythompsontitle) {Gray, Thompson (1996)};
+
+
+\node at (-2.5,7) [submodelbox, max width=3cm, below] (graythompson1){
+    Filtre asymétrique sans biais 
+    
+$\implies X'_{d}\hat\theta^{a}=e_1$
+};
+\node at (2,7) [submodelbox, max width=3cm, below] (graythompson2){
+Filtre asymétrique de biais constant 
+
+$\implies X'_{d-1}\hat\theta^{a}=e_1$
+};
+
+\draw [edgesubmod] (graythompson) -- (graythompson1) node[right, midway]{Contrainte};
+\draw [edgesubmod] (graythompson) -- (graythompson2);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Guggemos et al %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\node at (0,-10.8) [box, max width=8cm, above] (guggemos){
+$F_g(\theta)=\sum_j\theta_j^2$
+
+$S_g(\theta)=\sum_j(\Delta^q\theta_j)^2$
+
+$T_g(\theta)=\int_{0}^{\omega_1}\phi_\theta^2(\omega) \sin^2(\varphi_a(\omega)) \ud \omega$
+\begin{align*}
+\hat\theta&\in\argmin \nu_1 F_g(\theta) + \nu_2 S_g(\theta)+ (1-\nu_1-\nu_2)T_g(\theta)\\
+&s.c.\quad X'_d\theta=e_1
+\end{align*}
+};
+\node[boxtitle] at (guggemos.north) (guggemostitle) {Guggemos \emph{et al} (2018)};
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Proietti et Luati %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\node (proiettiluatiA) at (8,-10.8) {};
+\node (proiettiluatiB) at (24.8,-3.5) {};
+\draw[multimodelbox] (proiettiluatiA) rectangle (proiettiluatiB);
+\node[boxtitle2, below left] at (proiettiluatiB) (proiettiluatititle) {Proietti et Luati (2008)};
+
+\node at (20,-9) [box, max width=8cm, inner ysep=2pt] (proiettiluati){
+\begin{center}\centering \textbf{Modèle général}\end{center}\vspace{-0.2cm}
+\[
+y=U\gamma+Z\delta+\varepsilon,\quad \varepsilon\sim\mathcal N (0,D)
+\text{ et } \begin{bmatrix} U & Z \end{bmatrix} \subset X
+\]
+
+Minimisation des révisions à $\theta^s$ sous contrainte :
+\[
+U'_p\theta=U'\theta^s, \quad U=\begin{bmatrix} U_p \\ U_f \end{bmatrix} \text{ avec }U_p\text{ de }h+1+q\text{lignes}
+\]
+};
+
+
+
+\node at (24.5,-2) [box, max width=6cm, inner ysep=2pt, left] (genproiettiluati){
+\begin{center}\centering \textbf{Extension en intégrant la timeliness}\end{center}\vspace{-0.2cm}
+
+Minimisation  sous contrainte des révisions + $\alpha_T T_g(\theta)$
+};
+%\node[boxtitle] at (proiettiluati.north) (proiettiluatititle) {Proietti et Luati (2008)};
+
+
+%%%% DAF %%%%
+\node at (11,-10) [submodelbox, max width=4.5cm, above] (daf){
+\begin{center}\centering \textbf{DAF}\end{center}\vspace{-0.5cm}
+ \[
+  y_t=\gamma_0+\gamma_1 t+\gamma_2t^2+\delta t^3 +\varepsilon_t
+  \]
+  $\varepsilon_t$ bruit blanc et $\theta^a$ préserve tendances cubiques
+};
+
+
+%%%% CQ %%%%
+\node at (11,-8.4) [submodelbox, max width=4.5cm, above] (cq){
+  \begin{center}\centering \textbf{CQ}\end{center}\vspace{-0.5cm}
+  \[
+  y_t=\gamma_0+\gamma_1 t+\gamma_2t^2+\delta t^3 +\varepsilon_t
+  \]
+  $\varepsilon_t$ bruit blanc et $\theta^a$ préserve tendances quadratiques
+};
+
+%%%% QL %%%%
+\node at (11,-6.8) [submodelbox, max width=4.5cm, above] (ql){
+  \begin{center}\centering \textbf{QL}\end{center}\vspace{-0.5cm}
+  \[
+  y_t=\gamma_0+\gamma_1 t+\delta t^2 +\varepsilon_t,
+  \]
+  $\varepsilon_t$ bruit blanc et $\theta^a$ préserve tendances linéaires
+};
+
+
+%%%% LC %%%%
+\node at (20,-6) [submodelbox, max width=4.5cm, above] (lc){
+\begin{center}\centering \textbf{LC/Musgrave}\end{center}\vspace{-0.5cm}
+\[
+y_t=\gamma_0+\delta t +\varepsilon_t, 
+\]
+$\varepsilon_t$ bruit blanc et $\theta^a$ préserve constantes
+};
+
+%%%% Liens
+\draw [edgesubmod, max width = 2cm] (proiettiluati) -- (daf) node[below, midway] {
+\[
+\begin{cases}
+  D=K^{-1}\\ 
+  U=X_3\\ 
+  Z=0
+\end{cases}
+\]
+};
+
+\draw[edgesubmod, max width = 2cm] (proiettiluati) -- (cq) node[above right=-0.2cm,near end] {
+\[
+\begin{cases}
+U=X_2\\ 
+Z=x_3\\
+D=\sigma^2I
+\end{cases}
+\]
+};
+
+\draw [edgesubmod, max width = 2cm] (proiettiluati.160) |- (ql) node[above, near end] {
+\[
+\begin{cases}
+U=X_1\\ 
+Z= x_2\\
+D=\sigma^2I
+\end{cases}
+\]
+};
+\draw [edgesubmod, max width = 2cm] (proiettiluati) -- (lc) node[right, midway] {
+\[
+\begin{cases}
+U=X_0\\ 
+  Z=x_1\\
+  D=\sigma^2I
+\end{cases}
+\]
+};
+
+%%%%%%%%%%%%%%%%
+%%%%% RKHS %%%%%
+%%%%%%%%%%%%%%%%
+
+\node at (20,9.4) [box, max width=8cm, below] (rkhs){
+$f_0(t)$ noyau continu, $P_i$ polynômes orthonormaux de $\mathbb L^2(f_0)$ et $K_p(t)=\sum_{i=0}^{p-1}P_i(t)P_i(0)f_0(t)$.
+$$
+\hat\theta_i = \frac{K_p(i/b)}{\sum_{j=-h}^q K_p(j/b)}
+$$
+$b$ choisit optimalement pour minimiser : 
+\begin{itemize}[noitemsep,topsep=0pt]
+\item l'erreur quadratique moyenne de révision ($b_{q,\gamma}$)
+\item  l '\emph{accuracy} $A_w$ ($b_{q,G}$)
+\item  la \emph{smoothness}  $S_w$ ($b_{q,s}$) 
+\item  la \emph{timeliness} $T_w$  ($b_{q,\varphi}$)
+\end{itemize}
+};
+
+\node[boxtitle] at (rkhs.north) (rkhstitle) {Dagum et Bianconcini (2008) --- RKHS};
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%
+%%%%% Wildi %%%%%
+%%%%%%%%%%%%%%%%
+
+
+\node at (10,7.6) [box, max width=8cm] (trilemna){
+\begin{align*}
+A_w(\theta)&= 2\int_0^{\omega_1}\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}h(\omega)\ud\omega\\
+T_w(\theta)&= 8\int_0^{\omega_1}\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
+S_w(\theta)&= 2\int_{\omega_1}^\pi\left(\rho_s(\omega)^{2}-\rho_\theta(\omega)\right)^{2}h(\omega)\ud\omega%\\
+%R_w&= 8\int_{\omega_1}^\pi\rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega
+\end{align*}
+\[
+\min\nu_1A_w + \nu_2T_w+(1-\nu_1-\nu_2)S_w
+\]
+};
+\node[boxtitle] at (trilemna.north) (trilemnatitle) {Wildi, McElroy (2019)};
+
+
+
+%%%%%%%%%%%%%%%%%%
+%%%%% Liens %%%%%%
+%%%%%%%%%%%%%%%%%%
+
+\draw[edge] (genproiettiluati.west)-|(proiettiluati.158) node[pos = 0.57, right]{
+$\alpha_T=0$
+};
+
+\draw[edge] (graythompson1.west) --++(-0.1,0)--++(0,-8) --++(10,0)|-(daf.west) node[pos=0.7, below, max width = 5cm]{
+$\sigma^2=0, \Omega=K^{-1},$
+
+$ d=3$
+};
+
+\draw[edge] (graythompson2.east) --++(2,0)--++(0,-1) --++(2.3,0)|-(cq.west) node[pos=0.7, below, max width = 5cm]{
+$d=3$
+};
+
+\draw[edge] (graythompson2.east) --++(2,0)--++(0,-1) --++(2.3,0)|-(ql.west) node[pos=0.7, below, max width = 5cm]{
+$d=2$
+};
+
+\draw[edge] (graythompson2.east) --++(2,0) --++(0,-1) --++(2.3,0) node[below left]{$\sigma^2=0, \Omega=K^{-1}$}--++ (0, -8) --++ (9,0) --++ (0,-1)-|(lc.north) node[pos=0.7, left, max width = 5cm]{
+$d=1$
+};
+
+
+%%%%%%%%%%%%%%%%%%%
+%%%%%% Theorie gen
+
+%% gray thomson
+\draw[edgegeneral] (theoriegen.west)-|(graythomsonequiv) node[pos = 0.8, right]{
+$y_t=\sum_{j=0}^d\beta_jt^j+\xi_t+\varepsilon_t$,  avec $\varepsilon_t$ bruit blanc $\V{\varepsilon_t}=\sigma^2$ et $\xi_t$ non corrélé à $\varepsilon_t$,  $\Omega = \V{(\xi_{t-h},\dots,\xi_{t+h})}$
+\begin{align*}
+\min R(\theta)& =\E{\left(M_{\theta^s} y_t) - M_{\theta} y_t)\right)^2}
+\\&= I(\theta,\,0,\,y_t,\,M_{\theta^s} y_t) \\
+sc.\quad&  X'_{d}\theta=e_1\text{ ou } X'_{d-1}\theta=e_1
+\end{align*}
+};
+
+%% guggemos
+\draw[edgegeneral, max width = 8cm] (theoriegen.west) -|(graythomsonequiv |- 52,  52 |-guggemos.north) node[pos = 0.9, right]{
+$F_g(\theta)=I(\theta,0,y_t,\E{L_\theta y_t})$
+
+$S_g(\theta)=I(\theta,q,y_t,\E{L_\theta y_t})$
+
+$T_g(\theta)=J(\theta,f\colon(\rho,\varphi)\mapsto\rho^2\sin(\varphi)^2,0, \,\omega_1)$
+
+$y_t=\sum_{j=0}^d\beta_jt^j+\varepsilon_t, \quad \varepsilon_{t}\overset{i.i.d}{\sim}\mathcal{N}(0,\sigma^{2})$
+};
+
+\draw[edgegeneral, max width = 8cm] (theoriegen.east)-|(trilemna.south) node[pos=0.7,right]{
+$\begin{cases}
+    f_1(\rho,\varphi, \omega)=2\left(\rho_s(\omega)-\rho\right)^{2}h(\omega) \\
+    f_2(\rho,\varphi, \omega)=8\rho_s(\omega)\rho\sin^{2}\left(\frac{\varphi}{2}\right)h(\omega)
+\end{cases}$
+\begin{align*}
+A_w(\theta)&= J(\theta,f_1,0,\omega_1)\\
+T_w(\theta)&= J(\theta,f_2,0,\omega_1)\\
+S_w(\theta)&= J(\theta,f_1,\omega_1,\pi)\\
+R_w(\theta)&= J(\theta,f_2,\omega_1,\pi).
+\end{align*}
+};
+
+\draw[edgegeneral, max width = 4.cm] (theoriegen.east)-|(rkhs.south) node[near end, right]{
+$\min R(\theta)$,  $A_w(\theta)$,  $S_w(\theta)$,  ou $T_w(\theta)$
+
+s.c.  $\theta_i=K_p(i/b)$ et $\sum\theta_i=1$
+};
+
+\draw[edgegeneral, max width = 8cm] (theoriegen.east)-|(genproiettiluati.north) node[near end, right]{
+$\min R(\theta)+\alpha_TT_g(\theta)$
+
+s.c.  linéaires
+};
+
+\end{tikzpicture}

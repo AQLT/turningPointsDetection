@@ -1,5 +1,5 @@
 --- 
-title: "Détection en temps réels des points de retournement : apport de l’utilisation des filtres asymétriques dans l'analyse conjoncturelle"
+title: "Estimation en temps réel de la tendance-cycle : apport de l’utilisation des filtres asymétriques dans la détection des points de retournement"
 author: "Alain Quartier-la-Tente"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -9,7 +9,7 @@ description: "Journées de méthodologie statistique de l'Insee (JMS) / Mars 202
 themeoptions: "coding=utf8,language=french"
 classoption: '12pt,a4paper'
 lang: "fr"
-fontsize: 11pt
+fontsize: 12pt
 bibliography: [biblio.bib]
 biblio-style: authoryear
 urlcolor: blue

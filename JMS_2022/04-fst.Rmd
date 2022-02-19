@@ -1,0 +1,125 @@
+# D'une théorie générale sur la construction des filtres asymétriques à l'approche FST {#sec-theoriegen}
+
+## Théorie générale de construction des filtres asymétriques {#subsec-theoriegen}
+
+Pour établir une théorie générale englobant les principaux filtres linéaires, @ch15HBSA définissent deux critères. 
+En changeant légèrement les notations utilisées par les auteurs afin d'avoir une formulation plus générale, ces deux critères peuvent s'écrire :
+\begin{align}
+I(\theta,q,y_t,u_t)&=\E{(\Delta^{q}M_\theta y_t-u_t)^{2}} (\#eq:theoriegen1) \\
+J(\theta,f, \omega_1,\omega_2)&=\int_{\omega_1}^{\omega_2} f\left[\phi_\theta(\omega), \varphi_\theta (\omega), \omega\right] \ud \omega (\#eq:theoriegen2)
+\end{align}
+où $y_t$ est la série étudiée, $u_t$ une série de référence et $\Delta$ est l'opérateur différence ($\Delta y_t=y_t-y_{t-1}$ et $\Delta^q=\underbrace{\Delta \circ \dots \circ \Delta}_{q\text{ fois}}$ pour $q\in\N$).
+Dans la majorité des cas, la fonction $f$ ne dépendra que de la fonction de gain, $\phi_\theta$, et de la fonction de déphasage, $\varphi_\theta$.
+Dans ce cas, par simplification on écrira $f\left[\phi_\theta(\omega), \varphi_\theta (\omega), \omega\right] = f\left[\phi_\theta(\omega), \varphi_\theta (\omega)\right]$.
+
+Comme montré dans cette étude, la majorité des filtres linéaires peut s'obtenir par une minimisation d'une somme pondérée de ces critères, sous contrainte linéaire sur les coefficients :
+
+$$
+\begin{cases}
+\underset{\theta}{\min} & \sum \alpha_i I(\theta,\, q_i,\, y_t,\, u_t^{(i)})+
+\beta_iJ(\theta,\, f_i,\, \omega_{1,i},\, \omega_{2,i})\\
+s.t. & C\theta=a
+\end{cases}
+$$
+
+C'est en particulier le cas de l'approche *Fidelity-Smoothness-Timeliness* (FST) développée par les mêmes auteurs.
+
+## Approche *Fidelity-Smoothness-Timeliness* (FST) {#subsec-GuggemosEtAl}
+
+Pour construire les moyennes mobiles symétriques, @GrunRehommeLadiray1994 et @GrayThomson1996 proposent un programme de minimisation sous contrainte qui fait un compromis entre réduction de la variance et "lissage" de la tendance. 
+@ch15HBSA étendent ces approches en les appliquant à la construction des filtres asymétriques et en ajoutant un critère permettant de contrôler le déphasage. 
+Il s'agit de l'approche *Fidelity-Smoothness-Timeliness* --- Fidélité-Lissage-Temporalité --- (FST).
+Pour la construction des filtres asymétriques, un quatrième critère pourrait également être rajouté qui prendrait en compte les révisions par rapport à l'utilisation d'un filtre symétrique de référence (cette méthode pourrait alors être appelée la méthode FRST --- *Fidelity-Revisions-Smoothness-Timeliness*).
+Cependant, le package `rjdfilters` n'ayant implémenté que l'approche FST, nous nous restreignons dans cette étude qu'à la description de l'approche sans critère de révision.
+
+Les trois critères utilisés sont les suivants :
+
+- *Fidelity* (fidélité), $F_g$ : c'est le rapport de réduction de la variance.
+Plus il est petit et plus le signal de sortie (tendance-cycle estimée) est un bon estimateur du signal à estimer (tendance-cycle).
+$$
+F_g(\theta) = \sum_{k=-p}^{+f}\theta_{k}^{2}.
+$$
+$F_g$ peut également être écrite comme une forme quadratique positive : $F_g(\theta)=\theta'F\theta$ avec $F$ la matrice identité d'ordre $p+f+1$.
+
+- *Smoothness* (lissage), $S_g$ : 
+$$
+S_g(\theta) = \sum_{j}(\nabla^{d}\theta_{j})^{2}.
+$$
+Ce critère mesure la proximité du signal de sortie à une tendance polynomiale de degré $d-1$. 
+Avec $d=3$, Henderson utilise ce critère  pour construire des moyennes mobiles conservant des polynômes de degré 2.
+$S_g$ peut également s'écrire sous une forme quadratique positive $S_g(\theta)=\theta'S\theta$ avec $S$ une matrice symétrique d'ordre $p+f+1$ (voir section \@ref(subsec-equivlpfst)).
+
+
+- *Timeliness* (temporalité), $T_g$ : il mesure le déphasage entre le signal d'entrée et le signal de sortie à des fréquences spécifiques.
+Lorsqu'un filtre linéaire est appliqué, le niveau du signal d'entrée est également modifié par la fonction de gain : il est donc intuitif de considérer que plus le gain est élevé, plus l'impact du déphasage le sera.  
+C'est pourquoi le critère de déphasage dépend des fonctions de gain et de déphasage ($\rho_\theta$ et $\varphi_{\theta}$), le lien entre les deux fonctions étant fait à partir d'une fonction de pénalité $f$^[
+@ch15HBSA suggèrent 6 conditions de régularité à la fonction de pénalité afin qu'elle soit adaptée au problème de déphasage.
+Dans leur article, la fonction $f$ ne dépend que du gain et du déphasage de $\theta$ et les 6 conditions sont : $f \geq 0$, $f\left(\rho,0\right)=0$, $f\left(0,\varphi\right)=0$, $f\left(\rho,\varphi\right)=f\left(\rho,-\varphi\right)$, $\frac{\partial f}{\partial \rho} \geq 0$ et
+$\varphi \cdot \frac{\partial f}{\partial \varphi} \geq 0$.
+] :
+$$
+\int_{\omega_{1}}^{\omega_{2}}f(\rho_{\theta}(\omega),\varphi_{\theta}(\omega))\ud\omega.
+$$
+Comme fonction de pénalité, les auteurs suggèrent de prendre $f\colon(\rho,\varphi)\mapsto\rho^2\sin(\varphi)^2$. 
+Cela permet notamment d'avoir une *timeliness* qui peut s'écrire comme une forme quadratique positive ($T_g(\theta)=\theta'T\theta$ avec $T$ une matrice carré symétrique d'ordre $p+f+1$, voir @ch15HBSA pour la démonstration).
+Dans cet article nous utilisons $\omega_1=0$ et $\omega_2=2\pi/12$ : on ne s'intéresse qu'à des séries mensuelles et au déphasage qui impactent les cycles d'au minimum 12 mois.
+
+En somme, l'approche FST consiste à minimiser une somme pondérée de ces trois critères sous certaines contraintes (généralement préservation polynomiale).
+
+\begin{equation}
+\begin{cases}
+\underset{\theta}{\min} &
+\alpha F_g(\theta)+\beta S_g(\theta)+\gamma T_g(\theta) = \theta'(F+S+T)\theta\\
+s.t. & C\theta=a
+\end{cases}. (\#eq:gugemmos)
+\end{equation}
+
+Les conditions $0\leq\alpha,\beta,\gamma\leq 1$ et $\alpha+\beta\ne0$ garantissent que $\alpha F_g(\theta)+\beta S_g(\theta)+\gamma T_g(\theta)$ soit strictement convexe et donc l'unicité de la solution. 
+Dans ce cas, la solution s'écrit $\hat \theta = [\alpha F+\beta S+ \gamma T]^{-1}C'\left(C[\alpha F+\beta S+ \gamma T]^{-1}C'\right)^{-1}a$.
+
+Un autre avantage de cette approche est que les filtres asymétriques construits sont totalement indépendants des données, de la date d'estimation et du filtre symétrique choisis.
+
+On obtient par exemple le filtre d'Henderson avec les paramètres suivants :
+$$C=\begin{pmatrix}
+1 & \cdots&1\\
+-h & \cdots&h \\
+(-h)^2 & \cdots&h^2
+\end{pmatrix},\quad
+a=\begin{pmatrix}
+1 \\0\\0
+\end{pmatrix},\quad
+\alpha=\gamma=0,\quad
+\beta=1,\quad d=3.$$
+
+Un des inconvénients de cette approche est que les différents critères ne sont pas normalisés : leurs valeurs ne peuvent pas être comparées et n'ont donc pas de sens.
+Il n'y a, par exemple, pas d’interprétation à donner un poids deux fois plus important à la *timeliness* qu'à la *fidelity*.
+
+Les trois critères utilisés dans le programme de minimisation \@ref(eq:gugemmos) sont des cas particuliers de ceux définis dans la section \@ref(subsec-theoriegen). 
+En effet, en notant $y_t=TC_t+\varepsilon_t,\quad\varepsilon_t\sim\Norm(0,\sigma^2)$ avec $TC_t$ une tendance déterministe, on a :
+\begin{align*}
+F_g(\theta) & = I(\theta,\,0,\,y_t,\,\E{M_\theta y_t})\\
+S_g(\theta) & = I(\theta,\,q,\,y_t,\,\E{M_\theta y_t})\\
+T_g(\theta) & = J(f\colon(\rho,\varphi)\mapsto\rho^2\sin(\varphi)^2,\,\omega_1, \,\omega_2).
+\end{align*}
+
+
+:::: {.summary_box data-latex="{Filtres FST --- Grun-Rehomme et alii (2018)}"}
+`r if (is_html) '
+:::{.title}
+Filtres FST - @ch15HBSA
+:::
+'`
+**Avantages** :
+
+- Le filtre asymétrique est indépendant du filtre symétrique, des données et de la date d'estimation.
+
+- Le problème d'optimisation admet une solution unique
+
+
+**Inconvénients** :
+
+- Les différents critères ne sont pas normalisés : les poids accordés aux différents critères ne peuvent être comparés.
+
+**Fonction `r fa_r_project`** : `rjdfilters::fst_filter()`.
+::::
+

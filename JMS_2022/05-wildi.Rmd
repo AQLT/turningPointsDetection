@@ -1,0 +1,109 @@
+# Filtres dépendant des données : trilemme ATS {#sec-WildiMcLeroy}
+
+@trilemmaWMR2019 proposent une approche dépendante des données (*data-dependent*) pour calculer des filtres linéaires.
+Ils décomposent l'erreur quadratique moyenne de révision en un trilemme de trois quantités appelées *accuracy* (précision), *timeliness* (temporalité) et *smoothness* (lissage), d'où son nom *ATS-trilemna*.
+
+Soient :
+
+- $\left\{ y_{t}\right\}$ notre série temporelle en entrée^[
+Par rapport à l'article originel, les notations ont été modifiées afin de garder une cohérence entre les différentes sections.
+].
+
+- $\left\{TC_{t}\right\}$ le signal cible, i.e. la série lissée avec un filtre symétrique fini ou non, et soient respectivement $\Gamma_s$, $\rho_s$ et $\varphi_s$ les fonctions de réponse en fréquence, de gain et de déphasage associées à ce filtre symétrique.
+
+- $\left\{\widehat{TC}_{t}\right\}$ une estimation de $\left\{TC_{t}\right\}$, i.e. le résultat d'un filtre asymétrique (lorsque toutes les observations ne sont pas disponibles), et soient respectivement $\Gamma_\theta$, $\rho_\theta$ et $\varphi_\theta$ les fonctions de réponse en fréquence, de gain et de déphasage associées à ce filtre asymétrique.
+
+Une approche directe^[Par opposition aux approches indirectes par exemple utilisées dans X-13-ARIMA où le signal cible est approché en faisant une prévision sur la série initiale.], *Direct Filter Approach* (DFA), consiste à approcher directement le signal cible par minimisation de l'erreur quadratique moyenne :
+$$
+\underset{\widehat{TC}_{t}}{\min} \E{(TC_{t}-\widehat{TC}_{t})^{2}}.
+$$
+Cette approche peut être approfondie en décomposant l'erreur de quadratique moyenne en plusieurs éléments d'intérêt.
+
+Si l'on suppose que la série $\left\{ y_{t}\right\}$ est faiblement stationnaire avec une densité spectrale continue $h$, l'erreur quadratique moyenne de révision, $\E{(TC_{t}-\widehat{TC}_{t})^{2}}$, peut s'écrire dans le domaine spectral comme:
+\begin{equation}
+\E{(TC_{t}-\widehat{TC}_{t})^{2}}=\frac{1}{2\pi}\int_{-\pi}^{\pi}\left|\Gamma_s(\omega)-{\Gamma_\theta}(\omega)\right|^{2}h(\omega)\ud\omega=\frac{1}{2\pi}\times2\times\int_{0}^{\pi}\left|\Gamma_s(\omega)-{\Gamma_\theta}(\omega)\right|^{2}h(\omega)\ud\omega
+(\#eq:msedef)
+\end{equation}
+Cette égalité peut également se généraliser aux processus intégrés non-stationnaires (par exemple en imposant une cointégration entre les deux signaux et en utilisant le pseudo-spectre, voir @optimrtfWMR2013).
+
+On a :
+\begin{align}
+\left|\Gamma_s(\omega)-\Gamma_\theta(\omega)\right|^{2} & =\rho_s(\omega)^{2}+\rho_\theta(\omega)^{2}+2\rho_s(\omega)\rho_\theta(\omega)\left(1-\cos(\varphi_s(\omega)-\varphi_\theta(\omega)\right) \nonumber\\
+ & =\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}+4\rho_s(\omega)\rho_\theta(\omega)\sin^{2}\left(\frac{\varphi_s(\omega)-\varphi_\theta(\omega)}{2}\right)
+ (\#eq:msedecomp)
+\end{align}
+
+L'intervalle $[0,\pi]$ peut être coupé en deux : une partie dite *pass-band* $[0,\omega_1]$ (l'intervalle de fréquences qui contient le signal cible) et une partie dite *stop-band*  $[\omega_1,\pi]$ (l'intervalle de fréquences associé aux résidus).
+
+L'erreur de l'équation \@ref(eq:msedef) peut être décomposée en 4 quantités :
+\begin{align*}
+Accuracy =A_w(\theta)&= 2\int_0^{\omega_1}\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}h(\omega)\ud\omega\\
+Timeliness =T_w(\theta)&= 8\int_0^{\omega_1}\rho_s(\omega)\rho_\theta(\omega)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
+Smoothness =S_w(\theta)&= 2\int_{\omega_1}^\pi\left(\rho_s(\omega)-\rho_\theta(\omega)\right)^{2}h(\omega)\ud\omega\\
+Residual =R_w(\theta)&= 8\int_{\omega_1}^\pi\rho_s(\omega)\rho_\theta(\omega)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud\omega\\
+\end{align*}
+
+
+
+:::: {.remarque data-latex=""}
+Afin d'avoir des définitions cohérentes entre les différentes sections, les formules des quatre critères ont été légèrement modifiées par rapport à ceux définis par @trilemmaWMR2019 :
+
+- dans ce rapport l'intervalle d'intégration est $[0,\pi]$ plutôt que $[-\pi,\pi]$ (toutes les fonctions étant paires cela revient à multiplier par 2 toutes les intégrales) ;
+
+- dans l'article originel, l'intervalle pass-band dépend de la fonction de gain du filtre symétrique (pass-band$=\{\omega |\rho_s(\omega)\geq 0,5\}$) : cela correspond donc à l'intervalle contenant les fréquences conservées sans trop de distorsion par le filtre symétrique. 
+Dans le cas du filtre symétrique d'Henderson de 13 termes, cela correspond à l'intervalle $[0, 2\pi/8]$, c'est-à-dire aux cycles de plus de 8 mois.
+:::: 
+
+En général, le résidu $R_w$ est petit puisque $\rho_s(\omega)\rho_\theta(\omega)$ est proche de 0 dans l'intervalle *stop-band*. 
+Il est de plus rare que les utilisateurs s'intéressent aux propriétés de déphasage dans les fréquences *stop-band*.
+C'est pourquoi, pour la construction de filtres linéaires les auteurs suggèrent de faire une minimisation d'une somme pondérée des trois premiers critères :
+$$
+\mathcal{M}(\vartheta_{1},\vartheta_{2})=\vartheta_{1}T_w(\theta)+\vartheta_{2}S_w(\theta)+(1-\vartheta_{1}-\vartheta_{2})A_w(\theta)
+$$
+Comme le montrent @tuckerwildi2020, cette méthode peut également être étendue au cas multivarié, ce qui permet de prendre en compte les corrélations entre les composantes de différentes séries.
+
+Un des inconvénients de cette méthode est qu'il n'y a pas de garantie d'unicité de la solution.
+En revanche, son avantage par rapport à la méthode FST (section \@ref(subsec-GuggemosEtAl)) est que la décomposition de l'erreur quadratique moyenne permet de normaliser les différents indicateurs, et les coefficients $\vartheta_{1}$, $\vartheta_{2}$ et $1-\vartheta_{1}-\vartheta_{2}$ peuvent être comparés entre eux.
+
+Les quatre critères $A_w$, $T_w$, $S_w$ et $R_w$ étant des cas particuliers du critère $J$ défini dans l'équation \@ref(eq:theoriegen1), cette méthode s'inscrit dans le cadre de la théorie générale définie dans la section \@ref(subsec-theoriegen).
+En effet, en notant :
+$$
+\begin{cases}
+    f_1\colon&(\rho,\varphi, \omega)\mapsto2\left(\rho_s(\omega)-\rho\right)^{2}h(\omega) \\
+    f_2\colon&(\rho,\varphi, \omega)\mapsto8\rho_s(\omega)\rho\sin^{2}\left(\frac{\varphi}{2}\right)h(\omega)
+\end{cases}
+$$
+on a :
+\begin{align*}
+A_w(\theta)&= J(\theta,f_1,0,\omega_1)\\
+T_w(\theta)&= J(\theta,f_2,0,\omega_1)\\
+S_w(\theta)&= J(\theta,f_1,\omega_1,\pi)\\
+R_w(\theta)&= J(\theta,f_2,\omega_1,\pi).
+\end{align*}
+
+:::: {.summary_box data-latex="{ATS-trilemna -- Wildi et McElroy (2019)}"}
+`r if (is_html) '
+:::{.title}
+ATS-trilemna - @trilemmaWMR2019
+:::
+'`
+**Avantages** :
+
+- Les valeurs des différents critères peuvent être comparées et les poids associés peuvent être interprétés.
+
+- Méthode généralisable aux cas multivariés
+
+**Inconvénients **:
+
+- Les filtres dépendent des données, de la date d'estimation et du filtre symétrique utilisé.
+
+- Il peut y avoir des problèmes d'optimisation (plusieurs minimums, etc.).
+
+**`r fa_r_project`** : package MDFA https://github.com/wiaidp/MDFA.
+::::
+
+
+Cette méthode étant totalement dépendante des données, son intégration dans des algorithmes non-paramétriques tels que X-11 serait compliquée. 
+C'est pourquoi elle n'est pour l'instant pas comparée aux autres.
+Pour avoir des critères qui ne dépendent pas des données, une idée serait de fixer la densité spectrale, par exemple à celle d'un bruit blanc ($h_{WN}(x)=1$) ou d'une marche aléatoire ($h_{RW}(x)=\frac{1}{2(1-\cos(x))}$). 
+C'est ce qui est implémenté dans la fonction `rjdfilters::dfa_filter()`.
