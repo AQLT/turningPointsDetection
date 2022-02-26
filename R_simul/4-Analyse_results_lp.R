@@ -1,18 +1,26 @@
 source("R_simul/4-utils.R",encoding = "UTF-8")
 library(ggplot2)
 
-all_tp <- merge(readRDS("results_simul/compile_tp/troughs_lp.RDS"),
-                readRDS("results_simul/compile_tp/peaks_lp.RDS"),
+all_tp <- merge(readRDS("results_simul/compile_tp_norev/troughs_lp.RDS"),
+                readRDS("results_simul/compile_tp_norev/peaks_lp.RDS"),
                 by=c("series","kernel", "method"))
-all_tp <- select_var(all_tp)
-all_tp$method <- factor(all_tp$method,levels = c("lc","ql","cq","daf"),ordered = TRUE)
+all_tp <- merge(readRDS("results_simul/compile_tp_norev/troughs_lp.RDS"),
+      readRDS("results_simul/compile_tp_norev/peaks_lp.RDS"),
+      by=c("series","kernel", "method")) %>%
+  select_var() %>% 
+  mutate(method = factor(method,levels = c("lc","ql","cq","daf"),ordered = TRUE))
 nb_series <- all_tp %>%
   group_by(kernel, method) %>%
   summarise_if(is.numeric, \(x) sum(!is.na(x))) %>%
   data.frame
+unique(all_tp$series)
 
-all_rev_fe <- select_series(readRDS("results_simul/compile_revisions/lp_fe_rev.RDS"))
-all_rev_ce <- select_series(readRDS("results_simul/compile_revisions/lp_ce_rev.RDS"))
+all_rev_fe <- readRDS("results_simul/compile_revisions/lp_fe_rev.RDS") |> 
+  select_series() |> 
+  select_mae()
+all_rev_ce <- readRDS("results_simul/compile_revisions/lp_ce_rev.RDS") |> 
+  select_series() |> 
+  select_mae()
 
 
 mean2 <- function(x,...){
