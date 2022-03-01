@@ -15,6 +15,9 @@ all_fst_weights <- function(lags=6, leads=0, pdegree=2, smoothness.degree=3,
   
   resultat <- t(mapply(function(x,y){
     tryCatch({
+      if(leads == lags){ #Henderson filters
+        return(lp_filter(horizon = lags)$filters.coef[,sprintf("q=%i", leads)])
+      }
       filter <- fst_filter(lags = lags, leads = leads, pdegree=pdegree, 
                            smoothness.weight=x, smoothness.degree=smoothness.degree,
                            timeliness.weight=y,
