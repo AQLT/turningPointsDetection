@@ -7,4 +7,3 @@ filters/dfa/
 filters/fst/
 *.zip
 results*
-data_simul/
