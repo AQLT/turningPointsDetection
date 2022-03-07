@@ -48,45 +48,11 @@ $$
 \Gamma_{\theta_0}(\omega)=\frac{1}{2}+\frac{1}{2}\e^{-i\omega}
 =\lvert\cos(\omega/2)\rvert\e^{-i\frac{\omega}{2}}.
 $$
-<!-- La figure \@ref(fig:exgainPhase) montre l'impact du gain et du déphasage pour $\omega=\pi/2$ and $X_t=\sin(\omega t)$. -->
-
-<!-- \begin{figure}[!ht] -->
-<!-- \pgfplotsset{width=\textwidth,height=6cm,every axis legend/.append style={font=\footnotesize, -->
-<!--   at={(0.5,-0.1)}, -->
-<!--   anchor=north} -->
-<!--     } -->
-<!-- \begin{tikzpicture} -->
-<!-- \begin{axis}[ -->
-<!-- legend columns=2, -->
-<!-- legend style = {fill=none , fill opacity=0, draw opacity=1,text opacity=1}, -->
-<!-- xtick={0,3.14159,...,15.70795}, -->
-<!-- xticklabels={0,$\pi$,$2\pi$,$3\pi$,$4\pi$,$5\pi$}  -->
-<!-- ] -->
-<!-- \addplot[domain=0:5*pi,smooth,samples=300]    plot (\x,{sin(\x * (pi/2) r)}); -->
-<!-- \addlegendentry{$X_t(\pi/2)$} -->
-<!-- \addplot[domain=0:5*pi,smooth,samples=300, dashed]     -->
-<!--   plot (\x,{1/2*sin(\x* pi/2 r )+1/2*sin((\x -1) * pi/2 r)}); -->
-<!-- \addlegendentry{$M_{\theta_0}X_t(\pi/2)$} -->
-<!-- \draw[<->](axis cs: 1.5,1)--(axis cs: 1.5,0.7071068) -->
-<!--   node[pos=0.5, right]{\scriptsize $G_{\theta_0}(\pi/2)$}; -->
-<!-- \draw[<->] (axis cs: 3, -0.70710680-0.05)--(axis cs: 3.5,-0.7071068-0.05)  -->
-<!--   node[pos=0.5, below right]{\scriptsize $\Phi_{\theta_0}(\pi/2)$}; -->
-<!-- \end{axis} -->
-<!-- \end{tikzpicture} -->
-<!-- \caption{Lissage de la série $X_t=\sin(\omega t)$ par la moyenne mobile $M_{\theta_0}X_t=\frac{1}{2}X_{t-1}+\frac{1}{2}X_{t}$ pour $\omega=\pi/2$.}\label{fig:exgainPhase} -->
-<!-- \end{figure} -->
-
-<!-- <!-- knitr::include_graphics("img/tikz-def-mm.png") --> -->
-
-
-<!-- ```{r exgainPhase, echo=FALSE, out.width="100%", fig.cap="Lissage de la série $X_t=\\sin(\\omega t)$ par la moyenne mobile $M_{\\theta_0}X_t=\\frac{1}{2}X_{t-1}+\\frac{1}{2}X_{t}$ pour $\\omega=\\pi/2$.", eval=!is_latex} -->
-<!-- knitr::include_graphics("img/tikz-def-mm.png") -->
-<!-- ``` -->
 
 
 ## Propriétés souhaitables d'une moyenne mobile
 
-Pour décomposer une série temporelle en une composante saisonnière, une tendance-cycle et l'irrégulier, l'algorithme de décomposition X-11 (utilisé dans X-13ARIMA) utilise une succession de moyennes mobiles ayant toutes des contraintes spécifiques. 
+Pour décomposer une série temporelle en une composante saisonnière, une tendance-cycle et l'irrégulier, l'algorithme de décomposition X-11 (utilisé dans X-13ARIMA) utilise une succession de moyennes mobiles ayant toutes des contraintes spécifiques.
 Dans cette sous-section nous décrivons deux types de contraintes :
 
 - la préservation de certaines tendances ;
@@ -118,8 +84,8 @@ $$
 $$
 - De manière générale, $M_\theta$ conserves les tendances de degré $d$ si et seulement si :
 $$
-\sum_{k=-p}^{+f}\theta_k=1 
- \text{ et } 
+\sum_{k=-p}^{+f}\theta_k=1
+ \text{ et }
 \forall j \in \left\llbracket 1,d\right\rrbracket:\:
 \sum_{k=-p}^{+f}k^j\theta_k=0.
 $$
@@ -127,11 +93,11 @@ $$
 
 ### Réduction du bruit
 
-Toutes les séries temporelles sont affectées par du bruit qui peut brouiller l'extraction du signal. 
+Toutes les séries temporelles sont affectées par du bruit qui peut brouiller l'extraction du signal.
 C'est pourquoi on cherche à réduire ce bruit (en réduisant sa variance) tout en conservant le signal (en utilisant les propriétés vues dans les sections précédentes).
 La somme des carrés des coefficients $\sum_{k=-p}^{+f}\theta_k^2$ est le rapport de *réduction de la variance*.
 
-En effet, soit $\{\varepsilon_t\}$ une suite de variables aléatoires indépendantes avec $\E{\varepsilon_t}=0$, $\V{\varepsilon_t}=\sigma^2$. 
+En effet, soit $\{\varepsilon_t\}$ une suite de variables aléatoires indépendantes avec $\E{\varepsilon_t}=0$, $\V{\varepsilon_t}=\sigma^2$.
 On a :
 $$
 \V{M_\theta\varepsilon_t}=\V{\sum_{k=-p}^{+f} \theta_k \varepsilon_{t+k}}
@@ -153,7 +119,7 @@ Une solution est de prolonger la série par prévision pour ensuite appliquer le
 Cette méthode semble remonter à @deforest1877adjustment qui suggèrent également de modéliser en fin de période une tendance polynomiale de degré au plus 3 :
 
 :::{.quote data-latex=""}
-« *As the first $m$ and last $m$ terms of the series cannot be reached directly by the formula, the series should be graphically extended by m terms at both ends, first plotting the observations on paper as ordinates, and then extending the curve along what seems to be its probable course, and measuring the ordinates of the extended portions.* 
+« *As the first $m$ and last $m$ terms of the series cannot be reached directly by the formula, the series should be graphically extended by m terms at both ends, first plotting the observations on paper as ordinates, and then extending the curve along what seems to be its probable course, and measuring the ordinates of the extended portions.*
 *It is not necessary that this extension should coincide with what would be the true course of the curve in those parts. *
 *The important point is that the m terms thus added, taken together with the $m+1$ adjacent given terms, should follow a curve whose form is approximately algebraic and of a degree not higher than the third.* »
 :::
@@ -176,25 +142,25 @@ $$
 =\sum_{i=-h}^0 (w_i^q-v_i)y_i.
 $$
 En somme, matriciellement, cela revient donc à résoudre :
-$$
+$$\scriptstyle
 \begin{pmatrix}
   v_1 & v_2 & \cdots & v_h \\
   v_1 - w_1^1 & v_2 & \cdots & v_h \\
-  \vdots & \vdots & \cdots & \vdots \\ 
-   v_1 - w_1^{h-1} & v_2-w_2^{h-1} & \cdots & v_h 
+  \vdots & \vdots & \cdots & \vdots \\
+   v_1 - w_1^{h-1} & v_2-w_2^{h-1} & \cdots & v_h
 \end{pmatrix}
 \begin{pmatrix}y_1^* \\ \vdots \\ y_h^*\end{pmatrix}=
 \begin{pmatrix}
   w_{-h}^0 - v_{-h} & w_{-(h-1)}^0 - v_{-(h-1)} & \cdots & w_{0}^0 - v_{0} \\
   w_{-h}^1 - v_{-h} & w_{-(h-1)}^1 - v_{-(h-1)} & \cdots & w_{0}^1 - v_{0} \\
-  \vdots & \vdots & \cdots & \vdots \\ 
+  \vdots & \vdots & \cdots & \vdots \\
   w_{-h}^{h-1} - v_{-h} & w_{-(h-1)}^{h-1} - v_{-(h-1)} & \cdots & w_{0}^{h-1} - v_{0}
 \end{pmatrix}
 \begin{pmatrix}y_{-h} \\ \vdots \\ y_0\end{pmatrix}.
 $$
 C'est ce qui implémenté dans la fonction `rjdfilters::implicit_forecast`.
 
-Comme notamment souligné par @wildischis2004, étendre la série par prévision d'un modèle ARIMA revient à calculer des filtres asymétriques dont les coefficients sont optimisés par rapport à la prévision avec une longueur d'avance --- *one-step ahead forecasting*. 
+Comme notamment souligné par @wildischis2004, étendre la série par prévision d'un modèle ARIMA revient à calculer des filtres asymétriques dont les coefficients sont optimisés par rapport à la prévision avec une longueur d'avance --- *one-step ahead forecasting*.
 Autrement dit, on cherche à minimiser les révisions entre la première et la dernière estimation (avec le filtre symétrique).
 Cependant, puisque les coefficients du filtre symétrique décroissent lentement, il faudrait également s'intéresser à la performance des prévisions avec plusieurs longueurs d'avance --- *multi-step ahead forecasting*.
 Par ailleurs, le déphasage induit par les filtres asymétriques n'est pas contrôlé : on pourrait préférer avoir une détection plus rapide des points de retournement et une révision plus grande plutôt que de juste minimiser les révisions entre la première et la dernière estimation.
@@ -202,8 +168,7 @@ C'est pourquoi il peut être nécessaire de définir des critères alternatifs p
 
 ### Indicateurs de qualité des moyennes mobiles asymétriques
 
-Tous les indicateurs de qualité sont résumés implémentés dans la fonction `rjdfilters::diagnostic_matrix` sont résumés dans le tableau \@ref(tab:QC). 
-Ils proviennent en majorité de critères définis par @ch15HBSA et @trilemmaWMR2019 pour construire les filtres asymétriques.
+Pour les filtres asymétriques, la majorité des critères proviennent de ceux définis par @ch15HBSA et @trilemmaWMR2019 pour construire les filtres asymétriques. Ils sont résumés dans le tableau \@ref(tab:QC) et calculables avec la fonction fonction `rjdfilters::diagnostic_matrix`.
 
 @ch15HBSA proposent une approche générale pour dériver des filtres linéaires, basée sur un problème d'optimisation de trois critères : *Fidelity* ($F_g$, réduction de la variance), *Smoothness* ($S_g$, lissage) et *Timeliness* ($T_g$, déphasage).
 Voir section \@ref(subsec-GuggemosEtAl) pour plus de détails.
@@ -224,7 +189,7 @@ footnotes <- c("$X_g$ critères provenant de @ch15HBSA et $X_w$ critères proven
 criteria_mm <- data.frame(Sigle = c("b_c", "b_l", "b_q",
                                     "F_g", "S_g", "T_g",
                                     "A_w", "T_w", "S_w", "R_w"),
-                          Description = c(sprintf("%s biais", c("Constant", "Linéaire", "Quadratique")),
+                          Description = c(sprintf("Biais %s", c("constant", "linéaire", "quadratique")),
                                           sprintf("%s (Guggemos)",
                                                   c("Réduction de la variance / Fidelity", "Smoothness", "Timeliness")),
                                           sprintf("%s (Wildi)",c("Accuracy", "Timeliness", "Smoothness", "Residual"))),
@@ -242,9 +207,10 @@ criteria_mm[,1] <- sprintf("$%s$", criteria_mm[,1])
 criteria_mm[,3] <- sprintf("$%s$", criteria_mm[,3])
 library(kableExtra)
 
-criteria_mm %>% 
+criteria_mm %>%
   kbl(align = "c", booktabs = T, row.names = FALSE,
-        escape = FALSE,caption = title) %>% 
+        escape = FALSE,caption = title)  %>%
+kable_styling(latex_options = "scale_down") %>%
     add_footnote_kable(stop_centering = TRUE)
 ```
 
