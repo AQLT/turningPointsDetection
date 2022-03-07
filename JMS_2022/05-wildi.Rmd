@@ -9,9 +9,9 @@ Soient :
 Par rapport à l'article originel, les notations ont été modifiées afin de garder une cohérence entre les différentes sections.
 ].
 
-- $\left\{TC_{t}\right\}$ le signal cible, i.e. la série lissée avec un filtre symétrique fini ou non, et soient respectivement $\Gamma_s$, $\rho_s$ et $\varphi_s$ les fonctions de réponse en fréquence, de gain et de déphasage associées à ce filtre symétrique.
+- $\left\{TC_{t}\right\}$ le signal cible, i.e. la série lissée avec un filtre symétrique fini ou non, et soient respectivement $\Gamma_s$, $\rho_s$ et $\varphi_s$ les fonctions de transfert, de gain et de déphasage associées à ce filtre symétrique.
 
-- $\left\{\widehat{TC}_{t}\right\}$ une estimation de $\left\{TC_{t}\right\}$, i.e. le résultat d'un filtre asymétrique (lorsque toutes les observations ne sont pas disponibles), et soient respectivement $\Gamma_\theta$, $\rho_\theta$ et $\varphi_\theta$ les fonctions de réponse en fréquence, de gain et de déphasage associées à ce filtre asymétrique.
+- $\left\{\widehat{TC}_{t}\right\}$ une estimation de $\left\{TC_{t}\right\}$, i.e. le résultat d'un filtre asymétrique (lorsque toutes les observations ne sont pas disponibles), et soient respectivement $\Gamma_\theta$, $\rho_\theta$ et $\varphi_\theta$ les fonctions de transfert, de gain et de déphasage associées à ce filtre asymétrique.
 
 Une approche directe^[Par opposition aux approches indirectes par exemple utilisées dans X-13-ARIMA où le signal cible est approché en faisant une prévision sur la série initiale.], *Direct Filter Approach* (DFA), consiste à approcher directement le signal cible par minimisation de l'erreur quadratique moyenne :
 $$
@@ -48,7 +48,7 @@ Residual =R_w(\theta)&= 8\int_{\omega_1}^\pi\rho_s(\omega)\rho_\theta(\omega)\si
 :::: {.remarque data-latex=""}
 Afin d'avoir des définitions cohérentes entre les différentes sections, les formules des quatre critères ont été légèrement modifiées par rapport à ceux définis par @trilemmaWMR2019 :
 
-- dans ce rapport l'intervalle d'intégration est $[0,\pi]$ plutôt que $[-\pi,\pi]$ (toutes les fonctions étant paires cela revient à multiplier par 2 toutes les intégrales) ;
+- dans cette étude, l'intervalle d'intégration est $[0,\pi]$ plutôt que $[-\pi,\pi]$ (toutes les fonctions étant paires cela revient à multiplier par 2 toutes les intégrales) ;
 
 - dans l'article originel, l'intervalle pass-band dépend de la fonction de gain du filtre symétrique (pass-band$=\{\omega |\rho_s(\omega)\geq 0,5\}$) : cela correspond donc à l'intervalle contenant les fréquences conservées sans trop de distorsion par le filtre symétrique. 
 Dans le cas du filtre symétrique d'Henderson de 13 termes, cela correspond à l'intervalle $[0, 2\pi/8]$, c'est-à-dire aux cycles de plus de 8 mois.
@@ -81,6 +81,11 @@ S_w(\theta)&= J(\theta,f_1,\omega_1,\pi)\\
 R_w(\theta)&= J(\theta,f_2,\omega_1,\pi).
 \end{align*}
 
+Cette méthode étant totalement dépendante des données, son intégration dans des algorithmes non-paramétriques tels que X-11 serait compliquée. 
+C'est pourquoi elle n'est pour l'instant pas comparée aux autres.
+Pour avoir des critères qui ne dépendent pas des données, une idée serait de fixer la densité spectrale, par exemple à celle d'un bruit blanc ($h_{WN}(x)=1$) ou d'une marche aléatoire ($h_{RW}(x)=\frac{1}{2(1-\cos(x))}$). 
+C'est ce qui est implémenté dans la fonction `rjdfilters::dfa_filter()`.
+
 :::: {.summary_box data-latex="{ATS-trilemna -- Wildi et McElroy (2019)}"}
 `r if (is_html) '
 :::{.title}
@@ -91,7 +96,7 @@ ATS-trilemna - @trilemmaWMR2019
 
 - Les valeurs des différents critères peuvent être comparées et les poids associés peuvent être interprétés.
 
-- Méthode généralisable aux cas multivariés
+- Méthode généralisable aux cas multivariés.
 
 **Inconvénients **:
 
@@ -99,11 +104,6 @@ ATS-trilemna - @trilemmaWMR2019
 
 - Il peut y avoir des problèmes d'optimisation (plusieurs minimums, etc.).
 
-**`r fa_r_project`** : package MDFA https://github.com/wiaidp/MDFA.
+**`r fa_r_project`** : package MDFA https://github.com/wiaidp/MDFA ou `rjdfilters::dfa_filter()` (version simplifiée).
 ::::
 
-
-Cette méthode étant totalement dépendante des données, son intégration dans des algorithmes non-paramétriques tels que X-11 serait compliquée. 
-C'est pourquoi elle n'est pour l'instant pas comparée aux autres.
-Pour avoir des critères qui ne dépendent pas des données, une idée serait de fixer la densité spectrale, par exemple à celle d'un bruit blanc ($h_{WN}(x)=1$) ou d'une marche aléatoire ($h_{RW}(x)=\frac{1}{2(1-\cos(x))}$). 
-C'est ce qui est implémenté dans la fonction `rjdfilters::dfa_filter()`.
