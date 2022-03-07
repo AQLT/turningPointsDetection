@@ -47,7 +47,9 @@ markdown_latex <- function(text, to = "latex"){
     res <- sapply(text, function(x){
         dir = tempdir()
         infile <- tempfile(fileext=".md", tmpdir = dir)
-        writeLines(x, infile)
+        # writeLines(x, infile)
+        writeLines(enc2utf8(x), infile,
+                   useBytes=TRUE)
         file.copy("biblio.bib",file.path(dir,"biblio.bib"))
         outfile <- tempfile(fileext=".tex", tmpdir = dir)
         rmarkdown::pandoc_convert(infile,
@@ -59,7 +61,7 @@ markdown_latex <- function(text, to = "latex"){
                                               ),
                                   output = outfile,
                                   wd = dir)
-        paste(readLines(outfile), collapse = " ")
+        paste(readLines(outfile, encoding="UTF-8"), collapse = " ")
     })
     names(res) <- NULL
     res
