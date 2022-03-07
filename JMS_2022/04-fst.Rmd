@@ -113,7 +113,7 @@ Filtres FST - @ch15HBSA
 
 - Le filtre asymétrique est indépendant du filtre symétrique, des données et de la date d'estimation.
 
-- Le problème d'optimisation admet une solution unique
+- Le problème d'optimisation admet une solution unique.
 
 
 **Inconvénients** :
