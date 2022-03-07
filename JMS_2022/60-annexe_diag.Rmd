@@ -8,7 +8,7 @@ notations <- c("$X = X_d = \\begin{pmatrix} x_0 \\quad\\cdots \\quad x_d \\end{p
 notationsasym <- c("$X_d = \\begin{pmatrix} x_0 \\quad\\cdots \\quad x_d \\end{pmatrix}$ avec $x_i'=\\begin{pmatrix} (-h)^i \\quad \\cdots \\quad (q)^i\\end{pmatrix}$ et $X=X_d$ avec $q=h$.")
 if(is_latex){
     out.extra='angle=90'
-    out.width <- "0.9\\textheight"
+    out.width <- "0.8\\textheight"
 }else{
     out.extra <-  NULL
     out.width <- '100%'
@@ -16,11 +16,11 @@ if(is_latex){
 
 ```
 
-```{r diag-gen-sym, echo=FALSE, engine='tikz', fig.ext=if (is_latex) 'pdf' else 'png', fig.cap="Synthèse des méthodes de construction de moyennes mobiles symétriques $\\theta=(\\theta_{-h},\\dots,\\theta_{h})$ de $2h+1$ termes.", engine.opts = list(template = "img/tikz2pdf.tex"), fig.lecture = notations, out.extra = out.extra, out.width = out.width}
+```{r diag-gen-sym, echo=FALSE, engine='tikz', fig.ext=if (is_latex) 'pdf' else 'png', fig.cap="Synthèse des méthodes de construction de moyennes mobiles symétriques $\\theta=(\\theta_{-h},\\dots,\\theta_{h})$ de $2h+1$ termes.", engine.opts = list(template = "img/tikz2pdf.tex"), fig.lecture = notations, out.extra = out.extra, out.width = out.width,fig.pos="!h"}
 \input{diagrams/sym.tex}
 ```
 
 
-```{r diag-gen-asym, echo=FALSE, engine='tikz', out.width='90%', fig.ext=if (is_latex) 'pdf' else 'png', fig.cap="Synthèse des méthodes de construction de moyennes mobiles asymétriques $\\theta=(\\theta_{-h},\\dots,\\theta_{q})$, $0\\leq q< h$ avec $\\theta^s$ le filtre symétrique de référence de $2h+1$ termes.", engine.opts = list(template = "img/tikz2pdf.tex"), fig.lecture = notationsasym, out.extra = out.extra, out.width= out.width}
+```{r diag-gen-asym, echo=FALSE, engine='tikz', out.width='90%', fig.ext=if (is_latex) 'pdf' else 'png', fig.cap="Synthèse des méthodes de construction de moyennes mobiles asymétriques $\\theta=(\\theta_{-h},\\dots,\\theta_{q})$, $0\\leq q< h$ avec $\\theta^s$ le filtre symétrique de référence de $2h+1$ termes.", engine.opts = list(template = "img/tikz2pdf.tex"), fig.lecture = notationsasym, out.extra = out.extra, out.width= out.width,fig.pos="!h"}
 \input{diagrams/asym.tex}
 ```
