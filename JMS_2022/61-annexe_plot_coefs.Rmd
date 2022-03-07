@@ -26,28 +26,21 @@ img <- sprintf("img/filters_used/%s.%s", tolower("DAF"), fig.ext)
 knitr::include_graphics(img)
 ```
 
-```{r graphsrkhs, echo=FALSE, out.width="100%", fig.cap="Coefficients, fonctions de gain et de déphasage pour le filtre RKHS $b_{q,\\varphi}$."}
-img <- sprintf("img/filters_used/%s.%s", tolower("rkhs_timeliness"), fig.ext)
+```{r graphsrkhsfrf, echo=FALSE, out.width="100%", fig.cap="Coefficients, fonctions de gain et de déphasage pour le filtre RKHS $b_{q,\\Gamma}$."}
+img <- sprintf("img/filters_used/%s.%s", tolower("frf"), fig.ext)
 knitr::include_graphics(img)
 ```
 
-```{r graphsfstlcmax, echo=FALSE, out.width="100%", fig.cap="Coefficients, fonctions de gain et de déphasage pour le filtre FST optimal par rapport au filtre LC et minimisant la *timeliness*."}
-img <- sprintf("img/filters_used/%s.%s", tolower("fst_lc"), fig.ext)
+
+```{r graphsrkhsgain, echo=FALSE, out.width="100%", fig.cap="Coefficients, fonctions de gain et de déphasage pour le filtre RKHS $b_{q,G}$."}
+img <- sprintf("img/filters_used/%s.%s", tolower("gain"), fig.ext)
 knitr::include_graphics(img)
 ```
 
-```{r graphsfstlcmin, echo=FALSE, out.width="100%", fig.cap="Coefficients, fonctions de gain et de déphasage pour le filtre FST optimal par rapport au filtre LC et ayant la *timeliness* la plus élevée."}
-img <- sprintf("img/filters_used/%s.%s", tolower("fst_lc_min"), fig.ext)
-knitr::include_graphics(img)
-```
 
-```{r graphsfstlcmed, echo=FALSE, out.width="100%", fig.cap="Coefficients, fonctions de gain et de déphasage pour le filtre FST optimal par rapport au filtre LC et ayant une *timeliness* médiane."}
-img <- sprintf("img/filters_used/%s.%s", tolower("fst_lc_med"), fig.ext)
-knitr::include_graphics(img)
-```
 
-```{r graphsfstrkhs, echo=FALSE, out.width="100%", fig.cap="Coefficients, fonctions de gain et de déphasage pour le filtre FST optimal par rapport au filtre RKHS $b_{q,\\varphi}$ et minimisant la *timeliness*."}
-img <- sprintf("img/filters_used/%s.%s", tolower("fst_rkhs_timeliness"), fig.ext)
+```{r graphsrkhsphase, echo=FALSE, out.width="100%", fig.cap="Coefficients, fonctions de gain et de déphasage pour le filtre RKHS $b_{q,\\varphi}$."}
+img <- sprintf("img/filters_used/%s.%s", tolower("phase"), fig.ext)
 knitr::include_graphics(img)
 ```
 
