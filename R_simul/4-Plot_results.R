@@ -19,6 +19,29 @@ all_rev_rkhs_ce <- select_var(readRDS("results_simul/compile_revisions/rkhs_ce_r
 all_rev_rkhs_fe <- rbind(all_rev_rkhs_fe,all_rev_fe %>% filter(kernel == "henderson",method=="ql"))
 all_rev_rkhs_ce <- rbind(all_rev_rkhs_ce,all_rev_ce %>% filter(kernel == "henderson",method=="ql"))
 
+format_table <- function(x){
+  if(length(grep("method", colnames(x)))>0){
+    if("daf" %in% c(x$method)){
+      x$method = factor(x$method,
+                        levels = c("lc","ql","cq","daf"),
+                        ordered = TRUE)
+    }else{
+      x$method = factor(x$method,
+                        levels = c("ql","phase","gain","frf"),
+                        ordered = TRUE)
+    }
+  }
+  if(length(grep("Group", colnames(x)))>0){
+    x$Group = factor(x$Group,
+                     levels = c("total","normal","turning-point"),
+                     ordered = TRUE)
+  }
+  if(length(grep("variability", colnames(x)))>0){
+    x$variability = factor(x$variability,
+                     levels = c("lowvariability","mediumvariability","highvariability"),
+                     ordered = TRUE)
+  }
+}
 
 all_tp$method <- factor(all_tp$method,levels = c("lc","ql","cq","daf"),ordered = TRUE)
 all_rev_fe$method = factor(all_rev_fe$method,levels = c("lc","ql","cq","daf"), ordered = TRUE)
@@ -48,14 +71,14 @@ pivot_data_rkhs <- all_tp_rkhs %>%
     values_to = "value"
   )
 
-ggplot(pivot_data[pivot_data$kernel=="henderson",],aes(x=method, y = value))+ 
+p2 = ggplot(pivot_data[pivot_data$kernel=="henderson",],aes(x=method, y = value))+ 
   geom_boxplot() +
   facet_wrap(vars(variability), ncol = 1) + AQLTools:::theme_aqltools() +
   labs(title="Dephasage")
 ggsave("point_these/img/simul/lp_fixed_kernel_tp.pdf",
        width = 7, height = 5)
 
-ggplot(all_rev_fe[(all_rev_fe$kernel=="henderson")&(all_rev_fe$stats=="RMSE"),],aes(x=method, y = rev.q0))+ 
+ggplot(all_rev_fe[(all_rev_fe$kernel=="henderson")&(all_rev_fe$stats=="MAE"),],aes(x=method, y = rev.q0))+ 
   geom_boxplot() +
   facet_wrap(vars(variability, Group), ncol = 3,
              scales = "free_y") + AQLTools:::theme_aqltools()+
