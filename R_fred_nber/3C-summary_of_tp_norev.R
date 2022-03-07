@@ -8,7 +8,7 @@ all_files <- list.files("results_nber/lp/",pattern = "_tp",full.names = TRUE)
 all_tp_lp <- lapply(seq_along(all_files), function(i){
   print(i)
   f = all_files[i]
-  compute_time_lag(readRDS(f),
+  compute_time_lag(data = readRDS(f),
                    peaks = nber_tp_m[,"Peak"],
                    troughs = nber_tp_m[,"Trough"],
                    type = "no_revisions")
