@@ -56,6 +56,32 @@ rownames(all_t) <- rownames(all_p) <- full_names
 saveRDS(all_t, "results_nber/compile_tp_norev/troughs_rkhs.RDS")
 saveRDS(all_p, "results_nber/compile_tp_norev/peaks_rkhs.RDS")
 
+
+all_files <- list.files("results_nber/arima/",pattern = "_tp",full.names = TRUE)
+
+all_tp_rkhs <- lapply(seq_along(all_files), function(i){
+  print(i)
+  f = all_files[i]
+  compute_time_lag(readRDS(f),                    
+                   peaks = tp$downturn,
+                   troughs = tp$upturn,
+                   type = "no_revisions")
+})
+
+full_names <- gsub("_tp.RDS$", "", basename(all_files))
+split <- strsplit(full_names, "_")
+series <- sapply(split, `[`, 1)
+method <- "auto_arima"
+kernel = "henderson"
+all_t <- data.frame(t(sapply(all_tp_rkhs,`[[`,"troughs")),
+                    series, kernel, method)
+all_p <- data.frame(t(sapply(all_tp_rkhs,`[[`,"peaks")),
+                    series, kernel, method)
+rownames(all_t) <- rownames(all_p) <- full_names
+
+saveRDS(all_t, "results_nber/compile_tp_norev/troughs_arima.RDS")
+saveRDS(all_p, "results_nber/compile_tp_norev/peaks_arima.RDS")
+
 for(degree in 0:3){
   all_files <- list.files(sprintf("results_nber/dfa/dfa%i", degree),
                           pattern = "_tp",full.names = TRUE)

@@ -6,10 +6,10 @@ library(rjdfilters)
 library(AQLThesis)
 library("future")
 plan(multisession)
-list_series <- list.files("data/byseries", full.names = TRUE)
+list_series <- list.files("data/byseries_nber", full.names = TRUE)
 list_degree <- c(0:3)
 s = list_series[1]
-q = 0
+q = 0; degree = 0
 fs <- list()
 j <- 1
 reload <- FALSE
@@ -17,12 +17,13 @@ reload <- FALSE
 for(degree in list_degree){
   print(degree)
   all_coefs <- readRDS(sprintf("filters/fst_pdegree%i.RDS",degree))
+  
   weights = all_coefs$weights
   all_coefs = all_coefs$coefs
   
   if(!dir.exists(sprintf("results/fst/fst%i",degree)))
     dir.create(sprintf("results/fst/fst%i",degree))
-  for(i in seq_along(all_coefs)){
+  for(i in 231:236){
     print(i)
     for(s in list_series){
       name_file <- gsub(".RDS$", "", basename(s))
@@ -74,20 +75,20 @@ for(degree in list_degree){
         })
         names(series_s) <- names(data)
         
-        # saveRDS(series_s, nom_f_s)
-        
-        print("turning points")
-        tp <- lapply(series_s, turning_points)
-        saveRDS(tp,
-                nom_f_s_tp
-        )
-        
-        revisions_firstest <- first_est_revisions(series_s)
-        revisions_consest <- consecutive_est_revisions(series_s)
-        
-        
-        saveRDS(revisions_firstest, nom_f_s_rev_fe)
-        saveRDS(revisions_consest, nom_f_s_rev_ce)
+        saveRDS(series_s, nom_f_s)
+        # 
+        # print("turning points")
+        # tp <- lapply(series_s, turning_points)
+        # saveRDS(tp,
+        #         nom_f_s_tp
+        # )
+        # 
+        # revisions_firstest <- first_est_revisions(series_s)
+        # revisions_consest <- consecutive_est_revisions(series_s)
+        # 
+        # 
+        # saveRDS(revisions_firstest, nom_f_s_rev_fe)
+        # saveRDS(revisions_consest, nom_f_s_rev_ce)
         TRUE
       })
       j <- j+1
