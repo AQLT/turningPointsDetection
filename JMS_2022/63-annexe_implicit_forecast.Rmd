@@ -20,7 +20,7 @@ knitr::include_graphics(img)
 ```
 
 
-```{r retailxipfst1, echo=FALSE, out.width="90%", fig.cap="Prévisions implicites associées aux estimations successives de la tendance-cycle des ventes au détail aux États-Unis avec certains poids de la méthode FST."}
+```{r retailxipfst1, echo=FALSE, out.width="90%", fig.cap="Prévisions implicites associées aux estimations successives de la tendance-cycle des ventes au détail aux États-Unis avec la méthode FST et $\\begin{pmatrix}\\alpha&\\beta&\\gamma\\end{pmatrix} = \\begin{pmatrix}0,05 &0,00&0,95\\end{pmatrix}$ ou $\\begin{pmatrix}0,05 &0,05&0,90\\end{pmatrix}$."}
 img <- sprintf("img/nber/%s_%s_implicit_forecast.%s",tolower(series),
                "fstp1",
                fig.ext)
@@ -28,7 +28,7 @@ knitr::include_graphics(img)
 ```
 
 
-```{r retailxipfst2, echo=FALSE, out.width="90%", fig.cap="Prévisions implicites associées aux estimations successives de la tendance-cycle des ventes au détail aux États-Unis avec certains poids de la méthode FST."}
+```{r retailxipfst2, echo=FALSE, out.width="90%", fig.cap="Prévisions implicites associées aux estimations successives de la tendance-cycle des ventes au détail aux États-Unis avec la méthode FST et $\\begin{pmatrix}\\alpha&\\beta&\\gamma\\end{pmatrix} =\\begin{pmatrix}0,00 &0,05&0,95\\end{pmatrix}$ ou $\\begin{pmatrix}0 &0&1\\end{pmatrix}$."}
 img <- sprintf("img/nber/%s_%s_implicit_forecast.%s",tolower(series),
                "fstp2",
                fig.ext)

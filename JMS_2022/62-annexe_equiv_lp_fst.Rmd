@@ -9,7 +9,7 @@ knitr::opts_chunk$set(fig.pos = "H")
 Dans cette annexe sont tracés les rares poids pour lesquels l'approche FST **n'est pas** équivalente à l'approche polynomiale locale pour $h=6$ (filtre symétrique de 13 termes).
 Lorsqu'un graphique n'est pas affiché c'est que tous les filtres FST sont équivalents une approche polynomiale locale par moindre carrés pondérés.
 Par exemple pour les filtres associés au filtre symétrique de 13 termes ($h=6$, figure \@ref(fig:thhendersonh6)) il n'y a des graphiques que pour les filtres utilisés en temps réel ($q=0$) et lorsque ce filtre conserve les constantes ($d=0$), les droites ($d=1$) et les polynômes de degré 2 ($d=2$).
-Dans tous les autres cas (i.e.; dès que l'on connait au moins un point dans le futur, $q\geq 1$), il y a équivalence pour tous les poids testés^[
+Dans tous les autres cas (i.e., dès que l'on connait au moins un point dans le futur, $q\geq 1$), il y a équivalence pour tous les poids testés^[
 Un quadrillage de 200 points de l'intervalle $[0,1]$ a été effectuée et on ne garde que l'ensemble des poids tels que leur somme fasse 1.
 ].
 

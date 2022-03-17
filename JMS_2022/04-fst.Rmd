@@ -26,11 +26,11 @@ C'est en particulier le cas de l'approche *Fidelity-Smoothness-Timeliness* (FST)
 
 ## Approche *Fidelity-Smoothness-Timeliness* (FST) {#subsec-GuggemosEtAl}
 
-Pour construire les moyennes mobiles symétriques, @GrunRehommeLadiray1994 et @GrayThomson1996 proposent un programme de minimisation sous contrainte qui fait un compromis entre réduction de la variance et "lissage" de la tendance. 
+Pour construire les moyennes mobiles symétriques, @GrunRehommeLadiray1994 et @GrayThomson1996 proposent un programme de minimisation sous contrainte qui fait un compromis entre réduction de la variance et « lissage » de la tendance. 
 @ch15HBSA étendent ces approches en les appliquant à la construction des filtres asymétriques et en ajoutant un critère permettant de contrôler le déphasage. 
 Il s'agit de l'approche *Fidelity-Smoothness-Timeliness* --- Fidélité-Lissage-Temporalité --- (FST).
 Pour la construction des filtres asymétriques, un quatrième critère pourrait également être rajouté qui prendrait en compte les révisions par rapport à l'utilisation d'un filtre symétrique de référence (cette méthode pourrait alors être appelée la méthode FRST --- *Fidelity-Revisions-Smoothness-Timeliness*).
-Cependant, le package `rjdfilters` n'ayant implémenté que l'approche FST, nous nous restreignons dans cette étude qu'à la description de l'approche sans critère de révision.
+Cependant, le *package* `rjdfilters` n'ayant implémenté que l'approche FST, nous nous restreignons dans cette étude qu'à la description de l'approche sans critère de révision.
 
 Les trois critères utilisés sont les suivants :
 

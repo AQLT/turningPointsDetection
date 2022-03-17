@@ -52,7 +52,7 @@ Trois critères de qualité sont également calculés :
     - on parle de ralentissement (*downturn*) lorsque l'on passe d'une phase d'expansion à une phase de récession.
 C'est le cas à la date $t$ lorsque $y_{t-3}\leq y_{t-2}\leq y_{t-1}>y_t\geq y_{t+1}$.  
 
-    Le déphasage est souvent définit comme le nombre de mois nécessaires pour détecter le bon point de retournement (i.e. : le point de retournement sur la composante cyclique).
+    Le déphasage est souvent définit comme le nombre de mois nécessaires pour détecter le bon point de retournement (i.e., le point de retournement sur la composante cyclique).
     Nous utilisons ici un critère légèrement modifié : le déphasage est définit comme le nombre de mois nécessaires pour détecter le bon point de retournement sans aucune révision future.
     Il peut en effet arriver que le bon point de retournement soit détecté par des filtres asymétriques mais ne le soit pas avec l'estimation finale avec un filtre symétrique (c'est le cas de 41 points de retournements sur l'ensemble des 9 séries avec les filtres asymétriques de Musgrave) ou qu'il y ait des révisions dans les estimations successives (c'est le cas de 7 points de retournements sur l'ensemble des 9 séries avec les filtres asymétriques de Musgrave).
     Finalement, relativement peu de points de retournement sont détectés à la bonne date avec l'estimation finale.
@@ -86,7 +86,7 @@ Il est en effet difficile de comparer proprement les résultats entre les diffé
 Toutefois, une première analyse des résultats montrent que les différents noyaux ont des performances proches en termes de déphasage et de révisions, sauf le noyau uniforme qui produit de moins bons résultats.
 ] et les filtres RKHS $b_{q,\Gamma}$, $b_{q,G}$ et $b_{q,\varphi}$.
 
-En termes de déphasage dans la détection des points de retournement, c'est le filtre $b_{q,G}$ qui semble donner les meilleurs résultats quelle que soit la variabilité de la série (graphique \@ref(fig:graphstpsimul)), avec des performances légèrement meilleurs que celles obtenues en prolongeant la série grâce à un modèle ARIMA.
+En termes de déphasage dans la détection des points de retournement, c'est le filtre $b_{q,G}$ qui semble donner les meilleurs résultats quelle que soit la variabilité de la série (figure \@ref(fig:graphstpsimul)), avec des performances légèrement meilleurs que celles obtenues en prolongeant la série grâce à un modèle ARIMA.
 Étonnement, c'est le filtre $b_{q,\varphi}$ qui minimise le déphasage qui donne les moins bons résultats. Cela peut s'expliquer par le fait que la courbe des coefficients des moyennes mobiles asymétriques sont assez éloignées des coefficients du filtre symétrique : il y a donc potentiellement beaucoup de révisions dans la détection des points de retournement.
 Dans les filtres polynomiaux locaux, les filtres LC (filtres de Musgrave) semblent donner les meilleurs résultats lorsque la variabilité est moyenne ou forte (avec des résultats proches du filtre QL dans ce second pas) mais de moins bons résultats lorsque la variabilité est faible.
 
@@ -115,7 +115,7 @@ rev_table  %>%
 
 Concernant les révisions, la variabilité de la série a peu d'impact sur les performances respectives des différentes méthodes mais joue sur les ordres de grandeurs.
 Globalement, les filtres LC minimisent toujours les révisions (voir tableau \@ref(tab:simulrev)) et les révisions sont plus importantes avec les filtres CQ, DAF et les filtres RKHS autres que $b_{q,\varphi}$. 
-Pour les filtres QL, il y a une forte révision entre la deuxième et la troisième estimation : cela peut venir du fait que pour la deuxième estimation (lorsque l'on connait un point dans le futur), le filtre QL associe un point plus important à l'estimation en $t+1$ qu'à l'estimation en $t$, ce qui crée une discontinuité.
+Pour les filtres QL, il y a une forte révision entre la deuxième et la troisième estimation : cela peut venir du fait que pour la deuxième estimation (lorsque l'on connait un point dans le futur), le filtre QL associe un poids plus important à l'estimation en $t+1$ qu'à l'estimation en $t$, ce qui crée une discontinuité.
 Pour les filtres polynomiaux autres que le filtre LC, les révisions importantes à la première estimation étaient prévisibles au vu de la courbe des coefficients : un poids très important est associé à l'observation courante et il y une forte discontinuité entre la moyenne mobile utilisée pour l'estimation en temps réelle (lorsqu'aucun point dans le futur n'est connu) et les autres moyennes mobiles. 
 
 Le prolongement de la série par un modèle ARIMA donnent révisions avec les dernières estimations du même ordre de grandeur que le filtre LC mais des révisions plus importantes entre les estimations consécutives (on pouvait s'y attendre comme souligné dans la section \@ref(subec:mmetprev)).
@@ -141,7 +141,7 @@ img <- sprintf("img/simulations/fst_mediumvariability_tp_med.%s", fig.ext)
 knitr::include_graphics(img)
 ```
 
-En termes de déphasage, en médiane, les filtres qui sont plus performants que les filtres LC sont ceux qui préservent le polynômes de degré 2 et ayant un poids associé à la *fidelity* ($\beta$) inférieur à 0,5 et ceux qui préservent les polynômes de degré 3 (graphique \@ref(fig:graphstpsimulfst)). 
+En termes de déphasage, en médiane, les filtres qui sont plus performants que les filtres LC sont ceux qui préservent le polynômes de degré 2 et ayant un poids associé à la *fidelity* ($\beta$) inférieur à 0,5 et ceux qui préservent les polynômes de degré 3 (figure \@ref(fig:graphstpsimulfst)). 
 En revanche, une analyse plus fine des résultats montre qu'en moyenne le déphasage est plus élevé qu'avec la méthode LC pour tous les filtres FST mais les résultats sont quasiment équivalents (entre 1,0 et 1,1) pour les filtres qui préservent les polynômes de degré 2 avec $\alpha = \beta =0,05$ et $\alpha = 0,05, \, \beta =0$ et ceux qui préservent les polynômes de degré 3 avec $\beta=0$.
 
 ```{r graphsfeq0simulfst, echo=FALSE, out.width="90%", fig.cap="Moyenne des écarts relatifs des révisions entre la première et la dernière estimation ($MAE_{fe}(0)$), comparativement aux révisions du filtre LC sur les séries à variabilité moyenne."}
@@ -154,7 +154,7 @@ img <- sprintf("img/simulations/fst_mediumvariability_ceq0.%s", fig.ext)
 knitr::include_graphics(img)
 ```
 
-En termes de révisions (graphiques \@ref(fig:graphsfeq0simulfst) et \@ref(fig:graphsceq0simulfst)), les révisions entre la première et dernière estimation et entre la première et deuxième estimation sont inférieures à celles du filtre LC lorsque les filtres préservent les polynômes de degré 1. En revanche, avec les filtres qui préserve les polynômes de degré 3 les révisions entre la première et dernière estimation sont en moyenne plus de deux fois plus importante qu'avec le filtre LC et sont modérément plus élevées (rapport entre 1 et 2).
+En termes de révisions (figures \@ref(fig:graphsfeq0simulfst) et \@ref(fig:graphsceq0simulfst)), les révisions entre la première et dernière estimation et entre la première et deuxième estimation sont inférieures à celles du filtre LC lorsque les filtres préservent les polynômes de degré 1. En revanche, avec les filtres qui préserve les polynômes de degré 3 les révisions entre la première et dernière estimation sont en moyenne plus de deux fois plus importante qu'avec le filtre LC et sont modérément plus élevées (rapport entre 1 et 2).
 
 En somme, même si une étude plus approfondie devrait être menée, pour l'étude de la méthode FST il parait opportun de se concentrer sur les filtres qui préserve les polynômes de degré 2 avec un poids associé au critère *fidelity* élevé et un poids faible associé au critère *smoothness*.
 
@@ -163,8 +163,8 @@ En somme, même si une étude plus approfondie devrait être menée, pour l'étu
 
 Les différentes méthodes sont également comparées sur le point de retournement d'avril 2020 sur les ventes au détail des États-Unis (série `RETAILx` de la base FRED-MD @fredmd, utilisée en logarithme). 
 C'est une série avec une variabilité moyenne. 
-Les résultats des différentes estimations sont tracées dans les graphiques \@ref(fig:retailxlp) à \@ref(fig:retailxfst2). 
-Pour l'approche FST, on ne retient que les filtres obtenus avec les poids $\begin{pmatrix}\alpha&\beta&\gamma\end{pmatrix} = \begin{pmatrix}0,05 &0,00&0,95\end{pmatrix}$, $\begin{pmatrix}\alpha&\beta&\gamma\end{pmatrix} = \begin{pmatrix}0,00 &0,05&0,95\end{pmatrix},\, \begin{pmatrix}0,05 &0,05&0,90\end{pmatrix}$ ou $\begin{pmatrix}0 &0&1\end{pmatrix}$ et en préservant les tendances de degré 2 ou 3. 
+Les résultats des différentes estimations sont tracées dans les figures \@ref(fig:retailxlp) à \@ref(fig:retailxfst2). 
+Pour l'approche FST, on ne retient que les filtres obtenus avec les poids $\begin{pmatrix}\alpha&\beta&\gamma\end{pmatrix} = \begin{pmatrix}0,05 &0,00&0,95\end{pmatrix},\, \begin{pmatrix}0,00 &0,05&0,95\end{pmatrix},\, \begin{pmatrix}0,05 &0,05&0,90\end{pmatrix}$ ou $\begin{pmatrix}0 &0&1\end{pmatrix}$ et en préservant les tendances de degré 2 ou 3. 
 
 
 ```{r retailxlp, echo=FALSE, out.width="90%", fig.cap="Estimations successives de la tendance-cycle des ventes au détail aux États-Unis avec les méthodes polynomiales locales."}
@@ -183,7 +183,7 @@ knitr::include_graphics(img)
 ```
 
 
-```{r retailxfst1, echo=FALSE, out.width="90%", fig.cap="Estimations successives de la tendance-cycle des ventes au détail aux États-Unis avec certains poids de la méthode FST."}
+```{r retailxfst1, echo=FALSE, out.width="90%", fig.cap="Estimations successives de la tendance-cycle des ventes au détail aux États-Unis avec la méthode FST et $\\begin{pmatrix}\\alpha&\\beta&\\gamma\\end{pmatrix} = \\begin{pmatrix}0,05 &0,00&0,95\\end{pmatrix}$ ou $\\begin{pmatrix}0,05 &0,05&0,90\\end{pmatrix}$."}
 img <- sprintf("img/nber/%s_%s.%s",tolower(series),
                "fstp1",
                fig.ext)
@@ -191,7 +191,7 @@ knitr::include_graphics(img)
 ```
 
 
-```{r retailxfst2, echo=FALSE, out.width="90%", fig.cap="Estimations successives de la tendance-cycle des ventes au détail aux États-Unis avec certains poids de la méthode FST."}
+```{r retailxfst2, echo=FALSE, out.width="90%", fig.cap="Estimations successives de la tendance-cycle des ventes au détail aux États-Unis avec la méthode FST et $\\begin{pmatrix}\\alpha&\\beta&\\gamma\\end{pmatrix} =\\begin{pmatrix}0,00 &0,05&0,95\\end{pmatrix}$ ou $\\begin{pmatrix}0 &0&1\\end{pmatrix}$."}
 img <- sprintf("img/nber/%s_%s.%s",tolower(series),
                "fstp2",
                fig.ext)
@@ -200,11 +200,12 @@ knitr::include_graphics(img)
 
 
 Même si presque toutes les méthodes ont un déphasage d'au plus 3 mois sur ce point de retournement, les estimations intermédiaires différent grandement. 
-Il y a par exemple nettement plus de variabilités dans les estimations en temps réel pour les méthode QL, CQ et DAF et les filtres FST (graphiques \@ref(fig:retailxlp),  \@ref(fig:retailxfst1) et \@ref(fig:retailxfst2)), avec des estimations intermédiaires qui semblent peu plausibles (notamment pour la première estimation du mois d'avril 2020). Les premières estimations avec le filtre LC ne capte pas la remontée en mai et juin 2020 : cela peut provenir du fait qu'en fin de série, la tendance modélisée est linéaire.
+Il y a par exemple nettement plus de variabilités dans les estimations en temps réel pour les méthode QL, CQ et DAF et les filtres FST (figures \@ref(fig:retailxlp),  \@ref(fig:retailxfst1) et \@ref(fig:retailxfst2)), avec des estimations intermédiaires qui semblent peu plausibles (notamment pour la première estimation du mois d'avril 2020). Les premières estimations avec le filtre LC ne capte pas la remontée en mai et juin 2020 : cela peut provenir du fait qu'en fin de série, la tendance modélisée est linéaire.
 Concernant les filtres RKHS, les estimations intermédiaires du filtre $b_{q,\varphi}$ semblent très erratiques, ce qui s'explique par le fait que les moyennes mobiles asymétriques utilisées lorsque l'on se rapproche du cas symétrique sont éloignées de la moyenne mobile symétrique d'Henderson.
-En revanche, les filtres $b_{q,\Gamma}$ et $b_{q,G}$ donnent des estimations intermédiaire proches de l'estimation finale, tout en minimisant le déphasage.
+En revanche, les filtres $b_{q,\Gamma}$ et $b_{q,G}$ donnent des estimations intermédiaires proches de l'estimation finale, tout en minimisant le déphasage.
 
-La qualité des estimations intermédiaires peut également être analysée grâces aux prévisions implicites des différentes méthodes. Pour rappel, il s'agit des prévisions de la série brute qui, en appliquant le filtre symétrique de Henderson sur la série prolongée, donne les mêmes estimations que les moyennes mobiles asymétriques. L'annexe \@ref(an-implicitforecasts) rassemble les différentes prévisions implicites des filtres étudiés dans cette section. Les prévisions implicites des filtres polynomiaux autres que LC, des filtres FST et du filtre $b_{q,\varphi}$ sont très peu plausibles et très éloignés des valeurs futures.
+La qualité des estimations intermédiaires peut également être analysée grâces aux prévisions implicites des différentes méthodes. Pour rappel, il s'agit des prévisions de la série brute qui, en appliquant le filtre symétrique de Henderson sur la série prolongée, donne les mêmes estimations que les moyennes mobiles asymétriques. L'annexe \@ref(an-implicitforecasts) rassemble les différentes prévisions implicites des filtres étudiés dans cette section. 
+Les prévisions implicites des filtres polynomiaux autres que LC, des filtres FST et du filtre $b_{q,\varphi}$ sont très peu plausibles et très éloignés des valeurs futures.
 Le contrecoup en mai 2020 suite à la baisse d'avril 2020 ne sont pas prévus par le modèle ARIMA mais le sont par les filtres LC et RKHS, en revanche, les prévisions à l'horizon de 6 mois peuvent être assez éloignées des valeurs attendues.
 
 

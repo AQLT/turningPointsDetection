@@ -54,11 +54,13 @@ Afin d'avoir des définitions cohérentes entre les différentes sections, les f
 Dans le cas du filtre symétrique d'Henderson de 13 termes, cela correspond à l'intervalle $[0, 2\pi/8]$, c'est-à-dire aux cycles de plus de 8 mois.
 :::: 
 
-En général, le résidu $R_w$ est petit puisque $\rho_s(\omega)\rho_\theta(\omega)$ est proche de 0 dans l'intervalle *stop-band*. 
+En général, le résidu $R_w$ est petit puisque $\rho_s(\omega)\rho_\theta(\omega)$ est proche de 0 dans l'intervalle *stop-band*^[
+En pratique ce n'est pas toujours le cas comme montré dans la section \@ref(subsec-lppasymf).
+]. 
 Il est de plus rare que les utilisateurs s'intéressent aux propriétés de déphasage dans les fréquences *stop-band*.
 C'est pourquoi, pour la construction de filtres linéaires les auteurs suggèrent de faire une minimisation d'une somme pondérée des trois premiers critères :
 $$
-\mathcal{M}(\vartheta_{1},\vartheta_{2})=\vartheta_{1}T_w(\theta)+\vartheta_{2}S_w(\theta)+(1-\vartheta_{1}-\vartheta_{2})A_w(\theta)
+\mathcal{M}(\vartheta_{1},\vartheta_{2})=\vartheta_{1}T_w(\theta)+\vartheta_{2}S_w(\theta)+(1-\vartheta_{1}-\vartheta_{2})A_w(\theta).
 $$
 Comme le montrent @tuckerwildi2020, cette méthode peut également être étendue au cas multivarié, ce qui permet de prendre en compte les corrélations entre les composantes de différentes séries.
 
@@ -104,6 +106,6 @@ ATS-trilemna - @trilemmaWMR2019
 
 - Il peut y avoir des problèmes d'optimisation (plusieurs minimums, etc.).
 
-**`r fa_r_project`** : package MDFA https://github.com/wiaidp/MDFA ou `rjdfilters::dfa_filter()` (version simplifiée).
+**`r fa_r_project`** : *package* MDFA https://github.com/wiaidp/MDFA ou `rjdfilters::dfa_filter()` (version simplifiée).
 ::::
 

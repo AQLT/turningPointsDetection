@@ -80,16 +80,17 @@ $$
 $$
 Ainsi, la moyenne mobile $\theta$ préserve les polynômes de degré $d$.
 
-Concernant le choix des paramètres, l'idée générale qui prévaut est que la forme du noyau est secondaire^[
+Concernant le choix des paramètres, l'idée générale qui prévaut est que le choix entre ces différents noyaux est secondaire^[
 Voir par exemple @cleveland1996smoothing ou @Loader1999.
 Les seules contraintes souhaitées sur le noyau est qu'il accorde un poids plus important à l'estimation centrale ($\kappa_0$) et qu'il décroit vers 0 lorsque l'on s'éloigne de l'estimation centrale.
+Le noyau uniforme est donc à éviter.
 ] et qu'il vaut mieux se concentrer sur deux autres paramètres :
 
 - le degré du polynôme $d$ : s'il est trop petit on risque d'avoir des estimations biaisées de la tendance-cycle et s'il est trop grand on risque d'avoir une trop grande variance dans les estimations (du fait d'un sur-ajustement) ;
 
 - le nombre de voisins $H=2h+1$ (ou la fenêtre $h$) : s'il est trop petit alors trop peu de données seront utilisées pour les estimations (ce qui conduira à une grande variance dans les estimations) et s'il est trop grand alors l'approximation polynomiale sera vraisemblablement fausse ce qui conduira à avoir des estimations biaisées.
 
-#### Les différents noyaux {#sec-kernels}
+### Les différents noyaux {#sec-kernels}
 
 Dans les problèmes d'extraction du signal, les observations sont généralement pondérées par rapport à leur distance à la date $t$ : pour estimer la tendance-cycle à la date $t$, on accorde généralement plus d'importance aux observations qui sont proches de $t$.
 
@@ -190,13 +191,14 @@ $$
 <!-- \end{align*} -->
 <!-- So: -->
 
-Les noyaux d'Henderson, trapézoïdal and gaussien sont particuliers :
+Les noyaux d'Henderson, trapézoïdal et gaussien sont particuliers :
 
 - Les fonctions noyau d'Henderson et trapézoïdal changent avec la fenêtre (les autres dépendent uniquement du rapport $j/h+1$).
 
 - Pour les noyaux trapézoïdal et gaussien, d'autres définitions pourraient être utilisées et sont donc définis arbitrairement.  
 Le noyau trapézoïdal est implémenté dans `rjdfilters` car il permet de calculer les moyennes mobiles utilisées dans l'algorithme X-13ARIMA pour l'extraction des composantes saisonnières. 
 Il n'est pas adapté dans le cas de l'extraction de la tendance-cycle.
+
 
 ### Quelques filtres symétriques particuliers {#sec-sympolyfilter}
 
@@ -217,10 +219,9 @@ Il montre l'équivalence entre les trois problèmes suivants :
 2. minimiser la somme du carré de la différence d'ordre trois des coefficients du filtre, c'est le critère de lissage (*smoothness*) : $S=\sum_j(\nabla^{3}\theta_{j})^{2}$ ;  
 3. estimer une tendance localement cubique par les moindres carrés pondérés, où les poids sont choisis de sorte à minimiser la *smoothness* (cela conduit au noyau présenté dans la section \@ref(sec-kernels)).
 
-Par simplification, nous nous intéresserons uniquement aux filtres issus du noyau d'Henderson.
+Le filtre d'Henderson étant couramment utilisé pour l'extraction de la tendance-cycle, nous nous intéresserons uniquement aux filtres issus du noyau d'Henderson.
 
 ### Filtres asymétriques {#subsec-lppasymf}
-
 
 Comme mentionné dans la partie \@ref(subec:mmetprev), pour l'estimation en temps réel, plusieurs approches peuvent être utilisées :
 
@@ -230,10 +231,10 @@ Comme mentionné dans la partie \@ref(subec:mmetprev), pour l'estimation en temp
 
 3. Construire des filtres asymétriques qui minimisent l'erreur quadratique moyenne de révision sous des contraintes de reproduction de tendances polynomiales.
 
-@proietti2008 montrent que les deux premières approches sont équivalentes lorsque les prévisions sont faites par extrapolation polynomiale de degré $d$ (prévisions générées en utilisant les mêmes contraintes polynomiales que les filtres symétriques).
+@proietti2008 montrent que les deux premières approches sont équivalentes lorsque les prévisions sont faites par extrapolation polynomiale de degré $d$.
 Elles sont également équivalentes à la troisième approche sous les mêmes contraintes que celles du filtre symétrique.
 Cette méthode est appelée *direct asymmetric filter* (DAF).
-Les estimations de la tendance-cycle sont en théorie sans bi, même si les estimations sont sans biais, c'est au coût d'une plus grande variance dans les estimations. 
+Même si les estimations sont sans biais, c'est au coût d'une plus grande variance dans les estimations. 
 
 Pour résoudre le problème de la variance des estimations des filtres temps réel, @proietti2008 proposent une méthode générale pour construire les filtres asymétriques qui permet de faire un compromis biais-variance.
 Il s'agit d'une généralisation des filtres asymétriques de @musgrave1964set (utilisés dans l'algorithme de désaisonnalisation X-13ARIMA).
@@ -400,7 +401,7 @@ $$
 Pour le filtre central, les auteurs cherchent à avoir un estimateur $\hat g_t$ qui soit sans biais (ce qui implique que $\theta$ conserve les tendances de degré $d$) et qui minimise une somme pondérée d'un critère de *fidelity* et d'un critère de *smoothness* :
 \begin{equation}
 Q=\alpha\underbrace{\E{(\hat{g}_{t}-g_{t})^{2}}}_{=F_{GT}}+
-+(1-\alpha)\underbrace{\E{ (\Delta^{p+1}\hat{g}_{t})^{2}} }_{=S_{GT}}
+(1-\alpha)\underbrace{\E{ (\Delta^{p+1}\hat{g}_{t})^{2}} }_{=S_{GT}}
 (\#eq:graythomsonindicators)
 \end{equation}
 La solution est un filtre symétrique qui peut s'écrire sous la forme
@@ -580,7 +581,7 @@ On a :
 K_{d+1}(t)=\frac{\det{H_{d+1}[1,t]}}{\det{H_{d+1}}}f_0(t).
 (\#eq:rkhskernelfun)
 \end{equation}
-C'est cette formule qui est utilisée dans le package `rjdfilters` pour calculer les différentes moyennes mobiles.
+C'est cette formule qui est utilisée dans le *package* `rjdfilters` pour calculer les différentes moyennes mobiles.
 
 Comme discuté dans la partie \@ref(sec-proietti), le noyau d'Henderson dépend de la fenêtre utilisée.
 Ainsi, tous les moments de l'équation \@ref(eq:rkhskernelfun) doivent être recalculés pour chaque valeur de $h$.
@@ -621,7 +622,7 @@ b_{q,\varphi}=\underset{b_q\in[h; 3h]}{\min}
 8\int_{0}^{\omega_1}
 \rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)h(\omega)\ud \omega
 $$
-Dans `rjdfilters` $h$ peut être fixée à la densité spectrale d'un bruit blanc ($h_{WN}(x)=1$, comme c'est le cas dans @dagumbianconcini2008) ou d'une marche aléatoire ($h_{RW}(x)=\frac{1}{2(1-\cos(x))}$).
+Dans `rjdfilters` $h$ peut être fixée à la densité spectrale d'un bruit blanc ($h_{WN}(x)=1$, comme c'est le cas dans @dagumbianconcini2015new) ou d'une marche aléatoire ($h_{RW}(x)=\frac{1}{2(1-\cos(x))}$).
 
 :::: {.remarque data-latex=""}
 Pour assurer une cohérence dans les définitions entre les différentes sections, les définitions de $b_{q,G}$, $b_{q,\Gamma}$ et $b_{q,\varphi}$ ont été légèrement modifiées par rapport à celles définies dans @dagumbianconcini2015new où :
@@ -641,7 +642,7 @@ b_{q,\varphi}=\underset{b_q}{\min}
 \sqrt{2\int_{\Omega_S}
 \rho_s(\lambda)\rho_\theta(\lambda)\sin^{2}\left(\frac{\varphi_\theta(\omega)}{2}\right)\ud \omega}
 $$
-où $\Omega_S=[0,2\pi/36]$ est l'intervalle de fréquences associées aux cycles d'au moins 16 mois.
+où $\Omega_S=[0,2\pi/32]$ est l'intervalle de fréquences associées aux cycles d'au moins 16 mois.
 
 - une formule différente est utilisée pour la fonction de réponse  ($\Gamma_\theta(\omega)=\sum_{k=-p}^{+f} \theta_k e^{2\pi i \omega k}$), ce qui conduit à des bornes d'intégrales légèrement différentes, sans effet sur le résultat.
 ::::

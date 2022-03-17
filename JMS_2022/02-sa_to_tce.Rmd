@@ -47,12 +47,12 @@ D'autre part, cela permet de montrer les liens entre toutes ces approches et de 
 Pour cela nous utiliserons l'approche générale de @ch15HBSA (section \@ref(subsec-theoriegen)) qui ont également proposé une procédure globale pour construire des moyennes mobiles asymétriques permettant de minimiser les effets de déphasage (section \@ref(subsec-GuggemosEtAl)).
 Des diagrammes synthétiques des liens entre les différentes méthodes étudiées sont présentés dans l'annexe \@ref(an-diag).
  
-Dans cette étude, nous nous intéresserons uniquement aux estimations intermédiaires de la tendance-cycle faites en temps réels.
+Nous nous intéresserons uniquement aux estimations intermédiaires de la tendance-cycle faites en temps réels.
 Le filtre symétrique utilisé pour les estimations finales ne sera pas remis en cause et sera celui d'Henderson.
-Nous nous concentrons sur les méthodes qui pourraient être implémentées dans X-13ARIMA.
+Nous nous concentrons également sur les méthodes qui pourraient être implémentées dans X-13ARIMA.
 Pour maintenir la cohérence avec l'approche non paramétrique de X-13ARIMA, nous nous concentrons sur les méthodes d'extraction non paramétriques.
 C'est pourquoi ni les filtres de l'approche de @trilemmaWMR2019 (section \@ref(sec-WildiMcLeroy)), ni d'autres approches basées sur des modèles ne sont, pour l'instant, utilisées dans les simulations.
-Même si les différentes méthodes sont comparées en les appliquant sur des séries déjà désaisonnalisée, elles peuvent être intégrées dans l'algorithme de désaisonnalisation X-11 grâce à la fonction `rjdfilters::x11()`
+Même si les différentes méthodes sont comparées en les appliquant sur des séries déjà désaisonnalisée, elles peuvent être intégrées dans l'algorithme de désaisonnalisation X-11 grâce à la fonction `rjdfilters::x11()`.
 L'ensemble des filtres utilisés sont résumés dans l'annexe \@ref(an-graphs).
  
 

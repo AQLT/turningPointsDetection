@@ -39,15 +39,9 @@ En somme, appliquer une moyenne mobile à une série harmonique la modifie de de
 
 - en la multipliant par un coefficient égal à $G_{\theta}\left(\omega\right)$ (gain) ;
 
-- en la "décalant" dans le temps de $\Phi_\theta(\omega)/\omega$, ce qui a un impact sur la détection des points de retournement (déphasage) ^[
+- en la « décalant » dans le temps de $\Phi_\theta(\omega)/\omega$, ce qui a un impact sur la détection des points de retournement (déphasage) ^[
 Lorsque $\Phi_\theta(\omega)/\omega>0$ le déphasage est positif : le point de retournement est détecté avec retard.
 ].
-
-Par exemple, avec $M_{\theta_0}X_t=\frac{1}{2}X_{t-1}+\frac{1}{2}X_{t}$ on a: 
-$$
-\Gamma_{\theta_0}(\omega)=\frac{1}{2}+\frac{1}{2}\e^{-i\omega}
-=\lvert\cos(\omega/2)\rvert\e^{-i\frac{\omega}{2}}.
-$$
 
 
 ## Propriétés souhaitables d'une moyenne mobile
@@ -79,7 +73,7 @@ $$
 Ce qui est équivalent à :
 $$
 \sum_{k=-p}^{+f}\theta_k=1
-\quad\text{and}\quad
+\quad\text{et}\quad
 \sum_{k=-p}^{+f}k\theta_k=0.
 $$
 - De manière générale, $M_\theta$ conserves les tendances de degré $d$ si et seulement si :
@@ -116,7 +110,7 @@ Ils ne peuvent toutefois pas être utilisés au début et à la fin de la série
 
 En début et en fin de série, les moyennes mobiles asymétriques ne peuvent être utilisées du fait du manque de données disponibles.
 Une solution est de prolonger la série par prévision pour ensuite appliquer le filtre symétrique.
-Cette méthode semble remonter à @deforest1877adjustment qui suggèrent également de modéliser en fin de période une tendance polynomiale de degré au plus trois :
+Cette méthode semble remonter à @deforest1877adjustment qui suggère également de modéliser en fin de période une tendance polynomiale de degré au plus trois :
 
 :::{.quote data-latex=""}
 « *As the first $m$ and last $m$ terms of the series cannot be reached directly by the formula, the series should be graphically extended by m terms at both ends, first plotting the observations on paper as ordinates, and then extending the curve along what seems to be its probable course, and measuring the ordinates of the extended portions.*

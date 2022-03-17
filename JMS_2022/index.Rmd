@@ -43,6 +43,28 @@ local({
 
 ```{r,eval=is_latex, include = FALSE, cache = FALSE}
 rmarkdown::render(input = 'abstract/abstract.rmd',
-                  rmarkdown::latex_fragment(),
+                  rmarkdown::latex_fragment(citation_package ="biblatex"),
                   quiet = TRUE)
+# rmarkdown::render(input = 'abstract/abstract.rmd',
+#                   bookdown::markdown_document2(bibliography = "biblio.bib"),
+#                   params = list(bibliography = "biblio.bib"),
+#                   quiet = TRUE)
+# 
+# rmarkdown::pandoc_convert('abstract.md',
+#                           to = 'latex',from = "markdown",
+#                           out = "abstract.tex",
+#                           citeproc = FALSE,
+#                           options = c("--bibliography=biblio.bib",
+#                                       "--biblatex"
+#                           ),
+#                           wd ="abstract")
+# rmarkdown::pandoc_convert(infile,
+#                                   to = to,
+#                                   from = "markdown",
+#                                   citeproc = FALSE,
+#                                   options = c("--bibliography=biblio.bib",
+#                                               "--biblatex"
+#                                               ),
+#                                   output = outfile,
+#                                   wd = dir)
 ```
