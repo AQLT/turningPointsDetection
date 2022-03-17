@@ -1,0 +1,40 @@
+\newpage
+# Prévisions implicites pour séries `RETAILx` {#an-implicitforecasts}
+
+Cette annexe montre les prévisions implicites associées aux différentes estimations de la tendance-cycle sur les ventes au détail des États-Unis autour du point de retournement d'avril 2020.
+
+
+```{r retailxiplp, echo=FALSE, out.width="90%", fig.cap="Prévisions implicites associées aux estimations successives de la tendance-cycle des ventes au détail aux États-Unis avec les méthodes polynomiales locales."}
+series <- "RETAILx"
+img <- sprintf("img/nber/%s_%s_implicit_forecast.%s",tolower(series),
+               "lp",
+               fig.ext)
+knitr::include_graphics(img)
+```
+
+```{r retailxiprkhs, echo=FALSE, out.width="90%", fig.cap="Prévisions implicites associées aux estimations successives de la tendance-cycle des ventes au détail aux États-Unis avec les RKHS et en prolongeant la série par modèle ARIMA."}
+img <- sprintf("img/nber/%s_%s_implicit_forecast.%s",tolower(series),
+               "rkhs_arima",
+               fig.ext)
+knitr::include_graphics(img)
+```
+
+
+```{r retailxipfst1, echo=FALSE, out.width="90%", fig.cap="Prévisions implicites associées aux estimations successives de la tendance-cycle des ventes au détail aux États-Unis avec certains poids de la méthode FST."}
+img <- sprintf("img/nber/%s_%s_implicit_forecast.%s",tolower(series),
+               "fstp1",
+               fig.ext)
+knitr::include_graphics(img)
+```
+
+
+```{r retailxipfst2, echo=FALSE, out.width="90%", fig.cap="Prévisions implicites associées aux estimations successives de la tendance-cycle des ventes au détail aux États-Unis avec certains poids de la méthode FST."}
+img <- sprintf("img/nber/%s_%s_implicit_forecast.%s",tolower(series),
+               "fstp2",
+               fig.ext)
+knitr::include_graphics(img)
+```
+
+
+
+

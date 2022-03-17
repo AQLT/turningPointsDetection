@@ -1,30 +1,37 @@
 # Conclusion {.unnumbered}
 
-En somme, ce rapport fait une première revue de la littérature des méthodes de construction des filtres asymétriques pour l'analyse du cycle économique.
-Toutes ces méthodes peuvent se voir comme des cas particuliers d'une théorie générale de construction des moyennes mobiles.
+Pour l'analyse conjoncturel, la majorité des statisticiens fait directement ou indirectement appel à des méthodes d'extraction de la tendance-cycle.
+Elles sont par exemple utilisées pour réduire le bruit d'un indicateur afin d'en améliorer son analyse, et les modèles utilisées (comme les modèles de prévision) s'appuient généralement sur des séries désaisonnalisées qui s'appuient sur ces méthodes.
+
+Cette étude fait une première revue de la littérature des méthodes de construction des filtres asymétriques pour l'extraction de la tendance-cycle, utilisées pour l'estimation en temps réel (i.e. l'estimation des derniers points connus).
+Toutes ces méthodes peuvent se voir comme des cas particuliers d'une théorie générale de construction des moyennes mobiles. 
+Elles sont par ailleurs facilement mobilisables et comparables grâce au package `rjdfilters`
+Celui-ci permet d'utiliser plusieurs outils, comme la construction des prévisions implicites, qui peuvent aider les statisticiens à évaluer la qualité des estimations récentes des différents filtres.
+
 La comparaison des différentes méthodes, bien que perfectible, permet de tirer quelques enseignements pour la construction de ces moyennes mobiles.
+Premièrement, en fin de période, chercher à conserver des tendances polynomiales de degré supérieur à un (filtres QL, CQ et DAF et certains filtres FST) semble introduire de la variance dans les estimations (et donc plus de révisions) sans gain significatif en termes de détection de point de retournement. 
+Il faut en revanche que la longueur du filtre utilisé soit adapté à la variabilité de la série : si le filtre utilisé est trop long (c'est-à-dire si la variabilité de la série est "moyenne"), conserver des tendances polynomiale de degré au plus 1 (méthode LC) produit de moins bons résultats en termes de détection des points de retournement.
 
-Premièrement, en fin de période, il n'est pas nécessaire de chercher à conserver des tendances polynomiales de degré supérieur à un (filtres QL, CQ et DAF) : cela introduit de la variance dans les estimations (et donc plus de révisions) sans aucun gain en termes de détection de point de retournement.
-Par ailleurs, dans les méthodes polynomiales, le choix du noyau ne semble pas être fondamental.
+Deuxièmement, la théorie des RKHS semble permettre la construction de filtres qui pourraient donner un bon compromis entre minimisation du déphasage et révisions (filtre $b_{q,G}$).
+Toutefois, leur calibration peut être sujette à des problèmes d'optimisation et conduire à des estimations intermédiaires erratiques (filtre $b_{q,G}$).
 
-Deuxièmement, dans l'estimation en temps réel, les méthodes d'extraction de tendance-cycle ne peuvent s'étudier indépendamment du processus de désaisonnalisation.
-Dans le cas contraire, on néglige notamment l'effet des points atypiques sur l'estimation de la tendance-cycle, ce qui pourrait conduire à des estimations biaisées et à une détection de faux points de retournement.
-
-Enfin, sur les séries étudiées, la méthode utilisée dans X-13ARIMA semble satisfaisante avec des résultats proches de ceux obtenus en utilisant la méthode LC.
-Cependant, la moins bonne performance apparente de l'approche FST et de la méthode basée sur les RKHS semblent provenir de l'utilisation de filtres sous-optimaux lorsque que l'on s'approche du cas d'utilisation du filtre symétrique.
+Enfin, la moins bonne performance apparente de certains filtres basés sur l'approche FST ou les RKHS pourrait provenir de l'utilisation de filtres sous-optimaux lorsque que l'on s'approche du cas d'utilisation du filtre symétrique. 
+Sur l'approche FST par exemple, rien ne justifie que l'on devrait utiliser les mêmes poids entre fidélité, lissage et temporalité pour la construction de toutes les moyennes mobiles asymétriques.
 Plus d'études devraient être faites pour savoir si, pour la construction des filtres asymétriques minimisant le déphasage, on pourrait se concentrer uniquement sur les ceux utilisés lorsque peu d'observations futures sont disponibles.
 Cela impliquerait notamment de revoir la méthodologie et les indicateurs utilisés.
 
 Cette étude pourrait être étendue de plusieurs manières.
 
 Tout d'abord, elle n'est pas exhaustive et pourrait donc être complétée.
-Parmi les approches récentes non étudiées, nous pouvons citer @vasyechko2014new qui utilisent le noyau d'Epanechnikov pour construire des filtres asymétriques de 13 termes, et @FengSchafer2021 qui proposent, en fin de période, l'utilisation de poids optimaux (au sens de l'erreur quadratique moyenne) dans les régressions polynomiales locales.
+Parmi les approches étudiées, l'extension proposée aux méthodes polynomiales locales afin d'ajouter un critère sur le déphasage pourrait donner des résultats prometteurs. 
+Sur les méthodes FST et DAF, des méthodes de réduction de dimension pourraient être mobilisées afin d'étudier les paramètres les plus déterminants sur les performances des filtres.
+Parmi les approches récentes non étudiées, nous pouvons citer @vasyechko2014new qui utilisent le noyau d'Epanechnikov pour construire des filtres asymétriques de 13 termes (i.e., en utilisant un nombre de points dans le passé différent du filtre symétrique), et @FengSchafer2021 qui proposent, en fin de période, l'utilisation de poids optimaux (au sens de l'erreur quadratique moyenne) dans les régressions polynomiales locales.
 
 Parmi les pistes d'extension, on pourrait s'intéresser à l'impact de la longueur des filtres dans la détection des points de retournement.
 En effet, les filtres asymétriques sont calibrés avec des indicateurs calculés pour l'estimation des filtres symétriques (par exemple pour déterminer automatiquement sa longueur), alors qu'une estimation locale pourrait être préférée.
 Par ailleurs, nous nous sommes concentrés uniquement sur les séries mensuelles dont le filtre symétrique est de 13 termes, mais les résultats peuvent être différents si le filtre symétrique étudié est plus long/court et si l'on étudie des séries à d'autres fréquences (trimestrielles ou journalières par exemple).
 
-Une autre piste pourrait être d'étudier l'impact des points atypiques : dans X-13ARIMA il y a une forte correction des points atypiques, effectuée sur la composante irrégulière avant d'appliquer les filtres pour extraire la tendance.
+Une autre piste pourrait être d'étudier l'impact des points atypiques : les moyennes mobiles, comme tout opérateur linéaire, dans X-13ARIMA il y a une forte correction des points atypiques, effectuée sur la composante irrégulière avant d'appliquer les filtres pour extraire la tendance.
 Cela amène donc à étudier l'impact de ces points sur l'estimation de la tendance-cycle et des points de retournement, mais aussi à explorer de nouveaux types de filtres asymétriques basés sur des méthodes robustes (comme les régressions locales robustes ou les médianes mobiles).
 
 

@@ -1,4 +1,4 @@
-# Régression non paramétrique et régression polynomiale locale {#sec-lppfilters}
+# Régression non paramétrique et régression polynomiale locale {#sec-nonparamreg}
 
 Comme notamment montré par @Loader1999, la régression locale est un cas particulier de la régression non paramétrique. 
 Supposons que l'on ait un ensemble de points $(x_i,y_i)_{1\leq i\leq n}$. 
@@ -171,7 +171,7 @@ $$
 \end{cases}
 $$
 - noyau gaussien^[
-Dans `rjdfilters` $\sigma^2$ est fixé arbitrairement à $\sigma^2=0.25$.
+Dans `rjdfilters` $\sigma^2$ est fixé arbitrairement à $\sigma^2=0,25$.
 ]:
 $$
 \kappa_j^G=\exp\left(
@@ -219,9 +219,8 @@ Il montre l'équivalence entre les trois problèmes suivants :
 
 Par simplification, nous nous intéresserons uniquement aux filtres issus du noyau d'Henderson.
 
-### Filtres asymétriques
+### Filtres asymétriques {#subsec-lppasymf}
 
-#### Direct asymmetric filters (DAF)
 
 Comme mentionné dans la partie \@ref(subec:mmetprev), pour l'estimation en temps réel, plusieurs approches peuvent être utilisées :
 
@@ -673,7 +672,7 @@ Par cohérence, simplicité, nous utiliserons dans cet article les valeurs optim
 # rownames(data_bw) <- c("$\\omega_1 = \\pi$",
 #                        "$\\omega_1 = 2\\pi/12$",
 #                        "$\\omega_1 = \\pi$",
-#                        "$\\omega_1 = *\\pi/12$",
+#                        "$\\omega_1 = 2\\pi/12$",
 #                        "Valeurs de l'article (avec $\\omega_1 = 2\\pi/36$)",
 #                        "$\\omega_1 = 2\\pi/36$",
 #                        "$\\omega_1 = 2\\pi/12$")

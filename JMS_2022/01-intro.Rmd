@@ -1,11 +1,13 @@
 # Introduction {-}
 
-La crise du COVID-19 a montré que l’analyse du cycle économique, et en particulier la détection rapide des points de retournement, est un sujet de première importance dans l'analyse de la conjoncture économique. 
+L’analyse du cycle économique, et en particulier la détection rapide des points de retournement d'une série, est un sujet de première importance dans l'analyse de la conjoncture économique. 
+Pour cela, les indicateurs économiques sont généralement corrigés des variations saisonnières.
+Toutefois, afin d'améliorer leur lisibilité, il peut être nécessaire d'effectuer un lissage supplémentaire afin de réduire le bruit qui altère l'analyse de la composante tendance-cycle.
+Par construction, les méthodes d’extraction de tendance-cycle sont étroitement liées aux méthodes de désaisonnalisation puisqu’elles sont généralement appliquées sur des séries corrigées des variations saisonnières. 
 
 Les moyennes mobiles, ou les filtres linéaires, sont omniprésents dans les méthodes d'extraction du cycle économique et d'ajustement saisonnier^[
 Une moyenne mobile est une méthode statistique qui consiste à appliquer une moyenne pondérée glissante à une série temporelle : à chaque date $t$ on calcule une moyenne pondérée de $p$ points passés et $q$ points futurs où $p,q\geq0$ dépend de la moyenne mobile.
 ]. 
-En effet, les méthodes d’extraction de tendance-cycle sont, par construction, étroitement liées aux méthodes de désaisonnalisation puisqu’elles sont généralement appliquées sur des séries corrigées des variations saisonnières. 
 Ainsi, la méthode de désaisonnalisation X-13ARIMA-SEATS utilise des moyennes mobiles de Henderson et des moyennes mobiles composites pour estimer les principales composantes d'une série chronologique, tandis que TRAMO-SEATS utilise des filtres de Wiener-Kolmogorov. 
 Au centre de la série, des filtres symétriques sont appliqués. 
 En revanche, en raison du manque d’observations futures, pour estimer les points les plus récents, toutes ces méthodes doivent s'appuyer sur des filtres asymétriques. 
@@ -13,13 +15,11 @@ Par exemple, même si X-13ARIMA-SEATS et TRAMO-SEATS appliquent des moyennes sym
 
 Si ces moyennes mobiles asymétriques ont de bonnes propriétés concernant la taille des révisions futures induites par le processus de lissage^[Voir par exemple @pierce1980SA.], elles induisent également des déphasages qui retardent en général la détection en temps réel des points de retournement.
 
-
-L'objectif de ce rapport est de décrire et de comparer les approches récentes permettant l’extraction de tendance-cycle : filtres polynomiaux locaux, méthodes basées sur une optimisation des propriétés des filtres et filtres basés sur les espaces de Hilbert à noyau reproduisant (RKHS).  
+L'objectif de cette étude est de décrire et de comparer les approches récentes permettant l’extraction de tendance-cycle : filtres polynomiaux locaux, méthodes basées sur une optimisation des propriétés des filtres et filtres basés sur les espaces de Hilbert à noyau reproduisant (RKHS).  
+Toutes ces méthodes sont implémentées dans le package `r fa_r_project` `rjdfilters`^[https://github.com/palatej/rjdfilters.], tous les résultats de cette étude sont facilement reproductibles.
 En raison du lien entre la désaisonnalisation et l'extraction de tendance-cycle (section \@ref(sec-SAtoTCE)), nous nous concentrons sur les méthodes non paramétriques qui peuvent être incluses dans X-13ARIMA-SEATS.
-Après une description des propriétés générales d'un filtre linéaire (section \@ref(sec-propMM)), nous décrivons une approche générale englobant les différentes méthodes développées par @proietti2008, @GrayThomson1996, @ch15HBSA, @trilemmaWMR2019 et @dagumbianconcini2008 (sections \@ref(sec-theoriegen) à \@ref(sec-rkhs)).
-Enfin, dans la section \@ref(sec-comparison), nous comparons les différentes méthodes en les intégrant dans X-13ARIMA-SEATS et en les appliquant sur des séries réelles.
-
-
+Après une description des propriétés générales d'un filtre linéaire (section \@ref(sec-propMM)), nous décrivons une approche générale qui permet d'englober les différentes méthodes développées par @proietti2008, @GrayThomson1996, @ch15HBSA, @trilemmaWMR2019 et @dagumbianconcini2008 (sections \@ref(sec-theoriegen) à \@ref(sec-nonparamreg)) et nous mettrons également en exergue les liens théoriques entre ces différentes variables.
+Enfin, dans la section \@ref(sec-comparison), nous comparons les différentes méthodes en termes de déphasage et de révisions, en les appliquant sur des séries simulées et réelles.
 
     
 \newpage

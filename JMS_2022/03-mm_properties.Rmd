@@ -116,7 +116,7 @@ Ils ne peuvent toutefois pas être utilisés au début et à la fin de la série
 
 En début et en fin de série, les moyennes mobiles asymétriques ne peuvent être utilisées du fait du manque de données disponibles.
 Une solution est de prolonger la série par prévision pour ensuite appliquer le filtre symétrique.
-Cette méthode semble remonter à @deforest1877adjustment qui suggèrent également de modéliser en fin de période une tendance polynomiale de degré au plus 3 :
+Cette méthode semble remonter à @deforest1877adjustment qui suggèrent également de modéliser en fin de période une tendance polynomiale de degré au plus trois :
 
 :::{.quote data-latex=""}
 « *As the first $m$ and last $m$ terms of the series cannot be reached directly by the formula, the series should be graphically extended by m terms at both ends, first plotting the observations on paper as ordinates, and then extending the curve along what seems to be its probable course, and measuring the ordinates of the extended portions.*
@@ -156,8 +156,7 @@ $$\scriptstyle
   \vdots & \vdots & \cdots & \vdots \\
   w_{-h}^{h-1} - v_{-h} & w_{-(h-1)}^{h-1} - v_{-(h-1)} & \cdots & w_{0}^{h-1} - v_{0}
 \end{pmatrix}
-\begin{pmatrix}y_{-h} \\ \vdots \\ y_0\end{pmatrix}.
-$$
+\begin{pmatrix}y_{-h} \\ \vdots \\ y_0\end{pmatrix}.$$
 C'est ce qui implémenté dans la fonction `rjdfilters::implicit_forecast`.
 
 Comme notamment souligné par @wildischis2004, étendre la série par prévision d'un modèle ARIMA revient à calculer des filtres asymétriques dont les coefficients sont optimisés par rapport à la prévision avec une longueur d'avance --- *one-step ahead forecasting*.
@@ -171,7 +170,7 @@ C'est pourquoi il peut être nécessaire de définir des critères alternatifs p
 Pour les filtres asymétriques, la majorité des critères proviennent de ceux définis par @ch15HBSA et @trilemmaWMR2019 pour construire les filtres asymétriques. Ils sont résumés dans le tableau \@ref(tab:QC) et calculables avec la fonction fonction `rjdfilters::diagnostic_matrix`.
 
 @ch15HBSA proposent une approche générale pour dériver des filtres linéaires, basée sur un problème d'optimisation de trois critères : *Fidelity* ($F_g$, réduction de la variance), *Smoothness* ($S_g$, lissage) et *Timeliness* ($T_g$, déphasage).
-Voir section \@ref(subsec-GuggemosEtAl) pour plus de détails.
+Voir section \@ref(subsec-GuggemosEtAl) pour plus de détails.
 
 @trilemmaWMR2019 proposent une approche basée sur la décomposition de l'erreur quadratique moyenne entre le filtre symétrique et le filtre asymétrique en quatre quantités : *Accuracy* ($A_w$, précision), *Timeliness* ($T_w$, déphasage), *Smoothness* ($S_w$, lissage) et *Residual* ($R_w$, résidus).
 Voir section \@ref(sec-WildiMcLeroy) pour plus de détails.
@@ -213,6 +212,3 @@ criteria_mm %>%
 kable_styling(latex_options = "scale_down") %>%
     add_footnote_kable(stop_centering = TRUE)
 ```
-
-
-

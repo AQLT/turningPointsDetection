@@ -12,7 +12,7 @@ où $y_t$ est la série étudiée, $u_t$ une série de référence et $\Delta$ e
 Dans la majorité des cas, la fonction $f$ ne dépendra que de la fonction de gain, $\phi_\theta$, et de la fonction de déphasage, $\varphi_\theta$.
 Dans ce cas, par simplification on écrira $f\left[\phi_\theta(\omega), \varphi_\theta (\omega), \omega\right] = f\left[\phi_\theta(\omega), \varphi_\theta (\omega)\right]$.
 
-Comme montré dans cette étude, la majorité des filtres linéaires peut s'obtenir par une minimisation d'une somme pondérée de ces critères, sous contrainte linéaire sur les coefficients :
+Comme montré dans cette étude, la majorité des filtres linéaires peut s'obtenir par une minimisation d'une somme pondérée de ces critères, sous contrainte linéaire sur les coefficients :
 
 $$
 \begin{cases}
