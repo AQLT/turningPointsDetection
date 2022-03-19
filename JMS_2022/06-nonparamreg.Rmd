@@ -234,7 +234,8 @@ Comme mentionné dans la partie \@ref(subec:mmetprev), pour l'estimation en temp
 @proietti2008 montrent que les deux premières approches sont équivalentes lorsque les prévisions sont faites par extrapolation polynomiale de degré $d$.
 Elles sont également équivalentes à la troisième approche sous les mêmes contraintes que celles du filtre symétrique.
 Cette méthode est appelée *direct asymmetric filter* (DAF).
-Même si les estimations sont sans biais, c'est au coût d'une plus grande variance dans les estimations. 
+C'est cette méthode qui est utilisée pour l'estimation en temps réel dans la méthode de désaisonnalisation STL (*Seasonal-Trend decomposition based on Loess*, voir @cleveland90).
+Même si les estimations des filtres DAF sont sans biais, c'est au coût d'une plus grande variance dans les estimations. 
 
 Pour résoudre le problème de la variance des estimations des filtres temps réel, @proietti2008 proposent une méthode générale pour construire les filtres asymétriques qui permet de faire un compromis biais-variance.
 Il s'agit d'une généralisation des filtres asymétriques de @musgrave1964set (utilisés dans l'algorithme de désaisonnalisation X-13ARIMA).
