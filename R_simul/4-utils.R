@@ -282,3 +282,8 @@ unique_series <- function(x){
   x[,grep("^X", colnames(x))][as.matrix(to_remove[,grep("^X", colnames(to_remove))])] <- NA
   x
 }
+
+ggMultisave <- function(filename, out = c("pdf","jpg","svg"),...){
+  invisible(lapply(sprintf("%s.%s", gsub("\\.$","",filename), out),
+                   ggsave,...))
+}
