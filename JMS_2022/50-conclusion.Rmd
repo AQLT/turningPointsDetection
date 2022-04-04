@@ -10,6 +10,7 @@ Celui-ci permet d'utiliser plusieurs outils, comme la construction des prévisio
 
 La comparaison des différentes méthodes, bien que perfectible, permet de tirer quelques enseignements pour la construction de ces moyennes mobiles.
 Premièrement, en fin de période, chercher à conserver des tendances polynomiales de degré supérieur à un (filtres QL, CQ et DAF et certains filtres FST) semble introduire de la variance dans les estimations (et donc plus de révisions) sans gain significatif en termes de détection de point de retournement. 
+La méthode de désaisonnalisation STL utilisant les filtres DAF en fin de période, elle pourrait facilement être améliorée.
 Il faut en revanche que la longueur du filtre utilisé soit adapté à la variabilité de la série : si le filtre utilisé est trop long (c'est-à-dire si la variabilité de la série est « moyenne »), conserver des tendances polynomiale de degré au plus 1 (méthode LC) produit de moins bons résultats en termes de détection des points de retournement.
 
 Deuxièmement, la théorie des RKHS semble permettre la construction de filtres qui pourraient donner un bon compromis entre minimisation du déphasage et révisions (filtre $b_{q,G}$).

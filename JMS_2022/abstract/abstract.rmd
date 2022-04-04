@@ -1,8 +1,9 @@
 --- 
 always_allow_html: true
+bibliography: "biblio.bib"
 ---
 
-```{r}
+```{r, include=FALSE}
 is_html <- knitr::is_html_output()
 is_latex <- knitr::is_latex_output()
 
@@ -27,61 +28,55 @@ if(is_html){
 
 \thispagestyle{fancy}
 
-# Résumés {-}
+# Résumé {-}
 
-:::: {.abstract data-latex=""}
+
+:::: {.abstract}
 `r if (is_html) '
 :::{.title}
 Résumé
 :::
 '`
-La crise du COVID-19 met en évidence que l'analyse des cycles économiques, et en particulier la détection précoce des points de retournement, est un sujet majeur dans l'analyse de la conjoncture.
-Les moyennes mobiles, ou les filtres linéaires, sont omniprésents dans les méthodes d'extraction du cycle économique.
-Au centre de la série, des filtres symétriques sont appliqués.
+L'analyse des cycles économiques, et en particulier la détection précoce des points de retournement, est un sujet majeur dans l'analyse de la conjoncture.
+Les moyennes mobiles, ou les filtres linéaires, sont omniprésents dans les méthodes d'extraction de la tendance-cycle et d’ajustement saisonnier.
+Au centre de la série,  des moyennes mobiles symétriques sont appliquées^[
+C’est-à-dire que pour estimer la tendance-cycle à la date $t$,  on utilise autant de points dans le passé que dans le futur et le même poids est associé aux observations passées et futures.
+].
 Cependant, en raison du manque d'observations futures, les estimations en temps réel doivent s'appuyer sur des moyennes mobiles asymétriques.
-Les moyennes mobiles asymétriques classiques minimisent les erreurs de révision mais introduisent des retards dans la détection des points de retournement (déphasage).
+C’est ce qui est par exemple fait dans les méthodes de désaisonnalisation les plus utilisées, TRAMO-SEATS et X-13ARIMA, qui prolongent la série sur 1 an par un modèle ARIMA.
+Les prévisions étant des combinaisons linéaires du passé,  cela revient en réalité à utiliser des moyennes mobiles asymétriques dont les coefficients sont optimisés par rapport à la prévision avec une longueur d’avance --- *one-step ahead forecasting*.
 
+La construction de moyennes mobiles asymétriques performantes en termes de fidélité (préservation du signal), de révision, de lissage et de déphasage (délais dans la détection de points de retournement) est un sujet de recherche toujours ouvert.
+Cette étude décrit et compare des approches récentes pour la construction de moyennes mobiles asymétriques, utilisées pour l’estimation en temps réel de la tendance-cycle : filtres polynomiaux locaux [@proietti2008; @GrayThomson1996] ; méthodes basées sur une optimisation sous contrainte d’une somme pondérée de critères de qualité des moyennes mobiles [@ch15HBSA; @trilemmaWMR2019] ; et filtres basés sur les espaces de Hilbert à noyau reproduisant (RKHS) @dagumbianconcini2008.
+Elle montre également comment les filtres polynomiaux locaux peuvent être étendus pour inclure un critère de temporalité afin de minimiser le déphasage.
+Enfin,  cette étude montre qu'il est possible d'établir une approche unificatrice générale qui permet de reproduire l’ensemble des méthodes étudiées.
 
-La construction de moyennes mobiles asymétriques performantes en termes de fidélité (de préservation du signal), de révision, de lissage et de déphasage est un sujet de recherche toujours ouvert. 
-Ce rapport décrit et compare des approches récentes pour construire des filtres asymétriques : filtres polynomiaux locaux, méthodes basées sur une optimisation des propriétés des filtres et filtres basés sur les espaces de Hilbert à noyau reproduisant (RKHS).
-Il décrit également comment les filtres polynomiaux locaux peuvent être étendus pour inclure un critère de temporalité afin de minimiser le déphasage.
-Toutes ces méthodes peuvent se voir comme un cas particulier d'une théorie générale de construction des filtres et ont été comparées en les intégrant dans la méthode de désaisonnalisation X-13ARIMA.
+La comparaison des méthodes sur séries simulées montre qu'il est important d'adapter la longueur du filtre à la variabilité de la série. 
+Par ailleurs, même si certains filtres RKHS sont sujet à des problèmes d'optimisation et conduisent à des estimations intermédiaires erratiques, d'autres semblent donner des résultats satisfaisant en termes de délais dans la détection des points de retournement et de révisions.
+De plus, lorsque la longueur du filtre est adapté à la variabilité de la série, chercher à conserver des tendances polynomiales de degré supérieur à un semble introduire de la variance dans les estimations (et donc plus de révisions) sans gain significatif en termes de détection de point de retournement.
 
-Ce rapport montre notamment que contraindre les moyennes mobiles asymétriques à ne conserver que les constantes (et pas nécessairement polynomiales) réduit à la fois l'erreur de révision et le déphasage dans la détection de points de retournement.
-Les futures études sur le sujet peuvent donc se concentrer sur ces filtres.
-Ce rapport met également en évidence le lien entre désaisonnalisation et extraction de tendance-cycle. 
-Les deux ne peuvent s'étudier de manière indépendante et négliger la méthode de désaisonnalisation peut conduire à des estimations de la tendance-cycle biaisées par la présence de points atypiques mais aussi par l'introduction de faux points de retournement.
-
-Toutes les méthodes décrites sont implémentées dans le package `r fa_r_project` `rjdfilters` (https://github.com/palatej/rjdfilters) et tous les résultats peuvent facilement être reproduits.
-Les codes utilisés, ainsi qu'une version web de ce rapport, sont disponibles sur https://github.com/AQLT/Stage_3A.
+Cette étude est reproductible. En particulier, toutes les méthodes décrites sont implémentées dans le *package* `r fa_r_project` `rjdfilters` (https://github.com/palatej/rjdfilters) et tous les codes utilisées sont disponibles sous https://github.com/AQLT/articles.
 ::::
 
-\renewcommand{\abstractname}{Abstract}
 
-:::: {.abstract data-latex=""}
+# Abstract {-}
+
+:::: {.abstract}
 `r if (is_html) '
 :::{.title}
 Abstract
 :::
 '`
-The COVID-19 crisis highlights that business cycle analysis, and in particular the early detection of turning points, is a major topic in the analysis of economic outlook.
-In the business cycle analysis, estimates are usually derived from moving average (also called linear filters) techniques. 
-In the center of the series, symmetric filters are applied. 
-However, due to the lack of future observations, real-time estimates must rely on asymmetric moving averages.
-Classic asymmetric moving averages minimize revisions errors but introduce delays in the detecting turning points.
-
-Construction of good asymmetric filters, in terms of fidelity, revisions, smoothness and timeliness, is still an open topic. 
 This paper describes and compares different approaches to build asymmetric filters: local polynomials filters, methods based on an optimization of filters' properties (Fidelity-Smoothness-Timeliness, FST, approach and a data-dependent filter) and filters based on Reproducing Kernel Hilbert Space.
 It also describes how local polynomials filters can be extended to include a timeliness criterion to minimize phase shift.
-All these methods can be seen as a special case of a general unifying framework to derive linear filters, and have been compared by integrating them into the X-13ARIMA seasonal adjustment method.
+All these methods can be seen as a special case of a general unifying framework to derive linear filters.
 
-This paper shows that constraining asymmetric filters to preserve constant trends (and not necessarily polynomial ones) reduce revision error and time lag. 
+This paper shows that, when the length of the filter is adapted to the variability of the series, constraining asymmetric filters to preserve constant trends (and not necessarily polynomial ones) reduce revision error and time lag. 
 Therefore, future studies on the subject can focus on these filters.
-This report also highlights the link between seasonal adjustment method and trend-cycle extraction methods.
-Both cannot be studied independently and neglecting the seasonal adjustment method can lead to trend-cycle estimates biased by the presence of outliers but also by the introduction of false turning points.
+Moreover, with RKHS filters some optimisation issues can occurs and they might lead to erratic estimation; however, some of them seem to produce satisfying results in terms of phase-shift and revisions.
 
-All the methods are implemented in the `r fa_r_project` package `rjdfilters` (https://github.com/palatej/rjdfilters) and the results can be easily reproduced.
-The programs used, and a web version of this report, are available at https://github.com/AQLT/Stage_3A.
+All the methods are implemented in the `r fa_r_project` package `rjdfilters` and the results can be easily reproduced.
+The programs used, and a web version of this report, are available at https://github.com/AQLT/articles.
 ::::
 
 \newpage

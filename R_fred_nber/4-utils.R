@@ -66,7 +66,7 @@ select_var <- function(x){
   x
 }
 select_series <- function(x){
-  x = x[x$series %in% series_with_tp_ul,]
+  # x = x[x$series %in% series_with_tp_ul,]
   x = merge(x, length_info, all.x = TRUE, all.y = FALSE)
   x
 }
@@ -201,7 +201,8 @@ format_data_plot  <- function(data){
   colnames(dataGraph) <- c("date", colnames(data))
   reshape2::melt(dataGraph, id = "date") |> na.omit()
 }
-plot_prevs <- function (data, data_prevs, date_tp =2020.25, titre = NULL, sous_titre = NULL, limits_y = NULL) {
+plot_prevs <- function (data, data_prevs, date_tp =2020.25, titre = NULL, sous_titre = NULL, limits_y = NULL,
+                        linetype_prev = "dashed") {
   cex = 0.4;
   x_lab = y_lab= NULL; x_lab_month = TRUE; 
   outDec = ",";  n_xlabel = 6 ;n_ylabel = 4; 
@@ -218,7 +219,7 @@ plot_prevs <- function (data, data_prevs, date_tp =2020.25, titre = NULL, sous_t
     geom_vline(xintercept = date_tp, linetype = "dotted") +
     geom_line(size = size) + 
     geom_line(data = dataGraph_prevs, aes(x = date, y = value, group = variable, 
-                                          colour = variable), size = 1, linetype = "dashed")+
+                                          colour = variable), size = 0.6, linetype = linetype_prev)+
     labs(title = titre, subtitle = sous_titre, x = x_lab, 
          y = y_lab) + 
     scale_x_continuous(breaks = scales::pretty_breaks(n = n_xlabel), 
@@ -245,21 +246,28 @@ extract_est_data <- function(method = "lc", kernel = "henderson", nb_est = 10,
                              series = "RETAILx",
                              tp_date = 2020.25,
                              nb_dates_before = 6){
+  sep = "_"
   if(method %in% c("lc","ql", "cq", "daf")){
     dir <- "lp"
     full_name <- sprintf("%s_%s", kernel, method)
   }else{
-    dir <- "rkhs"
-    full_name <- method
+    if(length(grep("arima", method)) >0){
+      dir <- "arima"
+      full_name <- sep <- ""
+    }else{
+      dir <- "rkhs"
+      full_name <- method
+    }
   }
-  file = sprintf("results_nber/%s/%s_%s.RDS", dir, series, full_name)
+  file = sprintf("results_nber/%s/%s%s%s.RDS", dir, series, sep, full_name)
   data <- readRDS(file)
   data <- do.call(ts.union, data)
   colnames(data) <- as.character(zoo::as.yearmon(as.numeric(colnames(data))))
   column_to_keep <- !apply(window(data, start = tp_date),2, \(x) all(is.na(x)))
   data <- data[,column_to_keep]
   data <- data[,1:nb_est]
-  last_date <- time(data)[which(is.na(data[,ncol(data)]))[1] - 1]
+  last_date_est = zoo::na.trim(data[,ncol(data)], sides = "left")
+  last_date <- time(last_date_est)[which(is.na(last_date_est))[1] - 1]
   window(data, start = tp_date - nb_dates_before/frequency(data),
          end = last_date)
 }
@@ -277,7 +285,7 @@ extract_est_data_fst <- function(weight = "weight231",
   column_to_keep <- !apply(window(data, start = tp_date),2, \(x) all(is.na(x)))
   data <- data[,column_to_keep]
   data <- data[,1:nb_est]
-  last_date <- time(data)[which(is.na(data[,ncol(data)]))[1] - 1]
+  last_date <- time(data)[which(is.na(zoo::na.trim(data[,ncol(data)], sides = "left")))[1] - 1]
   window(data, start = tp_date - nb_dates_before/frequency(data),
          end = last_date)
 }

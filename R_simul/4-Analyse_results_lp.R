@@ -27,16 +27,16 @@ mean2 <- function(x,...){
   round(mean(x,...), 2)
 }
 by_kernel_rev_fe <- all_rev_fe %>% 
-  group_by(stats, Group, kernel, length) %>% 
+  group_by(kernel, length) %>% 
   summarise_at(vars(rev.q0:rev.q10), mean2, na.rm = TRUE) %>% 
   data.frame%>% 
-  arrange(length, Group, stats, kernel) %>% as.data.frame()
+  arrange(length, kernel) %>% as.data.frame()
 
 by_kernel_rev_ce <- all_rev_ce %>% 
-  group_by(stats, Group, kernel, length) %>% 
+  group_by(kernel, length) %>% 
   summarise_at(vars(rev.q0:rev.q10), mean2, na.rm = TRUE) %>% 
   data.frame%>% 
-  arrange(length, Group, stats, kernel) %>% as.data.frame()
+  arrange(length, kernel) %>% as.data.frame()
 
 by_kernel <- all_tp %>% 
   tidyr::pivot_longer(

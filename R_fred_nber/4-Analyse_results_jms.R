@@ -13,8 +13,8 @@ all_rev_ce <- readRDS("results_nber/compile_revisions/lp_ce_rev.RDS") |>
   select_mae()
 
 all_tp_rkhs <- 
-  merge(readRDS("results_nber/compile_tp/troughs_rkhs.RDS"),
-        readRDS("results_nber/compile_tp/peaks_rkhs.RDS"),
+  merge(readRDS("results_nber/compile_tp_norev/troughs_rkhs.RDS"),
+        readRDS("results_nber/compile_tp_norev/peaks_rkhs.RDS"),
         by=c("series","kernel", "method")) %>%
   select_var()
 all_rev_rkhs_fe <- readRDS("results_nber/compile_revisions/rkhs_fe_rev.RDS") |> 
@@ -30,8 +30,17 @@ all_rev_rkhs_fe <- rbind(all_rev_fe %>% mutate(article = "lpp"),
 all_rev_rkhs_ce <- rbind(all_rev_ce %>% mutate(article = "lpp"), 
                          all_rev_rkhs_ce %>% mutate(article = "rkhs"))
 
-all_tp <- all_tp_rkhs %>% 
-  mutate(method = factor(method,levels = c("lc","ql","cq","daf", "frf", "gain", "phase"),
+all_tp_arima <- 
+  merge(readRDS("results_nber/compile_tp_norev/troughs_arima.RDS"),
+        readRDS("results_nber/compile_tp_norev/peaks_arima.RDS"),
+        by=c("series","kernel", "method")) %>%
+  select_var() %>% mutate(article = "arima")
+
+
+
+all_tp <- all_tp_rkhs %>%
+  rbind(all_tp_arima) %>% 
+  mutate(method = factor(method,levels = c("lc","ql","cq","daf", "frf", "gain", "phase","auto_arima"),
                          ordered = TRUE),
          kernel = tolower(kernel))
 all_rev_fe <- all_rev_rkhs_fe %>% 
@@ -47,17 +56,20 @@ all_rev_ce <- all_rev_rkhs_ce %>%
 series <- "RETAILx"
 tp_keep = "2020.25"
 column_to_remove <- grep(tp_keep, grep("^X", colnames(all_tp),value = TRUE), value = TRUE, invert = TRUE)
-all_tp = all_tp %>% filter(series %in% !!series) %>% 
+all_tp = 
+  all_tp %>% filter(series %in% !!series) %>% 
   mutate(method2 = recode(method, lc = "Linear-Constant~(LC)",
                           ql = "Quadratic-Linear~(QL)",
                           cq = "Cubic-quadratic~(CQ)", daf = "DAF",
-                          frf = "b['q, '] [gamma]",
+                          frf = "b['q, '] [Gamma]",
                           gain = "b['q, '] [G]",
-                          phase = "b['q, '] [phi]")) %>% 
+                          phase = "b['q, '] [phi]",
+                          auto_arima = "ARIMA")) %>% 
   mutate(title = sprintf("%s%s",
                          ifelse(kernel == "henderson", as.character(method2), ""),
-                         ifelse((kernel == "henderson") & article == "lpp", "",
-                                sprintf("Noyau~%s", kernel))),
+                         ifelse((kernel != "henderson") & article == "lpp",
+                                sprintf("Noyau~%s", kernel), ""
+                                )),
          subtitle = sprintf("Déphasage de %i mois",
                             round(X2020.25))) %>%
 select(!c(!!column_to_remove, article))
@@ -127,21 +139,6 @@ all_rev_ce_fst <- all_rev_ce_fst |> normalise_fst()
 
 
 all_mod <- list(lc_h = list(kernel = "henderson",
-                 method = "lc"),
-     ql_h = list(kernel = "henderson",
-                 method = "ql"),
-     cq_h = list(kernel = "henderson",
-                 method = "cq"),
-     daf_h = list(kernel = "henderson",
-                 method = "daf"),
-     rkhs_frf = list(kernel = "henderson",
-                       method = "frf"),
-     rkhs_gain = list(kernel = "henderson",
-                       method = "gain"),
-     rkhs_phase = list(kernel = "henderson",
-                  method = "phase")
-     )
-all_mod <- list(lc_h = list(kernel = "henderson",
                             method = "lc"),
                 ql_h = list(kernel = "henderson",
                             method = "ql"),
@@ -154,7 +151,9 @@ all_mod <- list(lc_h = list(kernel = "henderson",
                 rkhs_gain = list(kernel = "henderson",
                                  method = "gain"),
                 rkhs_phase = list(kernel = "henderson",
-                                  method = "phase")
+                                  method = "phase"),
+                arima = list(kernel = "henderson",
+                                  method = "auto_arima")
 )
 all_titles = lapply(all_mod, function(x){
   title = all_tp %>% filter(kernel == x$kernel,
@@ -226,6 +225,9 @@ plots_fst <- lapply(names(all_mod_est_fst),
                 limits_y = all_range)
 plots_fst <- plots_fst[rep(c(1,5),4) +rep(0:3, each = 2)]
 
+wrap_plots(plots[1:4])
+wrap_plots(plots[-(1:4)])
+
 wrap_plots(plots_fst[1:4])
 wrap_plots(plots_fst[-(1:4)])
 
@@ -235,8 +237,8 @@ wrap_plots(plots_kernel[c(1,8)],ncol = 1)
 ggMultisave("JMS_2022/img/nber/retailx_lp", 
             plot =wrap_plots(plots[1:4],ncol = 2),
        width = 7,height = 5)
-ggMultisave("JMS_2022/img/nber/retailx_rkh",
-             plot = wrap_plots(plots[5:7],ncol = 2),
+ggMultisave("JMS_2022/img/nber/retailx_rkhs_arima",
+             plot = wrap_plots(plots[5:8],ncol = 2),
        width = 7,height = 5)
 ggMultisave("JMS_2022/img/nber/retailx_fstp1",
             plot = wrap_plots(plots_fst[1:4],ncol = 2),
