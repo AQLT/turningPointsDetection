@@ -157,3 +157,28 @@ saveRDS(do.call(rbind,
         "results_nber/compile_tp_norev/peaks_fst.RDS")
 file.remove(c(sprintf("results_nber/compile_tp_norev/troughs_fst%i.RDS", 0:3),
               sprintf("results_nber/compile_tp_norev/peaks_fst%i.RDS", 0:3)))
+
+
+
+all_files <- list.files("results_nber/bb/",pattern = "_tp",full.names = TRUE)
+
+all_tp_bp <- lapply(seq_along(all_files), function(i){
+  print(i)
+  f = all_files[i]
+  compute_time_lag(readRDS(f),                    
+                   peaks = nber_tp_m[,"Peak"],
+                   troughs = nber_tp_m[,"Trough"],
+                   type = "no_revisions")
+})
+
+full_names <- gsub("_tp.RDS$", "", basename(all_files))
+method <- "bryboschan"
+kernel = "henderson"
+all_t <- data.frame(t(sapply(all_tp_bp,`[[`,"troughs")),
+                    series, kernel, method)
+all_p <- data.frame(t(sapply(all_tp_bp,`[[`,"peaks")),
+                    series, kernel, method)
+rownames(all_t) <- rownames(all_p) <- full_names
+
+saveRDS(all_t, "results_nber/compile_tp_norev/troughs_bb.RDS")
+saveRDS(all_p, "results_nber/compile_tp_norev/peaks_bb.RDS")
