@@ -1,7 +1,7 @@
 if(!dir.exists("results_nber"))
   dir.create("results_nber")
-if(!dir.exists("results_nber/bp"))
-  dir.create("results_nber/bp")
+if(!dir.exists("results_nber/bb"))
+  dir.create("results_nber/bb")
 library(Coinprofile)
 library(AQLThesis)
 library("future")
@@ -25,7 +25,7 @@ for(s in list_series){
   print(name_file)
   
   nom_f_s_tp <- 
-    sprintf("results_nber/bp/%stp.RDS",
+    sprintf("results_nber/bb/%stp.RDS",
             name_file)
   
   if(all(file.exists(nom_f_s_tp)))
