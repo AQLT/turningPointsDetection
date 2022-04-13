@@ -166,6 +166,8 @@ all_tp_bp <- lapply(seq_along(all_files), function(i){
 })
 
 full_names <- gsub("_tp.RDS$", "", basename(all_files))
+split <- strsplit(full_names, "_")
+series <- sapply(split, `[`, 1)
 method <- "bryboschan"
 kernel = "henderson"
 all_t <- data.frame(t(sapply(all_tp_bp,`[[`,"troughs")),
