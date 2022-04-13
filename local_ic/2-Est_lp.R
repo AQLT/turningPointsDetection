@@ -105,9 +105,12 @@ if(reload){
 }
 
 
+fs <- list()
+j <- 1
+kernel = "Henderson"
 for (method in c("LC","QL")){
   print(method)
-  for(s in list.files("data/byseries", full.names = TRUE)){
+  for(s in list.files("data/byseries_nber", full.names = TRUE)){
     for(d in 2:3){
       for(h in 3:6) {
         name_file <- gsub(".RDS$", "", basename(s))
@@ -118,7 +121,7 @@ for (method in c("LC","QL")){
         } else {
           complement = ""
         }
-        data_info <- readRDS(sprintf("data/byseriespente/%s_h%i.RDS",
+        data_info <- readRDS(sprintf("data/byseriespente_nber/%s_h%i.RDS",
                                      gsub(".RDS", "",basename(s)),h))
         
         nom_f_s <- sprintf("results_nber/localic_lp/%s_%s_h%i%s.RDS",
