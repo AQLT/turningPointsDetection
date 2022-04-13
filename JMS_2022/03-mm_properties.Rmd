@@ -28,19 +28,19 @@ La fonction de transfert peut être définie de manière équivalente par $\Gamm
 ].
 Elle peut être réécrite en :
 $$
-\Gamma_\theta(\omega) = G_\theta(\omega)\e^{-i\Phi_\theta(\omega)},
+\Gamma_\theta(\omega) = \rho_\theta(\omega)\e^{-i\varphi_\theta(\omega)},
 $$
-où $G_\theta(\omega)=\lvert\Gamma_\theta(\omega)\rvert$ est la fonction de *gain* ou *d'amplitude* et $\Phi_\theta(\omega)$ est le *déphasage* (*phase shift* ou *time shift*)^[
-Cette fonction est parfois définie comme  $\phi_\theta(\omega)=\frac{\Phi_\theta(\omega)}{\omega}$ pour mesurer le déphasage en termes de période.
+où $\rho_\theta(\omega)=G_\theta(\omega)=\lvert\Gamma_\theta(\omega)\rvert$ est la fonction de *gain* ou *d'amplitude* et $\varphi_\theta(\omega)$ est le *déphasage* (*phase shift* ou *time shift*)^[
+Cette fonction est parfois définie comme  $\phi_\theta(\omega)=\frac{\varphi_\theta(\omega)}{\omega}$ pour mesurer le déphasage en termes de période.
 ]. 
 Pour tous les filtres symétriques on a $\Phi_\theta(\omega)\equiv 0 \;(modulo\;{\pi})$.
 
 En somme, appliquer une moyenne mobile à une série harmonique la modifie de deux façons :
 
-- en la multipliant par un coefficient égal à $G_{\theta}\left(\omega\right)$ (gain) ;
+- en la multipliant par un coefficient égal à $\rho_{\theta}\left(\omega\right)$ (gain) ;
 
-- en la « décalant » dans le temps de $\Phi_\theta(\omega)/\omega$, ce qui a un impact sur la détection des points de retournement (déphasage) ^[
-Lorsque $\Phi_\theta(\omega)/\omega>0$ le déphasage est positif : le point de retournement est détecté avec retard.
+- en la « décalant » dans le temps de $\varphi_\theta(\omega)/\omega$, ce qui a un impact sur la détection des points de retournement (déphasage) ^[
+Lorsque $\varphi_\theta(\omega)/\omega>0$ le déphasage est positif : le point de retournement est détecté avec retard.
 ].
 
 
@@ -132,7 +132,7 @@ $$
 $$
 Ce qui est équivalent à :
 $$
-\forall q, \quad \sum_{i=1}^h (v_i- w_i^q) y_i^**
+\forall q, \quad \sum_{i=1}^h (v_i- w_i^q) y_i^*
 =\sum_{i=-h}^0 (w_i^q-v_i)y_i.
 $$
 En somme, matriciellement, cela revient donc à résoudre :

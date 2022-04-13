@@ -100,6 +100,13 @@ knitr::include_graphics(img)
 ```{r simulrev, echo = FALSE}
 title = "Moyenne des écarts relatifs des révisions pour les différents filtres sur les séries à variabilité moyenne."
 rev_table <- readRDS("data/simulations_revisions.RDS")
+pack_row_index = c("$MAE_{fe}(q) = \\mathbb E\\\\left[\\\\left|(y_{t|t+q} -  y_{t|last})/y_{t|last}\\\\right|\\\\right]$"=8,
+                      "$MAE_{ce}(q)=\\mathbb E\\\\left[
+\\\\left|(y_{t|t+q} - y_{t|t+q+1})/y_{t|t+q+1}\\\\right|
+\\\\right]$"=8)
+if(is_html){
+    names(pack_row_index) <- gsub("\\\\","\\",names(pack_row_index), fixed = TRUE)
+}
 rev_table  %>%
   kable(format.args = list(digits = 2,
                            decimal.mark = ","),
@@ -107,10 +114,7 @@ rev_table  %>%
         escape = FALSE, caption = title) %>%  
   kable_styling(latex_options=c(#"striped",  
     "hold_position")) %>% 
-  pack_rows(index = c("$MAE_{fe}(q) = \\mathbb E\\\\left[\\\\left|(y_{t|t+q} -  y_{t|last})/y_{t|last}\\\\right|\\\\right]$"=8,
-                      "$MAE_{ce}(q)=\\mathbb E\\\\left[
-\\\\left|(y_{t|t+q} - y_{t|t+q+1})/y_{t|t+q+1}\\\\right|
-\\\\right]$"=8), escape = FALSE)
+  pack_rows(index = pack_row_index, escape = FALSE)
 ```
 
 Concernant les révisions, la variabilité de la série a peu d'impact sur les performances respectives des différentes méthodes mais joue sur les ordres de grandeurs.

@@ -6,7 +6,7 @@ La régression non paramétrique consiste à supposer qu'il existe une fonction 
 D'après le théorème de Taylor, pour tout point $x_0$, si $\mu$ est différentiable $d$ fois, alors :
 $$
 \forall x \::\:\mu(x) = \mu(x_0) + \mu'(x_0)(x-x_0)+\dots +
-\frac{\mu^{(d)}(x_0)}{d!}(x-a)^d+R_d(x),
+\frac{\mu^{(d)}(x_0)}{d!}(x-x_0)^d+R_d(x),
 $$
 où $R_d$ est un terme résiduel négligeable au voisinage de $x_0$. 
 Dans un voisinage $h(x_0)$ autour de $x_0$, $\mu$ peut être approchée par un polynôme de degré $d$. 

@@ -3,7 +3,7 @@ bookdown::gitbook:
   config:
     toc:
       before: |
-        <li><a href="./">Stage 3A AQLT</a></li>
+        <li><a href="./">JMS 2022 AQLT</a></li>
     download: ["pdf", "docx", "tex"]
   includes:
     before_body: preamble.html

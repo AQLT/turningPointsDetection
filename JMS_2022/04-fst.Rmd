@@ -6,11 +6,11 @@ Pour établir une théorie générale englobant les principaux filtres linéaire
 En changeant légèrement les notations utilisées par les auteurs afin d'avoir une formulation plus générale, ces deux critères peuvent s'écrire :
 \begin{align}
 I(\theta,q,y_t,u_t)&=\E{(\Delta^{q}M_\theta y_t-u_t)^{2}} (\#eq:theoriegen1) \\
-J(\theta,f, \omega_1,\omega_2)&=\int_{\omega_1}^{\omega_2} f\left[\phi_\theta(\omega), \varphi_\theta (\omega), \omega\right] \ud \omega (\#eq:theoriegen2)
+J(\theta,f, \omega_1,\omega_2)&=\int_{\omega_1}^{\omega_2} f\left[\rho_\theta(\omega), \varphi_\theta (\omega), \omega\right] \ud \omega (\#eq:theoriegen2)
 \end{align}
 où $y_t$ est la série étudiée, $u_t$ une série de référence et $\Delta$ est l'opérateur différence ($\Delta y_t=y_t-y_{t-1}$ et $\Delta^q=\underbrace{\Delta \circ \dots \circ \Delta}_{q\text{ fois}}$ pour $q\in\N$).
-Dans la majorité des cas, la fonction $f$ ne dépendra que de la fonction de gain, $\phi_\theta$, et de la fonction de déphasage, $\varphi_\theta$.
-Dans ce cas, par simplification on écrira $f\left[\phi_\theta(\omega), \varphi_\theta (\omega), \omega\right] = f\left[\phi_\theta(\omega), \varphi_\theta (\omega)\right]$.
+Dans la majorité des cas, la fonction $f$ ne dépendra que de la fonction de gain, $\rho_\theta$, et de la fonction de déphasage, $\varphi_\theta$.
+Dans ce cas, par simplification on écrira $f\left[\rho_\theta(\omega), \varphi_\theta (\omega), \omega\right] = f\left[\rho_\theta(\omega), \varphi_\theta (\omega)\right]$.
 
 Comme montré dans cette étude, la majorité des filtres linéaires peut s'obtenir par une minimisation d'une somme pondérée de ces critères, sous contrainte linéaire sur les coefficients :
 
