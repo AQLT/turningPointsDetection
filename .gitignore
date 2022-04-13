@@ -7,3 +7,7 @@ filters/dfa/
 filters/fst/
 *.zip
 results*
+data_simul/byseriescv/
+JMS_2022/_book/
+JMS_2022/img
+point_these
