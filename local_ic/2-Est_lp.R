@@ -17,6 +17,8 @@ s = list_series[1]
 fs <- list()
 j <- 1
 reload <- FALSE
+d = 2
+h = 3
 for (method in c("LC","QL")){
   print(method)
   for(s in list.files("data_simul/byseries", full.names = TRUE)){
@@ -40,7 +42,7 @@ for (method in c("LC","QL")){
                   name_file,
                   tolower(method), h, complement)
         
-        nom_f_s_rev_fe <- sprintf("results_simul/localic_lp/%s_%_h%is%s_fe_rev.RDS",
+        nom_f_s_rev_fe <- sprintf("results_simul/localic_lp/%s_%s_h%i%s_fe_rev.RDS",
                                   name_file,
                                   tolower(method), h, complement)
         nom_f_s_rev_ce <- sprintf("results_simul/localic_lp/%s_%s_h%i%s_ce_rev.RDS",
@@ -126,13 +128,12 @@ for (method in c("LC","QL")){
                   name_file,
                   tolower(method), h, complement)
         
-        nom_f_s_rev_fe <- sprintf("results_nber/localic_lp/%s_%_h%is%s_fe_rev.RDS",
+        nom_f_s_rev_fe <- sprintf("results_nber/localic_lp/%s_%s_h%i%s_fe_rev.RDS",
                                   name_file,
                                   tolower(method), h, complement)
         nom_f_s_rev_ce <- sprintf("results_nber/localic_lp/%s_%s_h%i%s_ce_rev.RDS",
                                   name_file,
                                   tolower(method), h, complement)
-        
         if(all(file.exists(nom_f_s_tp),
                file.exists(nom_f_s_rev_fe),
                file.exists(nom_f_s_rev_ce)))
