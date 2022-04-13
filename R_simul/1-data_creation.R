@@ -24,8 +24,8 @@ series = lapply(series,ts, start = start, frequency = frequency)
 
 # AQLThesis::selectFilter(ts(simulated_tci(time,sigma_nu = 0.08,sigma_e = 0.30,lambda = 60,rho = 4),
 #    start = start, frequency = frequency))
-tp = turning_points(series[[6]][,"cycle"])
-first_date = time(series[[6]][,"cycle"])[25]
+tp = turning_points(series[[9]][,"cycle"])
+first_date = time(series[[9]][,"cycle"])[25]
 tp = lapply(tp, function(x)x[x>=first_date])
 saveRDS(tp, "data_simul/tp_simul1.RDS")
 
