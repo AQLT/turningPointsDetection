@@ -13,7 +13,7 @@ plan(multisession)
 
 kernel = "Henderson"
 method = "LC"
-s = list_series[1]
+s = list.files("data_simul/byseries",full.names = TRUE)[1]
 fs <- list()
 j <- 1
 reload <- FALSE
