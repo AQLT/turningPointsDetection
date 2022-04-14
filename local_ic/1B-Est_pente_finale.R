@@ -52,7 +52,7 @@ for(s in list.files("data_simul/byseries",full.names = TRUE)){
       res3 = zoo::na.locf(jasym_filter(last_est, MM_h[[sprintf("d=%i",3)]],-h))
       resderiv2 = zoo::na.locf(jasym_filter(last_est, MM_h[["deriv2"]],-h))
       
-      info_fs <- lapply(data[1:10], function(x){
+      info_fs <- lapply(data, function(x){
         future({
           sigma2 =  mean((x -jasym_filter(x, hend_filter, -h))^2,
                          na.rm = TRUE)
@@ -87,7 +87,7 @@ for(s in list.files("data/byseries_nber",full.names = TRUE)){
       res3 = zoo::na.locf(jasym_filter(last_est, MM_h[[sprintf("d=%i",3)]],-h))
       resderiv2 = zoo::na.locf(jasym_filter(last_est, MM_h[["deriv2"]],-h))
       
-      info_fs <- lapply(data[1:10], function(x){
+      info_fs <- lapply(data, function(x){
         future({
           sigma2 =  mean((x -jasym_filter(x, hend_filter, -h))^2,
                          na.rm = TRUE)
