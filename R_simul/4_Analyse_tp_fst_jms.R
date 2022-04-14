@@ -56,8 +56,8 @@ all_rev_fe_ref <- readRDS("results_simul/compile_revisions/lp_fe_rev.RDS") |>
 all_rev_ce_ref <- readRDS("results_simul/compile_revisions/lp_ce_rev.RDS") |> 
   select_series() |> select_mae()|> format_ref_fst()
 
-all_tp <- merge(readRDS("results_simul/compile_tp/troughs_fst.RDS"),
-                readRDS("results_simul/compile_tp/peaks_fst.RDS"),
+all_tp <- merge(readRDS("results_simul/compile_tp_norev/troughs_fst.RDS"),
+                readRDS("results_simul/compile_tp_norev/peaks_fst.RDS"),
                 by=c("series","degree", "weight")) |> 
   select_var() |> 
   format_fst()|>

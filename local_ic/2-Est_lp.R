@@ -137,7 +137,7 @@ for (method in c("LC","QL")){
         nom_f_s_rev_ce <- sprintf("results_nber/localic_lp/%s_%s_h%i%s_ce_rev.RDS",
                                   name_file,
                                   tolower(method), h, complement)
-        if(all(file.exists(nom_f_s_tp),
+        if(all(file.exists(nom_f_s),
                file.exists(nom_f_s_rev_fe),
                file.exists(nom_f_s_rev_ce)))
           next;
@@ -164,7 +164,7 @@ for (method in c("LC","QL")){
           })
           names(series_s) <- names(data)
           
-          # saveRDS(series_s, nom_f_s)
+          saveRDS(series_s, nom_f_s)
           
           print("turning points")
           tp <- lapply(series_s, turning_points)
@@ -186,8 +186,7 @@ for (method in c("LC","QL")){
     }
   }
 }
-if(reload){
-  vs <- lapply(fs, value)
+if(reload){vs <- lapply(fs, value)
   fs <- list()
   j <- 1
 }

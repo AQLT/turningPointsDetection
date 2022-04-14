@@ -14,8 +14,8 @@ all_rev_ce <- readRDS("results_simul/compile_revisions/lp_ce_rev.RDS") |>
   select_mae()
 
 all_tp_rkhs <- 
-  merge(readRDS("results_simul/compile_tp/troughs_rkhs.RDS"),
-        readRDS("results_simul/compile_tp/peaks_rkhs.RDS"),
+  merge(readRDS("results_simul/compile_tp_norev/troughs_rkhs.RDS"),
+        readRDS("results_simul/compile_tp_norev/peaks_rkhs.RDS"),
         by=c("series","kernel", "method")) %>%
   select_var()
 all_rev_rkhs_fe <- readRDS("results_simul/compile_revisions/rkhs_fe_rev.RDS") |> 
@@ -32,8 +32,8 @@ all_rev_rkhs_ce <- rbind(all_rev_ce %>% mutate(article = "lpp"),
                          all_rev_rkhs_ce %>% mutate(article = "rkhs"))
 
 all_tp_arima <- 
-  merge(readRDS("results_simul/compile_tp/troughs_arima.RDS"),
-        readRDS("results_simul/compile_tp/peaks_arima.RDS"),
+  merge(readRDS("results_simul/compile_tp_norev/troughs_arima.RDS"),
+        readRDS("results_simul/compile_tp_norev/peaks_arima.RDS"),
         by=c("series","kernel", "method")) %>%
   select_var()
 all_rev_arima_fe <- readRDS("results_simul/compile_revisions/arima_fe_rev.RDS") |> 
@@ -44,14 +44,22 @@ all_rev_arima_ce <- readRDS("results_simul/compile_revisions/arima_ce_rev.RDS") 
   select_mae()
 
 
-all_tp_lic <- merge(readRDS("results_simul/compile_tp_norev/troughs_lp_localic.RDS"),
-                readRDS("results_simul/compile_tp_norev/peaks_lp_localic.RDS"),
+all_tp_lic <- merge(readRDS("results_simul/compile_tp_norev/troughs_localic_lp.RDS"),
+                readRDS("results_simul/compile_tp_norev/peaks_localic_lp.RDS"),
                 by=c("series","h", "degree", "method")) %>%
   select_var()
-all_rev_fe_lic <- readRDS("results_simul/compile_revisions/lp_localic_fe_rev.RDS") |> 
+all_tp_lic_final <- merge(readRDS("results_simul/compile_tp_norev/troughs_localic_final.RDS"),
+                    readRDS("results_simul/compile_tp_norev/peaks_localic_final.RDS"),
+                    by=c("series","h", "degree", "method")) %>%
+  select_var()
+all_tp_lic_daf <- merge(readRDS("results_simul/compile_tp_norev/troughs_localic_daf.RDS"),
+                    readRDS("results_simul/compile_tp_norev/peaks_localic_daf.RDS"),
+                    by=c("series","h", "degree", "method")) %>%
+  select_var()
+all_rev_fe_lic <- readRDS("results_simul/compile_revisions/localic_lp_fe_rev.RDS") |> 
   select_series() |> 
   select_mae()
-all_rev_ce_lic <- readRDS("results_simul/compile_revisions/lp_localic_ce_rev.RDS") |> 
+all_rev_ce_lic <- readRDS("results_simul/compile_revisions/localic_lp_ce_rev.RDS") |> 
   select_series() |> 
   select_mae()
 
@@ -223,7 +231,33 @@ data_tp_lic <- all_tp_lic %>%
     cols = starts_with("x"), 
     names_to = "name",
     values_to = "value"
-  )%>% filter(kernel == "henderson") %>% 
+  ) %>% 
+  unique_series_pivot() %>% 
+  mutate(variability = recode(variability,
+                              lowvariability = "Faible variabilité",
+                              mediumvariability = "Variabilité moyenne",
+                              highvariability = "Forte variabilité")) %>% 
+  na.omit()
+data_tp_lic_final <- all_tp_lic_final %>% 
+  mutate(method = paste(method, degree,h, sep = "_")) %>% 
+  tidyr::pivot_longer(
+    cols = starts_with("x"), 
+    names_to = "name",
+    values_to = "value"
+  ) %>% 
+  unique_series_pivot() %>% 
+  mutate(variability = recode(variability,
+                              lowvariability = "Faible variabilité",
+                              mediumvariability = "Variabilité moyenne",
+                              highvariability = "Forte variabilité")) %>% 
+  na.omit()
+data_tp_lic_daf <- all_tp_lic_daf %>% 
+  mutate(method = paste(method, degree,h, sep = "_")) %>% 
+  tidyr::pivot_longer(
+    cols = starts_with("x"), 
+    names_to = "name",
+    values_to = "value"
+  ) %>% 
   unique_series_pivot() %>% 
   mutate(variability = recode(variability,
                               lowvariability = "Faible variabilité",
@@ -231,6 +265,16 @@ data_tp_lic <- all_tp_lic %>%
                               highvariability = "Forte variabilité")) %>% 
   na.omit()
 data_tp_compil = rbind(data_tp_lic |> 
+                         filter(h == "h6") |> 
+                         select(method, value, variability),
+                       data_tp |> 
+                         select(method, value, variability))
+data_tp_compil_daf = rbind(data_tp_lic_daf |> 
+                         filter(h == "h6") |> 
+                         select(method, value, variability),
+                       data_tp |> 
+                         select(method, value, variability))
+data_tp_compil_final = rbind(data_tp_lic_final |> 
                          filter(h == "h6") |> 
                          select(method, value, variability),
                        data_tp |> 
@@ -261,24 +305,47 @@ p = ggplot(data_tp ,aes(x=method, y = value))+
   labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
   scale_x_discrete(labels = label_parse())
 p 
-ggMultisave("JMS_2022/img/simulations/phase_shift_simul", 
-            plot =p,
-            width = 8,height = 5)
-p_lic = ggplot(data_tp_lic ,aes(x=method, y = value))+ 
+
+ggplot(data_tp_lic ,aes(x=method, y = value))+ 
   geom_boxplot() +
-  facet_wrap(vars(variability), ncol = 1) + AQLTools:::theme_aqltools() +
-  labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
-  scale_x_discrete(labels = label_parse())
-p_lic
-ggplot(data_tp_compil ,aes(x=method, y = value))+ 
-  geom_boxplot() +
-  facet_wrap(vars(variability), ncol = 1) + AQLTools:::theme_aqltools() +
+  facet_wrap(vars(variability), ncol = 1) +
   labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
   scale_x_discrete(labels = label_parse())
 
+ggplot(data_tp_lic_final ,aes(x=method, y = value))+ 
+  geom_boxplot() +
+  facet_wrap(vars(variability), ncol = 1) +
+  labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
+  scale_x_discrete(labels = label_parse())
+
+ggplot(data_tp_lic_daf ,aes(x=method, y = value))+ 
+  geom_boxplot() +
+  facet_wrap(vars(variability), ncol = 1) +
+  labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
+  scale_x_discrete(labels = label_parse())
+
+ggplot(data_tp_compil ,aes(x=method, y = value))+ 
+  geom_boxplot() +
+  facet_wrap(vars(variability), ncol = 1) +
+  labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
+  scale_x_discrete(labels = label_parse())
+
+ggplot(data_tp_compil_final ,aes(x=method, y = value))+ 
+  geom_boxplot() +
+  facet_wrap(vars(variability), ncol = 1) +
+  labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
+  scale_x_discrete(labels = label_parse())
+
+ggplot(data_tp_compil_daf ,aes(x=method, y = value))+ 
+  geom_boxplot() +
+  facet_wrap(vars(variability), ncol = 1) +
+  labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
+  scale_x_discrete(labels = label_parse())
+
+
 p2 <- ggplot(data_tp %>% filter(variability == "Variabilité moyenne") ,aes(x=method, y = value))+ 
   geom_boxplot() +
-  facet_wrap(vars(variability), ncol = 1) + AQLTools:::theme_aqltools() +
+  facet_wrap(vars(variability), ncol = 1) + #AQLTools:::theme_aqltools() +
   labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
   scale_x_discrete(labels = label_parse())
 

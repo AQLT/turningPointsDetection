@@ -14,8 +14,8 @@ all_rev_ce <- readRDS("results_simul/compile_revisions/lp_ce_rev.RDS") |>
   select_mae()
 
 all_tp_rkhs <- 
-  merge(readRDS("results_simul/compile_tp/troughs_rkhs.RDS"),
-        readRDS("results_simul/compile_tp/peaks_rkhs.RDS"),
+  merge(readRDS("results_simul/compile_tp_norev/troughs_rkhs.RDS"),
+        readRDS("results_simul/compile_tp_norev/peaks_rkhs.RDS"),
         by=c("series","kernel", "method")) %>%
   select_var()
 all_rev_rkhs_fe <- readRDS("results_simul/compile_revisions/rkhs_fe_rev.RDS") |> 
@@ -32,8 +32,8 @@ all_rev_rkhs_ce <- rbind(all_rev_ce %>% mutate(article = "lpp"),
                          all_rev_rkhs_ce %>% mutate(article = "rkhs"))
 
 all_tp_arima <- 
-  merge(readRDS("results_simul/compile_tp/troughs_arima.RDS"),
-        readRDS("results_simul/compile_tp/peaks_arima.RDS"),
+  merge(readRDS("results_simul/compile_tp_norev/troughs_arima.RDS"),
+        readRDS("results_simul/compile_tp_norev/peaks_arima.RDS"),
         by=c("series","kernel", "method")) %>%
   select_var()
 all_rev_arima_fe <- readRDS("results_simul/compile_revisions/arima_fe_rev.RDS") |> 
