@@ -29,12 +29,6 @@ plot_coef(moving_average(gen_MM(d=3,q=4)[,2], -6),add = TRUE)
 h_filter = lp_filter(horizon = h,endpoints = "DAF")$filters.coef
 henderson_coef = h_filter[,ncol(h_filter)]
 
-lp_filter()
-
-plot_coef(moving_average(henderson_coef, -6))
-plot_coef(moving_average(M2, -6))
-plot_coef(moving_average(M3, -6))
-h_cv <- 18
 s = "data_simul/byseries/mediumvariability2.RDS"
 new_f = sprintf("data_simul/byseriescv/%s", basename(s))
 
@@ -46,15 +40,15 @@ sigma_2 = sapply(data, function(x){
 })
 sigma_2 = sigma_2/(1- 2*henderson_coef["t"] + sum(henderson_coef^2))
 icr = ts(sapply(data_info,`[`,"icr-13"), start = 1962, frequency = 12)
-rapport_act = 4/(pi * icr)
+rapport_act = 2/(sqrt(pi) * icr)
+rapport_act = rapport_act^2
 x = data[[length(data)]]
 estim_deriv = lapply(0:h, function(q) jasym_filter(x, MM2[,q+1], -6))
-estim_local_rapport = estim_deriv^2 / ts(sigma_2, start= start(na.omit(estim_deriv)), frequency = 12)
+estim_local_rapport = lapply(estim_deriv, function(x) x^2 / ts(sigma_2, start= start(na.omit(x)), frequency = 12))
 
-lc_tp = readRDS("results_simul/lp/mediumvariability3_henderson_lc_tp.RDS")
+lc_tp = readRDS("results_simul/lp/mediumvariability2_henderson_lc_tp.RDS")
 
 tp = lc_tp[[length(lc_tp)]]
-plot(estim_deriv^2)
 
 for(i in tp$upturn){
   abline(v=i,col = "red")
@@ -88,34 +82,24 @@ sapply(lapply(0:6, function(q) estim_deriv_abs[[7]]-lag(estim_deriv_abs[[q+1]],-
 
 library(highcharter)
 hc <- highchart(type = "stock") |> 
-  hc_add_series(data = estim_local_rapport,
-                name = "Estimation local du paramètre") |> 
+  hc_add_series(data = estim_local_rapport[[7]],
+                name = "Estimation local du paramètre (delta/sigma)^2") |> 
   hc_add_series(data = rapport_act,
-                name = "Estimation à partir du ratio I/C")
+                name = "Estimation à partir du ratio I/C")|>
+  hc_legend(enabled = TRUE) %>% 
+  hc_tooltip(pointFormat = sprintf("{series.name}: <b>{point.y:.%if}</b><br/>", 
+                                   2))
+hc
+
+color = c(lapply(sprintf("Date.UTC(%s,%s,01)", format(zoo::as.yearmon(tp$upturn), "%Y"),
+                         format(zoo::as.yearmon(tp$upturn), "%m")),
+                 function(x) 
+                   list(color = "#FF0000", width = 1,
+                        value = JS(x))),
+          lapply(sprintf("Date.UTC(%s,%s,01)", format(zoo::as.yearmon(tp$downturn), "%Y"),
+                         format(zoo::as.yearmon(tp$downturn), "%m")),
+                 function(x) 
+                   list(color = "#90ee90", width = 1,
+                        value = JS(x)))) |
 hc |> 
-  hc_xAxis(plotLines = lapply(tp$upturn,function(x) list(color = "#FF0000", width = 1, value = x)))
-
-
-plot(estim_local_rapport)
-lines(rapport_act)
-
-for(s in list.files("data_simul/byseries",full.names = TRUE)){
-  print(s)
-  new_f = sprintf("data_simul/byseriescv/%s", basename(s))
-  if(!file.exists(new_f)){
-    data <- readRDS(s)
-    info_fs <- lapply(data, function(x){
-      future({sapply(3:h_cv, function(i){
-        tmp = CV(x, i)^2
-        if(all(is.na(tmp)))
-          return(NA)
-        mean(tmp[-c(1:h_cv, 1:h_cv + length(x) - h_cv)], na.rm=TRUE)
-      }
-      )
-      })
-    })
-    info <- sapply(info_fs, value)
-    rownames(info) <- sprintf("h=%i", 3:h_cv)
-    saveRDS(info, new_f)
-  }
-}
+  hc_xAxis(plotLines = color)  
