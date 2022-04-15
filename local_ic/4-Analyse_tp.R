@@ -46,16 +46,32 @@ all_rev_arima_ce <- readRDS("results_simul/compile_revisions/arima_ce_rev.RDS") 
 
 all_tp_lic <- merge(readRDS("results_simul/compile_tp_norev/troughs_localic_lp.RDS"),
                 readRDS("results_simul/compile_tp_norev/peaks_localic_lp.RDS"),
-                by=c("series","h", "degree", "method")) %>%
-  select_var()
+                by=c("series", "kernel", "h", "degree", "method")) %>%
+  select_var()%>% 
+  mutate(variability = factor(variability,
+                              levels = c("lowvariability","mediumvariability","highvariability"),
+                              ordered = TRUE))
 all_tp_lic_final <- merge(readRDS("results_simul/compile_tp_norev/troughs_localic_final.RDS"),
                     readRDS("results_simul/compile_tp_norev/peaks_localic_final.RDS"),
-                    by=c("series","h", "degree", "method")) %>%
-  select_var()
+                    by=c("series", "kernel", "h", "degree", "method")) %>%
+  select_var()%>% 
+  mutate(variability = factor(variability,
+                              levels = c("lowvariability","mediumvariability","highvariability"),
+                              ordered = TRUE))
 all_tp_lic_daf <- merge(readRDS("results_simul/compile_tp_norev/troughs_localic_daf.RDS"),
                     readRDS("results_simul/compile_tp_norev/peaks_localic_daf.RDS"),
-                    by=c("series","h", "degree", "method")) %>%
-  select_var()
+                    by=c("series", "kernel", "h", "degree", "method")) %>%
+  select_var()%>% 
+  mutate(variability = factor(variability,
+                              levels = c("lowvariability","mediumvariability","highvariability"),
+                              ordered = TRUE))
+all_tp_lic_daf_trunc <- merge(readRDS("results_simul/compile_tp_norev/troughs_localic_daf_trunc.RDS"),
+                        readRDS("results_simul/compile_tp_norev/peaks_localic_daf_trunc.RDS"),
+                        by=c("series", "kernel", "h", "degree", "method")) %>%
+  select_var() %>% 
+  mutate(variability = factor(variability,
+                              levels = c("lowvariability","mediumvariability","highvariability"),
+                              ordered = TRUE))
 all_rev_fe_lic <- readRDS("results_simul/compile_revisions/localic_lp_fe_rev.RDS") |> 
   select_series() |> 
   select_mae()
@@ -207,63 +223,36 @@ all_tp %>%
 
 
 # Graphique sur le dephasage
-data_tp <- all_tp %>% 
-  tidyr::pivot_longer(
-    cols = starts_with("x"), 
-    names_to = "name",
-    values_to = "value"
-  )%>% filter(kernel == "henderson") %>% 
-  unique_series_pivot() %>% 
+format_table_tp <- function(x){
+  x %>% 
+    tidyr::pivot_longer(
+      cols = starts_with("x"), 
+      names_to = "name",
+      values_to = "value"
+    )%>% filter(kernel == "henderson") %>% 
+    unique_series_pivot() %>% 
+    mutate(variability = recode(variability,
+                                lowvariability = "Faible variabilité",
+                                mediumvariability = "Variabilité moyenne",
+                                highvariability = "Forte variabilité")) %>% 
+    na.omit()
+}
+data_tp <- all_tp %>% format_table_tp() %>% 
   mutate(method = recode(method, lc = "LC", ql = "QL",
                          cq = "CQ", daf = "DAF",
                          frf = "b['q, '] [Gamma]",
                          gain = "b['q, '] [G]",
                          phase = "b['q, '] [phi]",
-                         auto_arima = "ARIMA"),
-         variability = recode(variability,
-                              lowvariability = "Faible variabilité",
-                              mediumvariability = "Variabilité moyenne",
-                              highvariability = "Forte variabilité")) %>% 
-  na.omit()
-data_tp_lic <- all_tp_lic %>% 
-  mutate(method = paste(method, degree,h, sep = "_")) %>% 
-  tidyr::pivot_longer(
-    cols = starts_with("x"), 
-    names_to = "name",
-    values_to = "value"
-  ) %>% 
-  unique_series_pivot() %>% 
-  mutate(variability = recode(variability,
-                              lowvariability = "Faible variabilité",
-                              mediumvariability = "Variabilité moyenne",
-                              highvariability = "Forte variabilité")) %>% 
-  na.omit()
+                         auto_arima = "ARIMA"))
+data_tp_lic <- all_tp_lic  %>% 
+  mutate(method = paste(method, degree,h, sep = "_")) %>%  format_table_tp()
 data_tp_lic_final <- all_tp_lic_final %>% 
-  mutate(method = paste(method, degree,h, sep = "_")) %>% 
-  tidyr::pivot_longer(
-    cols = starts_with("x"), 
-    names_to = "name",
-    values_to = "value"
-  ) %>% 
-  unique_series_pivot() %>% 
-  mutate(variability = recode(variability,
-                              lowvariability = "Faible variabilité",
-                              mediumvariability = "Variabilité moyenne",
-                              highvariability = "Forte variabilité")) %>% 
-  na.omit()
+  mutate(method = paste(method, degree,h, sep = "_")) %>% format_table_tp()
 data_tp_lic_daf <- all_tp_lic_daf %>% 
-  mutate(method = paste(method, degree,h, sep = "_")) %>% 
-  tidyr::pivot_longer(
-    cols = starts_with("x"), 
-    names_to = "name",
-    values_to = "value"
-  ) %>% 
-  unique_series_pivot() %>% 
-  mutate(variability = recode(variability,
-                              lowvariability = "Faible variabilité",
-                              mediumvariability = "Variabilité moyenne",
-                              highvariability = "Forte variabilité")) %>% 
-  na.omit()
+  mutate(method = paste(method, degree,h, sep = "_")) %>% format_table_tp()
+data_tp_lic_daf_trunc <- all_tp_lic_daf_trunc %>% 
+  mutate(method = paste(method, degree,h, sep = "_")) %>% format_table_tp()
+
 data_tp_compil = rbind(data_tp_lic |> 
                          filter(h == "h6") |> 
                          select(method, value, variability),
@@ -274,6 +263,11 @@ data_tp_compil_daf = rbind(data_tp_lic_daf |>
                          select(method, value, variability),
                        data_tp |> 
                          select(method, value, variability))
+data_tp_compil_daf_trunc = rbind(data_tp_lic_daf_trunc |> 
+                             filter(h == "h6") |> 
+                             select(method, value, variability),
+                           data_tp |> 
+                             select(method, value, variability))
 data_tp_compil_final = rbind(data_tp_lic_final |> 
                          filter(h == "h6") |> 
                          select(method, value, variability),
@@ -306,46 +300,54 @@ p = ggplot(data_tp ,aes(x=method, y = value))+
   scale_x_discrete(labels = label_parse())
 p 
 
+# Conclusion garder h6
 ggplot(data_tp_lic ,aes(x=method, y = value))+ 
   geom_boxplot() +
-  facet_wrap(vars(variability), ncol = 1) +
-  labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
+  facet_wrap(vars(variability), ncol = 1) + AQLTools:::theme_aqltools() +
+  labs(y="Déphasage", x = NULL,title = "IC connu en h-6") +# geom_jitter(width = 0.2, alpha = 0.1) +
   scale_x_discrete(labels = label_parse())
 
+# Conclusion : garder h6 aussi
 ggplot(data_tp_lic_final ,aes(x=method, y = value))+ 
   geom_boxplot() +
-  facet_wrap(vars(variability), ncol = 1) +
-  labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
+  facet_wrap(vars(variability), ncol = 1) + AQLTools:::theme_aqltools() +
+  labs(y="Déphasage", x = NULL, title = "IC final estimé") +# geom_jitter(width = 0.2, alpha = 0.1) +
   scale_x_discrete(labels = label_parse())
+
 
 ggplot(data_tp_lic_daf ,aes(x=method, y = value))+ 
   geom_boxplot() +
-  facet_wrap(vars(variability), ncol = 1) +
-  labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
+  facet_wrap(vars(variability), ncol = 1) + AQLTools:::theme_aqltools()  +
+  labs(y="Déphasage", x = NULL, title = "IC estimé par DAF") +# geom_jitter(width = 0.2, alpha = 0.1) +
   scale_x_discrete(labels = label_parse())
 
 ggplot(data_tp_compil ,aes(x=method, y = value))+ 
   geom_boxplot() +
-  facet_wrap(vars(variability), ncol = 1) +
+  facet_wrap(vars(variability), ncol = 1) + AQLTools:::theme_aqltools()  +
   labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
   scale_x_discrete(labels = label_parse())
 
 ggplot(data_tp_compil_final ,aes(x=method, y = value))+ 
   geom_boxplot() +
-  facet_wrap(vars(variability), ncol = 1) +
+  facet_wrap(vars(variability), ncol = 1) +AQLTools:::theme_aqltools()  +
   labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
   scale_x_discrete(labels = label_parse())
 
 ggplot(data_tp_compil_daf ,aes(x=method, y = value))+ 
   geom_boxplot() +
-  facet_wrap(vars(variability), ncol = 1) +
-  labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
+  facet_wrap(vars(variability), ncol = 1) + AQLTools:::theme_aqltools()  +
+  labs(y="Déphasage", x = NULL, title = "IC DAF") +# geom_jitter(width = 0.2, alpha = 0.1) +
+  scale_x_discrete(labels = label_parse())
+ggplot(data_tp_compil_daf_trunc ,aes(x=method, y = value))+ 
+  geom_boxplot() +
+  facet_wrap(vars(variability), ncol = 1) + AQLTools:::theme_aqltools()  +
+  labs(y="Déphasage", x = NULL, title = "IC DAF trunc") +# geom_jitter(width = 0.2, alpha = 0.1) +
   scale_x_discrete(labels = label_parse())
 
 
 p2 <- ggplot(data_tp %>% filter(variability == "Variabilité moyenne") ,aes(x=method, y = value))+ 
   geom_boxplot() +
-  facet_wrap(vars(variability), ncol = 1) + #AQLTools:::theme_aqltools() +
+  facet_wrap(vars(variability), ncol = 1) + AQLTools:::theme_aqltools() +
   labs(y="Déphasage", x = NULL) +# geom_jitter(width = 0.2, alpha = 0.1) +
   scale_x_discrete(labels = label_parse())
 

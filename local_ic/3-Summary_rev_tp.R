@@ -14,7 +14,7 @@ if(!dir.exists("results_nber/compile_tp_norev"))
 
 tp = readRDS("data_simul/tp_simul1.RDS")
 suffix = "_fe_rev"
-for(dir in c("localic_lp", "localic_daf", "localic_final")){
+for(dir in c("localic_lp", "localic_daf", "localic_daf_trunc", "localic_final")){
   
   for(suffix in c("_fe_rev", "_ce_rev")){
     
@@ -33,7 +33,7 @@ for(dir in c("localic_lp", "localic_daf", "localic_final")){
       split <- strsplit(full_names, "_")
       series <- sapply(split, `[`, 1)
       method <- sapply(split, `[`, 2)
-      if(dir == "localic_daf"){
+      if(length(grep("localic_daf", dir)) >0){
         h <- "h6"
         degree <- sapply(split, `[`, 3)
       } else {
@@ -67,7 +67,7 @@ for(dir in c("localic_lp", "localic_daf", "localic_final")){
   split <- strsplit(full_names, "_")
   series <- sapply(split, `[`, 1)
   method <- sapply(split, `[`, 2)
-  if(dir == "localic_daf"){
+  if(length(grep("localic_daf", dir)) >0){
     h <- "h6"
     degree <- sapply(split, `[`, 3)
   } else {
@@ -97,7 +97,7 @@ for(dir in c("localic_lp", "localic_daf", "localic_final")){
   split <- strsplit(full_names, "_")
   series <- sapply(split, `[`, 1)
   method <- sapply(split, `[`, 2)
-  if(dir == "localic_daf"){
+  if(length(grep("localic_daf", dir)) >0){
     h <- "h6"
     degree <- sapply(split, `[`, 3)
   } else {
@@ -107,9 +107,9 @@ for(dir in c("localic_lp", "localic_daf", "localic_final")){
   degree[is.na(degree)] <- "d3"
   
   all_t <- data.frame(t(sapply(all_tp_lp,`[[`,"troughs")),
-                      series, method, h, degree)
+                      series, kernel = "henderson", method, h, degree)
   all_p <- data.frame(t(sapply(all_tp_lp,`[[`,"peaks")),
-                      series, method, h, degree)
+                      series, kernel = "henderson", method, h, degree)
   rownames(all_t) <- rownames(all_p) <- full_names
   
   saveRDS(all_t, sprintf("results_simul/compile_tp_norev/troughs_%s.RDS", dir))
@@ -117,7 +117,7 @@ for(dir in c("localic_lp", "localic_daf", "localic_final")){
 }
 #####################################################
 
-for(dir in c("localic_lp", "localic_daf", "localic_final")){
+for(dir in c("localic_lp", "localic_daf", "localic_daf_trunc", "localic_final")){
   print(dir)
   for(suffix in c("_fe_rev", "_ce_rev")){
     all_files <- list.files(sprintf("results_nber/%s/", dir),pattern = suffix,full.names = TRUE)
@@ -135,7 +135,7 @@ for(dir in c("localic_lp", "localic_daf", "localic_final")){
       split <- strsplit(full_names, "_")
       series <- sapply(split, `[`, 1)
       method <- sapply(split, `[`, 2)
-      if(dir == "localic_daf"){
+      if(length(grep("localic_daf", dir)) >0){
         h <- "h6"
         degree <- sapply(split, `[`, 3)
       } else {
@@ -169,7 +169,7 @@ for(dir in c("localic_lp", "localic_daf", "localic_final")){
   split <- strsplit(full_names, "_")
   series <- sapply(split, `[`, 1)
   method <- sapply(split, `[`, 2)
-  if(dir == "localic_daf"){
+  if(length(grep("localic_daf", dir)) >0){
     h <- "h6"
     degree <- sapply(split, `[`, 3)
   } else {
@@ -199,7 +199,7 @@ for(dir in c("localic_lp", "localic_daf", "localic_final")){
   split <- strsplit(full_names, "_")
   series <- sapply(split, `[`, 1)
   method <- sapply(split, `[`, 2)
-  if(dir == "localic_daf"){
+  if(length(grep("localic_daf", dir)) >0){
     h <- "h6"
     degree <- sapply(split, `[`, 3)
   } else {
@@ -209,9 +209,9 @@ for(dir in c("localic_lp", "localic_daf", "localic_final")){
   degree[is.na(degree)] <- "d3"
   
   all_t <- data.frame(t(sapply(all_tp_lp,`[[`,"troughs")),
-                      series, method, h, degree)
+                      series, kernel = "henderson", method, h, degree)
   all_p <- data.frame(t(sapply(all_tp_lp,`[[`,"peaks")),
-                      series, method, h, degree)
+                      series, kernel = "henderson", method, h, degree)
   rownames(all_t) <- rownames(all_p) <- full_names
   
   saveRDS(all_t, sprintf("results_nber/compile_tp_norev/troughs_%s.RDS", dir))
