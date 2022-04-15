@@ -36,7 +36,11 @@ all_tp_arima <-
         by=c("series","kernel", "method")) %>%
   select_var() %>% mutate(article = "arima")
 
-
+all_tp_arima <- 
+  merge(readRDS("results_nber/compile_tp_norev/troughs_bp.RDS"),
+        readRDS("results_nber/compile_tp_norev/peaks_arima.RDS"),
+        by=c("series","kernel", "method")) %>%
+  select_var() %>% mutate(article = "arima")
 
 all_tp <- all_tp_rkhs %>%
   rbind(all_tp_arima) %>% 

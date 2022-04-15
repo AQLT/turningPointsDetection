@@ -246,6 +246,7 @@ extract_est_data <- function(method = "lc", kernel = "henderson", nb_est = 10,
                              series = "RETAILx",
                              tp_date = 2020.25,
                              nb_dates_before = 6){
+  # print(method)
   sep = "_"
   if(method %in% c("lc","ql", "cq", "daf")){
     dir <- "lp"
@@ -254,7 +255,14 @@ extract_est_data <- function(method = "lc", kernel = "henderson", nb_est = 10,
     if(length(grep("arima", method)) >0){
       dir <- "arima"
       full_name <- sep <- ""
-    }else{
+    }else if (length(grep("_h.", method)) >0){
+      dir <- "localic_lp"
+      if (length(grep("ql", method)) > 0) {
+        method <- gsub("_d3", "", method)
+      }
+      full_name <- method
+      
+    } else {
       dir <- "rkhs"
       full_name <- method
     }
