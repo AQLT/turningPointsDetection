@@ -69,7 +69,8 @@ En somme, l'approche FST consiste à minimiser une somme pondérée de ces trois
 \begin{equation}
 \begin{cases}
 \underset{\theta}{\min} &
-\alpha F_g(\theta)+\beta S_g(\theta)+\gamma T_g(\theta) = \theta'(F+S+T)\theta\\
+\alpha F_g(\theta)+\beta S_g(\theta)+\gamma T_g(\theta) = 
+\theta'(\alpha F+\beta S+ \gamma T)\theta\\
 s.t. & C\theta=a
 \end{cases}. (\#eq:gugemmos)
 \end{equation}

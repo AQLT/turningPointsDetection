@@ -10,8 +10,8 @@ Ces méthodes supposent que toute série temporelle $X_t$ peut se décomposer en
  
 2. Une composante jours ouvrables $D_t$.
  
-3. Une composante tendance-cycle $TC_t$ qui contient la tendance (qui représente les évolutions de long terme) et le cycle (qui représente les évolutions cycliques autour de la tendance). 
-La tendance et le cycle n'étant pas observés et étant difficiles à séparer, ils sont estimés de manière conjointes dans la désaisonnalisation.
+3. Une composante tendance-cycle $TC_t$ qui contient la tendance (qui représente les évolutions de long terme) et le cycle (qui représente les évolutions cycliques autour de la tendance).
+Dans ce cas, la tendance et le cycle sont estimés conjointement : les deux composantes peuvent en effet être difficiles à séparer (comment différentier les cycles courts des cycles longs ?) et les méthodes étudiées sont souvent appliquées sur des courtes (les cycles longs sont alors difficilement estimables).
  
 4. Une composante irrégulière $I_t$ qui contient toutes les autres fluctuations.
  
