@@ -44,7 +44,7 @@ C’est-à-dire que pour estimer la tendance-cycle à la date $t$,  on utilise a
 ].
 Cependant, en raison du manque d'observations futures, les estimations en temps réel doivent s'appuyer sur des moyennes mobiles asymétriques.
 C’est ce qui est par exemple fait dans les méthodes de désaisonnalisation les plus utilisées, TRAMO-SEATS et X-13ARIMA, qui prolongent la série sur 1 an par un modèle ARIMA.
-Les prévisions étant des combinaisons linéaires du passé,  cela revient en réalité à utiliser des moyennes mobiles asymétriques dont les coefficients sont optimisés par rapport à la prévision avec une longueur d’avance --- *one-step ahead forecasting*.
+Les prévisions étant des combinaisons linéaires du passé,  cela revient en réalité à utiliser des moyennes mobiles asymétriques dont les coefficients sont optimisés par rapport à la prévision avec une longueur d’avance.
 
 La construction de moyennes mobiles asymétriques performantes en termes de fidélité (préservation du signal), de révision, de lissage et de déphasage (délais dans la détection de points de retournement) est un sujet de recherche toujours ouvert.
 Cette étude décrit et compare des approches récentes pour la construction de moyennes mobiles asymétriques, utilisées pour l’estimation en temps réel de la tendance-cycle : filtres polynomiaux locaux [@proietti2008; @GrayThomson1996] ; méthodes basées sur une optimisation sous contrainte d’une somme pondérée de critères de qualité des moyennes mobiles [@ch15HBSA; @trilemmaWMR2019] ; et filtres basés sur les espaces de Hilbert à noyau reproduisant (RKHS) @dagumbianconcini2008.
@@ -52,8 +52,8 @@ Elle montre également comment les filtres polynomiaux locaux peuvent être éte
 Enfin,  cette étude montre qu'il est possible d'établir une approche unificatrice générale qui permet de reproduire l’ensemble des méthodes étudiées.
 
 La comparaison des méthodes sur séries simulées montre qu'il est important d'adapter la longueur du filtre à la variabilité de la série. 
-Par ailleurs, même si certains filtres RKHS sont sujet à des problèmes d'optimisation et conduisent à des estimations intermédiaires erratiques, d'autres semblent donner des résultats satisfaisant en termes de délais dans la détection des points de retournement et de révisions.
-De plus, lorsque la longueur du filtre est adapté à la variabilité de la série, chercher à conserver des tendances polynomiales de degré supérieur à un semble introduire de la variance dans les estimations (et donc plus de révisions) sans gain significatif en termes de détection de point de retournement.
+Même si certains filtres RKHS pourraient donner des résultats satisfaisant en termes de délais dans la détection des points de retournement, leur utilisation doit être limitées aux premières estimations de la tendances-cycles. Lorsque l'on se rapproche de l'estimation finale (i.e., lorsque beaucoup de points dans le futur sont connus), d'autres méthodes devraient être utilisées afin de limiter les révisions. Les filtres RKHS sont par ailleurs sujets à problèmes d'optimisation.
+Enfin, lorsque la longueur du filtre est adapté à la variabilité de la série, chercher à conserver des tendances polynomiales de degré supérieur à un semble introduire de la variance dans les estimations (et donc plus de révisions) sans gain significatif en termes de détection de point de retournement.
 
 Cette étude est reproductible. En particulier, toutes les méthodes décrites sont implémentées dans le *package* `r fa_r_project` `rjdfilters` (https://github.com/palatej/rjdfilters) et tous les codes utilisées sont disponibles sous https://github.com/AQLT/articles.
 ::::
@@ -73,10 +73,10 @@ All these methods can be seen as a special case of a general unifying framework 
 
 This paper shows that, when the length of the filter is adapted to the variability of the series, constraining asymmetric filters to preserve constant trends (and not necessarily polynomial ones) reduce revision error and time lag. 
 Therefore, future studies on the subject can focus on these filters.
-Moreover, with RKHS filters some optimisation issues can occurs and they might lead to erratic estimation; however, some of them seem to produce satisfying results in terms of phase-shift and revisions.
+Moreover, with RKHS filters some optimisation issues can occurs and they might lead to erratic estimation.
+They might be able to produce satisfying results in terms of phase-shift and revisions, but they should be avoid for the last estimates of the trend-cycle component: other methods should then be prefered to reduce revisions with the final estimates.
 
 All the methods are implemented in the `r fa_r_project` package `rjdfilters` and the results can be easily reproduced.
 The programs used, and a web version of this report, are available at https://github.com/AQLT/articles.
 ::::
 
-\newpage

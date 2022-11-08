@@ -7,11 +7,12 @@ documentclass: article
 link-citations: yes
 description: "Journées de méthodologie statistique de l'Insee (JMS) / Mars 2022 / PARIS"
 themeoptions: "coding=utf8,language=french"
-classoption: '12pt,a4paper'
+classoption: 'a4paper,french'
 lang: "fr"
 fontsize: 12pt
 bibliography: [biblio.bib]
 biblio-style: authoryear
+babel-lang: french
 urlcolor: blue
 geometry: hmargin = 25mm, vmargin = 25mm
 always_allow_html: true

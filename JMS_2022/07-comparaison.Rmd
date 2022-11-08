@@ -86,9 +86,12 @@ Il est en effet difficile de comparer proprement les résultats entre les diffé
 Toutefois, une première analyse des résultats montrent que les différents noyaux ont des performances proches en termes de déphasage et de révisions, sauf le noyau uniforme qui produit de moins bons résultats.
 ] et les filtres RKHS $b_{q,\Gamma}$, $b_{q,G}$ et $b_{q,\varphi}$.
 
-En termes de déphasage dans la détection des points de retournement, c'est le filtre $b_{q,G}$ qui semble donner les meilleurs résultats quelle que soit la variabilité de la série (figure \@ref(fig:graphstpsimul)), avec des performances légèrement meilleurs que celles obtenues en prolongeant la série grâce à un modèle ARIMA.
-Étonnement, c'est le filtre $b_{q,\varphi}$ qui minimise le déphasage qui donne les moins bons résultats. Cela peut s'expliquer par le fait que la courbe des coefficients des moyennes mobiles asymétriques sont assez éloignées des coefficients du filtre symétrique : il y a donc potentiellement beaucoup de révisions dans la détection des points de retournement.
-Dans les filtres polynomiaux locaux, les filtres LC (filtres de Musgrave) semblent donner les meilleurs résultats lorsque la variabilité est moyenne ou forte (avec des résultats proches du filtre QL dans ce second pas) mais de moins bons résultats lorsque la variabilité est faible.
+En termes de déphasage dans la détection des points de retournement, c'est le filtre LC qui semble donner les meilleurs résultats lorsque la variabilité de la série est moyenne ou forte (figure \@ref(fig:graphstpsimul)). 
+Les performances sont relativement proches de celles obtenues en prolongeant la série grâce à un modèle ARIMA.
+Toutefois, lorsque la variabilité est faible, ils semblent donner de moins bons résultats.
+Étonnement, c'est le filtre $b_{q,\varphi}$ qui minimise le déphasage qui donne les moins bons résultats. Les autres filtres RKHS ont également une grande variabilité en termes de déphasage. 
+Cela peut s'expliquer par le fait que la courbe des coefficients des moyennes mobiles asymétriques sont assez éloignées des coefficients du filtre symétrique : il y a donc potentiellement beaucoup de révisions dans la détection des points de retournement. 
+En effet, lorsque le déphasage est défini comme la première date à laquelle le bon point de retournement est détecté, c'est le filtre $b_{q,G}$ qui donne les meilleurs résultats.
 
 ```{r graphstpsimul, echo=FALSE, out.width="100%", fig.cap="Distribution des déphasages sur les séries simulées."}
 img <- sprintf("img/simulations/phase_shift_simul.%s", fig.ext)
@@ -205,7 +208,7 @@ knitr::include_graphics(img)
 
 Même si presque toutes les méthodes ont un déphasage d'au plus 3 mois sur ce point de retournement, les estimations intermédiaires différent grandement. 
 Il y a par exemple nettement plus de variabilités dans les estimations en temps réel pour les méthode QL, CQ et DAF et les filtres FST (figures \@ref(fig:retailxlp),  \@ref(fig:retailxfst1) et \@ref(fig:retailxfst2)), avec des estimations intermédiaires qui semblent peu plausibles (notamment pour la première estimation du mois d'avril 2020). Les premières estimations avec le filtre LC ne capte pas la remontée en mai et juin 2020 : cela peut provenir du fait qu'en fin de série, la tendance modélisée est linéaire.
-Concernant les filtres RKHS, les estimations intermédiaires du filtre $b_{q,\varphi}$ semblent très erratiques, ce qui s'explique par le fait que les moyennes mobiles asymétriques utilisées lorsque l'on se rapproche du cas symétrique sont éloignées de la moyenne mobile symétrique d'Henderson.
+Concernant les filtres RKHS, les estimations intermédiaires du filtre $b_{q,\varphi}$ semblent très erratiques, ce qui s'explique, encore une fois, par le fait que les moyennes mobiles asymétriques utilisées lorsque l'on se rapproche du cas symétrique sont éloignées de la moyenne mobile symétrique d'Henderson.
 En revanche, les filtres $b_{q,\Gamma}$ et $b_{q,G}$ donnent des estimations intermédiaires proches de l'estimation finale, tout en minimisant le déphasage.
 
 La qualité des estimations intermédiaires peut également être analysée grâces aux prévisions implicites des différentes méthodes. Pour rappel, il s'agit des prévisions de la série brute qui, en appliquant le filtre symétrique de Henderson sur la série prolongée, donne les mêmes estimations que les moyennes mobiles asymétriques. L'annexe \@ref(an-implicitforecasts) rassemble les différentes prévisions implicites des filtres étudiés dans cette section. 

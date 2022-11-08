@@ -13,13 +13,13 @@ Premièrement, en fin de période, chercher à conserver des tendances polynomia
 La méthode de désaisonnalisation STL utilisant les filtres DAF en fin de période, elle pourrait facilement être améliorée.
 Il faut en revanche que la longueur du filtre utilisé soit adapté à la variabilité de la série : si le filtre utilisé est trop long (c'est-à-dire si la variabilité de la série est « moyenne »), conserver des tendances polynomiale de degré au plus 1 (méthode LC) produit de moins bons résultats en termes de détection des points de retournement.
 
-Deuxièmement, la théorie des RKHS semble permettre la construction de filtres qui pourraient donner un bon compromis entre minimisation du déphasage et révisions (filtre $b_{q,G}$).
-Toutefois, leur calibration peut être sujette à des problèmes d'optimisation et conduire à des estimations intermédiaires erratiques (filtre $b_{q,\varphi}$).
+Deuxièmement, plus d'investigations devraient être faites sur la théorie des RKHS qui pourrait donner un bon compromis entre minimisation du déphasage et révisions. 
+En revanche, ils devraient uniquement être utilisées pour les premières estimations de la tendance-cycle (lorsque peu de points dans le futur sont connus), lorsqu'au moins 3 points dans le futur sont connus, un filtre simple (comme le filtre LC) peut être utiliser pour limiter les révisions avec le filtre final.
+Par ailleurs, leur calibration peut être sujette à des problèmes d'optimisation (filtre $b_{q,\varphi}$).
 
 Enfin, la moins bonne performance apparente de certains filtres basés sur l'approche FST ou les RKHS pourrait provenir de l'utilisation de filtres sous-optimaux lorsque que l'on s'approche du cas d'utilisation du filtre symétrique. 
 Sur l'approche FST par exemple, rien ne justifie que l'on devrait utiliser les mêmes poids entre fidélité, lissage et temporalité pour la construction de toutes les moyennes mobiles asymétriques.
-Plus d'études devraient être faites pour savoir si, pour la construction des filtres asymétriques minimisant le déphasage, on pourrait se concentrer uniquement sur les ceux utilisés lorsque peu d'observations futures sont disponibles.
-Cela impliquerait notamment de revoir la méthodologie et les indicateurs utilisés.
+Chaque moyenne mobile asymétrique devraient ainsi être construite de manière indépendante
 
 Cette étude pourrait être étendue de plusieurs manières.
 
