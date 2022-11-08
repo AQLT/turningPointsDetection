@@ -20,9 +20,9 @@ split <- strsplit(full_names, "_")
 series <- sapply(split, `[`, 1)
 kernel <- sapply(split, `[`, 2)
 method <- sapply(split, `[`, 3)
-all_t <- data.frame(t(sapply(all_tp_lp,`[[`,"troughs")),
+all_t <- data.frame(t(sapply(all_tp_lp, function(x) x[["troughs"]][["phaseshift"]])),
                     series, kernel, method)
-all_p <- data.frame(t(sapply(all_tp_lp,`[[`,"peaks")),
+all_p <- data.frame(t(sapply(all_tp_lp, function(x) x[["peaks"]][["phaseshift"]])),
                     series, kernel, method)
 rownames(all_t) <- rownames(all_p) <- full_names
 
@@ -47,9 +47,9 @@ split <- strsplit(full_names, "_")
 series <- sapply(split, `[`, 1)
 method <- sapply(split, `[`, 2)
 kernel = "henderson"
-all_t <- data.frame(t(sapply(all_tp_rkhs,`[[`,"troughs")),
+all_t <- data.frame(t(sapply(all_tp_rkhs, function(x) x[["troughs"]][["phaseshift"]])),
                     series, kernel, method)
-all_p <- data.frame(t(sapply(all_tp_rkhs,`[[`,"peaks")),
+all_p <- data.frame(t(sapply(all_tp_rkhs, function(x) x[["peaks"]][["phaseshift"]])),
                     series, kernel, method)
 rownames(all_t) <- rownames(all_p) <- full_names
 
@@ -72,9 +72,9 @@ split <- strsplit(full_names, "_")
 series <- sapply(split, `[`, 1)
 method <- "auto_arima"
 kernel = "henderson"
-all_t <- data.frame(t(sapply(all_tp_rkhs,`[[`,"troughs")),
+all_t <- data.frame(t(sapply(all_tp_rkhs, function(x) x[["troughs"]][["phaseshift"]])),
                     series, kernel, method)
-all_p <- data.frame(t(sapply(all_tp_rkhs,`[[`,"peaks")),
+all_p <- data.frame(t(sapply(all_tp_rkhs, function(x) x[["peaks"]][["phaseshift"]])),
                     series, kernel, method)
 rownames(all_t) <- rownames(all_p) <- full_names
 
@@ -99,9 +99,9 @@ for(degree in 0:3){
   split <- strsplit(full_names, "_")
   series <- sapply(split, `[`, 1)
   weight <- sapply(split, `[`, 3)
-  all_t <- data.frame(t(sapply(all_tp,`[[`,"troughs")),
+  all_t <- data.frame(t(sapply(all_tp, function(x) x[["troughs"]][["phaseshift"]])),
                       series, degree, weight)
-  all_p <- data.frame(t(sapply(all_tp,`[[`,"peaks")),
+  all_p <- data.frame(t(sapply(all_tp, function(x) x[["peaks"]][["phaseshift"]])),
                       series, degree, weight)
   rownames(all_t) <- rownames(all_p) <- full_names
   
@@ -135,9 +135,9 @@ for(degree in 0:3){
   split <- strsplit(full_names, "_")
   series <- sapply(split, `[`, 1)
   weight <- sapply(split, `[`, 3)
-  all_t <- data.frame(t(sapply(all_tp,`[[`,"troughs")),
+  all_t <- data.frame(t(sapply(all_tp, function(x) x[["troughs"]][["phaseshift"]])),
                       series, degree, weight)
-  all_p <- data.frame(t(sapply(all_tp,`[[`,"peaks")),
+  all_p <- data.frame(t(sapply(all_tp, function(x) x[["peaks"]][["phaseshift"]])),
                       series, degree, weight)
   rownames(all_t) <- rownames(all_p) <- full_names
   
@@ -175,9 +175,9 @@ split <- strsplit(full_names, "_")
 series <- sapply(split, `[`, 1)
 method <- "bryboschan"
 kernel = "henderson"
-all_t <- data.frame(t(sapply(all_tp_bp,`[[`,"troughs")),
+all_t <- data.frame(t(sapply(all_tp_bp, function(x) x[["troughs"]][["phaseshift"]])),
                     series, kernel, method)
-all_p <- data.frame(t(sapply(all_tp_bp,`[[`,"peaks")),
+all_p <- data.frame(t(sapply(all_tp_bp, function(x) x[["peaks"]][["phaseshift"]])),
                     series, kernel, method)
 rownames(all_t) <- rownames(all_p) <- full_names
 
