@@ -18,7 +18,7 @@ fs <- list()
 j <- 1
 reload <- FALSE
 d = 2
-h = 3
+h = 6
 lp_filter2 <- function(icr, method = "LC", h = 6, kernel = "Henderson"){
   all_coef = lapply(icr, function(ic){
     lp_filter(horizon = h,

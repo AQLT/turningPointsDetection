@@ -68,14 +68,14 @@ all_tp_lic_daf <- merge(readRDS("results_simul/compile_tp_norev/troughs_localic_
 all_tp_lic_daf_trunc <- merge(readRDS("results_simul/compile_tp_norev/troughs_localic_daf_trunc.RDS"),
                         readRDS("results_simul/compile_tp_norev/peaks_localic_daf_trunc.RDS"),
                         by=c("series", "kernel", "h", "degree", "method")) %>%
-  select_var() %>% 
+  select_var() %>%
   mutate(variability = factor(variability,
                               levels = c("lowvariability","mediumvariability","highvariability"),
                               ordered = TRUE))
-all_rev_fe_lic <- readRDS("results_simul/compile_revisions/localic_lp_fe_rev.RDS") |> 
+all_rev_fe_lic <- readRDS("results_simul/compile_revisions/localic_daf_fe_rev.RDS") |> 
   select_series() |> 
   select_mae()
-all_rev_ce_lic <- readRDS("results_simul/compile_revisions/localic_lp_ce_rev.RDS") |> 
+all_rev_ce_lic <- readRDS("results_simul/compile_revisions/localic_daf_ce_rev.RDS") |> 
   select_series() |> 
   select_mae()
 
@@ -88,16 +88,22 @@ all_tp <- rbind(all_tp_rkhs,
                               ordered = TRUE),
          kernel = tolower(kernel))
 all_rev_fe <- rbind(all_rev_rkhs_fe, 
-                    all_rev_arima_fe %>% mutate(article = "rkhs")) %>% 
-  mutate(method = factor(method,levels = c("lc","ql","cq","daf", "frf", "gain", "phase", "auto_arima"),
+                    all_rev_arima_fe %>% mutate(article = "rkhs"),
+                    all_rev_fe_lic |> filter(h == "h6", degree == "d3") |> 
+                      mutate(article = "local ic", method = paste0(method, "_local_ic"))|> 
+                      select(!c(h, degree))) %>% 
+  mutate(method = factor(method,levels = c("lc", "lc_local_ic","ql", "ql_local_ic","cq","daf", "frf", "gain", "phase", "auto_arima"),
                          ordered = TRUE),
          variability = factor(variability,
                               levels = c("lowvariability","mediumvariability","highvariability"),
                               ordered = TRUE),
          kernel = tolower(kernel))
 all_rev_ce <- rbind(all_rev_rkhs_ce, 
-                    all_rev_arima_ce %>% mutate(article = "rkhs")) %>% 
-  mutate(method = factor(method,levels = c("lc","ql","cq","daf", "frf", "gain", "phase", "auto_arima"),
+                    all_rev_arima_ce %>% mutate(article = "rkhs"),
+                    all_rev_ce_lic |> filter(h == "h6", degree == "d3") |> 
+                      mutate(article = "local ic", method = paste0(method, "_local_ic"))|> 
+                      select(!c(h, degree))) %>% 
+  mutate(method = factor(method,levels = c("lc", "lc_local_ic","ql", "ql_local_ic","cq","daf", "frf", "gain", "phase", "auto_arima"),
                          ordered = TRUE),
          variability = factor(variability,
                               levels = c("lowvariability","mediumvariability","highvariability"),
@@ -138,73 +144,77 @@ summarise_ref <- function(x, normalise = FALSE){
 }
 rev_tot = rbind(all_rev_fe %>% summarise_ref(),
                 all_rev_ce %>% summarise_ref())
-rev_rel = rbind(all_rev_fe %>% summarise_ref(normalise = TRUE),
-                all_rev_ce %>% summarise_ref(normalise = TRUE))
+# rev_rel = rbind(all_rev_fe %>% summarise_ref(normalise = TRUE),
+#                 all_rev_ce %>% summarise_ref(normalise = TRUE))
 rev_tot %>% filter(variability == "mediumvariability")
-rev_rel %>% filter(variability == "mediumvariability")
-rev_tot %>% filter(method %in% c("lc", "gain"))
+# rev_rel %>% filter(variability == "mediumvariability")
+all_rev_fe %>% summarise_ref() |> 
+  filter(method %in% c("lc", "ql", "lc_local_ic", "ql_local_ic"))
 
-rev_table <- rev_tot %>% filter(variability == "mediumvariability")%>%
-  select(!c(variability)) %>% 
-  mutate(method = recode(method, lc = "LC", ql = "QL",
-                         cq = "CQ", daf = "DAF",
-                         frf = "$b_{q,\\Gamma}$",
-                         gain = "$b_{q,G}$",
-                         phase = "$b_{q,\\varphi}$",
-                         auto_arima = "ARIMA")) %>% 
-  rename_at(vars(starts_with("rev")), function(x){
-    sprintf("$q=%s$", gsub("rev.q","",x))
-  }) %>% 
-  rename(`Méthode` = method)
-
-rev_table_rel <- rev_rel %>% filter(variability == "mediumvariability")%>%
-  select(!c(variability)) %>% 
-  mutate(method = recode(method, lc = "LC", ql = "QL",
-                         cq = "CQ", daf = "DAF",
-                         frf = "$b_{q,\\Gamma}$",
-                         gain = "$b_{q,G}$",
-                         phase = "$b_{q,\\varphi}$",
-                         auto_arima = "ARIMA")) %>% 
-  rename_at(vars(starts_with("rev")), function(x){
-    sprintf("$q=%s$", gsub("rev.q","",x))
-  }) %>% 
-  rename(`Méthode` = method)
-rev_table_rel[rev_table_rel$Méthode=="LC",] <- rev_table[rev_table$Méthode=="LC",]
-
-library(kableExtra)
-title = "toto"
-# saveRDS(rev_table, file = "JMS_2022/data/simulations_revisions.RDS")
-rev_table  %>%
-  kable(format.args = list(digits = 2,
-                           decimal.mark = ","),
-        align = "c", booktabs = T, row.names = FALSE, 
-        escape = FALSE, caption = title) %>%  
-  kable_styling(latex_options=c(#"striped",  
-    "hold_position")) %>% 
-  pack_rows(index = c("$MAE_{fe}(q) = \\mathbb E\\left[
-\\left|\\frac{(y_{t|t+q} -  y_{t|last})/ y_{t|last}\\right|
-\\right]$"=8,
-                      "$MAE_{ce}(q)=\\mathbb E\\left[
-\\left|(y_{t|t+q} - y_{t|t+q+1})/y_{t|t+q+1}\\right|
-\\right]$"=8), escape = FALSE)
-
-rev_table_rel$Méthode <- as.character(rev_table_rel$Méthode)
-rev_table_rel[rev_table_rel$Méthode!="LC",1] <- sprintf("%s (rel)",
-                                                        rev_table_rel[rev_table_rel$Méthode!="LC",1])
-
-rev_table_rel  %>%
-  kable(format.args = list(digits = 2,
-                           decimal.mark = ","),
-        align = "c", booktabs = T, row.names = FALSE, 
-        escape = FALSE, format = "latex") %>%  
-  kable_styling(latex_options=c(#"striped",  
-    "hold_position")) %>% 
-  pack_rows(index = c("$MAE_{fe}(q) = \\mathbb E\\left[
-\\left|\\frac{(y_{t|t+q} -  y_{t|last})/ y_{t|last}\\right|
-\\right]$"=8,
-                      "$MAE_{ce}(q)=\\mathbb E\\left[
-\\left|(y_{t|t+q} - y_{t|t+q+1})/y_{t|t+q+1}\\right|
-\\right]$"=8), escape = FALSE)
+all_rev_ce %>% summarise_ref() |> 
+  filter(method %in% c("lc", "ql", "lc_local_ic", "ql_local_ic"))
+# 
+# rev_table <- rev_tot %>% filter(variability == "mediumvariability")%>%
+#   select(!c(variability)) %>% 
+#   mutate(method = recode(method, lc = "LC", ql = "QL",
+#                          cq = "CQ", daf = "DAF",
+#                          frf = "$b_{q,\\Gamma}$",
+#                          gain = "$b_{q,G}$",
+#                          phase = "$b_{q,\\varphi}$",
+#                          auto_arima = "ARIMA")) %>% 
+#   rename_at(vars(starts_with("rev")), function(x){
+#     sprintf("$q=%s$", gsub("rev.q","",x))
+#   }) %>% 
+#   rename(`Méthode` = method)
+# 
+# rev_table_rel <- rev_rel %>% filter(variability == "mediumvariability")%>%
+#   select(!c(variability)) %>% 
+#   mutate(method = recode(method, lc = "LC", ql = "QL",
+#                          cq = "CQ", daf = "DAF",
+#                          frf = "$b_{q,\\Gamma}$",
+#                          gain = "$b_{q,G}$",
+#                          phase = "$b_{q,\\varphi}$",
+#                          auto_arima = "ARIMA")) %>% 
+#   rename_at(vars(starts_with("rev")), function(x){
+#     sprintf("$q=%s$", gsub("rev.q","",x))
+#   }) %>% 
+#   rename(`Méthode` = method)
+# rev_table_rel[rev_table_rel$Méthode=="LC",] <- rev_table[rev_table$Méthode=="LC",]
+# 
+# library(kableExtra)
+# title = "toto"
+# # saveRDS(rev_table, file = "JMS_2022/data/simulations_revisions.RDS")
+# rev_table  %>%
+#   kable(format.args = list(digits = 2,
+#                            decimal.mark = ","),
+#         align = "c", booktabs = T, row.names = FALSE, 
+#         escape = FALSE, caption = title) %>%  
+#   kable_styling(latex_options=c(#"striped",  
+#     "hold_position")) %>% 
+#   pack_rows(index = c("$MAE_{fe}(q) = \\mathbb E\\left[
+# \\left|\\frac{(y_{t|t+q} -  y_{t|last})/ y_{t|last}\\right|
+# \\right]$"=8,
+#                       "$MAE_{ce}(q)=\\mathbb E\\left[
+# \\left|(y_{t|t+q} - y_{t|t+q+1})/y_{t|t+q+1}\\right|
+# \\right]$"=8), escape = FALSE)
+# 
+# rev_table_rel$Méthode <- as.character(rev_table_rel$Méthode)
+# rev_table_rel[rev_table_rel$Méthode!="LC",1] <- sprintf("%s (rel)",
+#                                                         rev_table_rel[rev_table_rel$Méthode!="LC",1])
+# 
+# rev_table_rel  %>%
+#   kable(format.args = list(digits = 2,
+#                            decimal.mark = ","),
+#         align = "c", booktabs = T, row.names = FALSE, 
+#         escape = FALSE, format = "latex") %>%  
+#   kable_styling(latex_options=c(#"striped",  
+#     "hold_position")) %>% 
+#   pack_rows(index = c("$MAE_{fe}(q) = \\mathbb E\\left[
+# \\left|\\frac{(y_{t|t+q} -  y_{t|last})/ y_{t|last}\\right|
+# \\right]$"=8,
+#                       "$MAE_{ce}(q)=\\mathbb E\\left[
+# \\left|(y_{t|t+q} - y_{t|t+q+1})/y_{t|t+q+1}\\right|
+# \\right]$"=8), escape = FALSE)
 
 
 
@@ -250,7 +260,7 @@ data_tp_lic_final <- all_tp_lic_final %>%
   mutate(method = paste(method, degree,h, sep = "_")) %>% format_table_tp()
 data_tp_lic_daf <- all_tp_lic_daf %>% 
   mutate(method = paste(method, degree,h, sep = "_")) %>% format_table_tp()
-data_tp_lic_daf_trunc <- all_tp_lic_daf_trunc %>% 
+data_tp_lic_daf_trunc <- all_tp_lic_daf_trunc %>%
   mutate(method = paste(method, degree,h, sep = "_")) %>% format_table_tp()
 
 data_tp_compil = rbind(data_tp_lic |> 
@@ -263,10 +273,10 @@ data_tp_compil_daf = rbind(data_tp_lic_daf |>
                          select(method, value, variability),
                        data_tp |> 
                          select(method, value, variability))
-data_tp_compil_daf_trunc = rbind(data_tp_lic_daf_trunc |> 
-                             filter(h == "h6") |> 
+data_tp_compil_daf_trunc = rbind(data_tp_lic_daf_trunc |>
+                             filter(h == "h6") |>
                              select(method, value, variability),
-                           data_tp |> 
+                           data_tp |>
                              select(method, value, variability))
 data_tp_compil_final = rbind(data_tp_lic_final |> 
                          filter(h == "h6") |> 

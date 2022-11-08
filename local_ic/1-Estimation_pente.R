@@ -10,6 +10,14 @@ X_gen <- function(d = 1, p = 6, q = p){
   sapply(0:d, function(exp) seq(-p, q)^exp)
 }
 
+# Dans ce programme, pour paramétrer les méthodes LC et QL :
+# 1. On prend les MM symétriques d'estimation de la pente et polynôme degré 2
+#  (dans gen_MM q = p)
+#   mais appliqué sur les données réelles et on prend la dernière date connue
+# Rmq : cela n'a pas vraiment de sens car on prend la pente estimée en h-6...
+# 2. la variance est estimée à chaque date sur les données connues
+
+
 gen_MM <- function(p=6, q=p, d=2){
   k = rjdfilters::get_kernel("Henderson", h = p)
   k

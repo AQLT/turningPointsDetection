@@ -75,9 +75,9 @@ for(dir in c("localic_lp", "localic_daf", "localic_daf_trunc", "localic_final"))
     degree <- sapply(split, `[`, 4)
   }
   degree[is.na(degree)] <- "d3"
-  all_t <- data.frame(t(sapply(all_tp_lp,`[[`,"troughs")),
+  all_t <- data.frame(t(sapply(all_tp_lp, function(x) x[["troughs"]][["phaseshift"]])),
                       series, kernel = "henderson", method, h, degree)
-  all_p <- data.frame(t(sapply(all_tp_lp,`[[`,"peaks")),
+  all_p <- data.frame(t(sapply(all_tp_lp, function(x) x[["peaks"]][["phaseshift"]])),
                       series, kernel = "henderson", method, h, degree)
   rownames(all_t) <- rownames(all_p) <- full_names
   
@@ -106,9 +106,9 @@ for(dir in c("localic_lp", "localic_daf", "localic_daf_trunc", "localic_final"))
   }
   degree[is.na(degree)] <- "d3"
   
-  all_t <- data.frame(t(sapply(all_tp_lp,`[[`,"troughs")),
+  all_t <- data.frame(t(sapply(all_tp_lp, function(x) x[["troughs"]][["phaseshift"]])),
                       series, kernel = "henderson", method, h, degree)
-  all_p <- data.frame(t(sapply(all_tp_lp,`[[`,"peaks")),
+  all_p <- data.frame(t(sapply(all_tp_lp, function(x) x[["peaks"]][["phaseshift"]])),
                       series, kernel = "henderson", method, h, degree)
   rownames(all_t) <- rownames(all_p) <- full_names
   
@@ -177,9 +177,9 @@ for(dir in c("localic_lp", "localic_daf", "localic_daf_trunc", "localic_final"))
     degree <- sapply(split, `[`, 4)
   }
   degree[is.na(degree)] <- "d3"
-  all_t <- data.frame(t(sapply(all_tp_lp,`[[`,"troughs")),
+  all_t <- data.frame(t(sapply(all_tp_lp, function(x) x[["troughs"]][["phaseshift"]])),
                       series, kernel = "henderson", method, h, degree)
-  all_p <- data.frame(t(sapply(all_tp_lp,`[[`,"peaks")),
+  all_p <- data.frame(t(sapply(all_tp_lp, function(x) x[["peaks"]][["phaseshift"]])),
                       series, kernel = "henderson", method, h, degree)
   rownames(all_t) <- rownames(all_p) <- full_names
   
@@ -208,14 +208,13 @@ for(dir in c("localic_lp", "localic_daf", "localic_daf_trunc", "localic_final"))
   }
   degree[is.na(degree)] <- "d3"
   
-  all_t <- data.frame(t(sapply(all_tp_lp,`[[`,"troughs")),
+  all_t <- data.frame(t(sapply(all_tp_lp, function(x) x[["troughs"]][["phaseshift"]])),
                       series, kernel = "henderson", method, h, degree)
-  all_p <- data.frame(t(sapply(all_tp_lp,`[[`,"peaks")),
+  all_p <- data.frame(t(sapply(all_tp_lp, function(x) x[["peaks"]][["phaseshift"]])),
                       series, kernel = "henderson", method, h, degree)
   rownames(all_t) <- rownames(all_p) <- full_names
   
   saveRDS(all_t, sprintf("results_nber/compile_tp_norev/troughs_%s.RDS", dir))
   saveRDS(all_p, sprintf("results_nber/compile_tp_norev/peaks_%s.RDS", dir))
 }
-
 

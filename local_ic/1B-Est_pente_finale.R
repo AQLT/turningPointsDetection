@@ -6,6 +6,12 @@ if(!dir.exists("data_simul/byseriespente_final"))
   dir.create("data_simul/byseriespente_final")
 if(!dir.exists("data/byseriespente_final_nber"))
   dir.create("data/byseriespente_final_nber")
+
+# Dans ce programme, pour paramétrer les méthodes LC et QL :
+# 1. On prend les MM symétriques finales d'estimation de la pente et polynôme degré 2
+#  (dans gen_MM q = p)
+# 2. la variance est estimée à chaque date sur les données connues
+
 X_gen <- function(d = 1, p = 6, q = p){
   sapply(0:d, function(exp) seq(-p, q)^exp)
 }

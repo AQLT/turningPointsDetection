@@ -6,6 +6,12 @@ if(!dir.exists("data_simul/byseriespente_daf"))
   dir.create("data_simul/byseriespente_daf")
 if(!dir.exists("data/byseriespente_daf_nber"))
   dir.create("data/byseriespente_daf_nber")
+
+# Dans ce programme, pour paramétrer les méthodes LC et QL :
+# 1. On prend les MM asymétriques d'estimation de la pente et polynôme degré 2 et on fait une estimation en temps réel
+# Pour chaque date on a donc h+1=6+1 moyennes mobiles
+# 2. la variance est estimée à chaque date sur les données connues
+
 X_gen <- function(d = 1, p = 6, q = p){
   sapply(0:d, function(exp) seq(-p, q)^exp)
 }
