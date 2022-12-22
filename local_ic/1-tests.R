@@ -1,11 +1,11 @@
-library(rjdfilters)
+library(rjd3filters)
 h <- 6 
 q <- 6
 X_gen <- function(d = 1, p = 6, q = p){
   sapply(0:d, function(exp) seq(-p, q)^exp)
 }
 gen_MM <- function(p=6, q=p, d=2){
-  k = rjdfilters::get_kernel("Henderson", h = h)
+  k = rjd3filters::get_kernel("Henderson", h = h)
   k
   k = c(rev(k$coef[-1]), k$coef[seq(0,q)+1])
   k

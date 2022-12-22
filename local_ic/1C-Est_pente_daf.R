@@ -1,6 +1,6 @@
 library(AQLThesis)
 library("future")
-library(rjdfilters)
+library(rjd3filters)
 plan(multisession)
 if(!dir.exists("data_simul/byseriespente_daf"))
   dir.create("data_simul/byseriespente_daf")
@@ -17,7 +17,7 @@ X_gen <- function(d = 1, p = 6, q = p){
 }
 
 gen_MM <- function(p=6, q=p, d=2){
-  k = rjdfilters::get_kernel("Henderson", h = p)
+  k = rjd3filters::get_kernel("Henderson", h = p)
   k
   k = c(rev(k$coef[-1]), k$coef[seq(0,q)+1])
   k
@@ -58,7 +58,7 @@ MM = list(pente = list(
 MM = lapply(MM, function(x){
   lapply(x, function(y){
     colnames(y) <- sprintf("q=%i", 0:6)
-    rownames(y) <- rjdfilters:::coefficients_names(-6,6)
+    rownames(y) <- rjd3filters:::coefficients_names(-6,6)
     y
   })
 })

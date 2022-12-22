@@ -6,7 +6,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
-library(rjdfilters)
+library(rjd3filters)
 library(ggplot2)
 library(highcharter)
 library(zoo)
@@ -14,7 +14,7 @@ X_gen <- function(d = 1, p = 6, q = p){
   sapply(0:d, function(exp) seq(-p, q)^exp)
 }
 gen_MM <- function(p=6, q=p, d=2){
-  k = rjdfilters::get_kernel("Henderson", h = p)
+  k = rjd3filters::get_kernel("Henderson", h = p)
   k
   k = c(rev(k$coef[-1]), k$coef[seq(0,q)+1])
   k
@@ -105,13 +105,13 @@ Pour le filtre symétrique de Henderson, modéliser une tendance de degré 2 ou 
 ```{r figmm,fig.cap="Moyenne mobile utilisée pour l'estimation de la pente pour $d=2$ et $d=3$"}
 data = data.frame(`degré 2` = d2[,2],
                   `degré 3` = d2[,3])
-rownames(data) <- rjdfilters:::coefficients_names(-6,6)
+rownames(data) <- rjd3filters:::coefficients_names(-6,6)
 colnames(data) <- c("degré 2", "degré 3")
 plot_coef_ggplot(data)
 ```
 
 ```{r,fig.cap="Moyenne mobile utilisée pour l'estimation de la dérivée seconde"}
-plot_coef_ggplot(data.frame(x=d3[,3],row.names = rjdfilters:::coefficients_names(-6,6)))
+plot_coef_ggplot(data.frame(x=d3[,3],row.names = rjd3filters:::coefficients_names(-6,6)))
 ```
 
 
@@ -146,42 +146,42 @@ où $\delta_2$ peut être calibré par $2\widehat{\mu''}(t)$.
 
 ```{r asympented2,fig.cap="Moyenne mobile asymétriques directes pour l'estimation de la pente avec $d=2$"}
 MM2 = data.frame(sapply(0:6, function(x) c(gen_MM(d=2,q=x)[,2], rep(NA, 6-x))))
-rownames(MM2) <-  rjdfilters:::coefficients_names(-6,6)
+rownames(MM2) <-  rjd3filters:::coefficients_names(-6,6)
 colnames(MM2) <- sprintf("q=%i",0:6)
 plot_coef_ggplot(MM2)
 ```
 
 ```{r asympented3,fig.cap="Moyenne mobile asymétriques directes pour l'estimation de la pente avec $d=3$"}
 MM2 = data.frame(sapply(0:6, function(x) c(gen_MM(d=3,q=x)[,2], rep(NA, 6-x))))
-rownames(MM2) <-  rjdfilters:::coefficients_names(-6,6)
+rownames(MM2) <-  rjd3filters:::coefficients_names(-6,6)
 colnames(MM2) <- sprintf("q=%i",0:6)
 plot_coef_ggplot(MM2)
 ```
 
 ```{r asymd2d2,fig.cap="Moyenne mobile asymétriques directes pour l'estimation de la dérivée seconde avec $d=2$"}
 MM2 = data.frame(sapply(0:6, function(x) c(gen_MM(d=2,q=x)[,3], rep(NA, 6-x))))
-rownames(MM2) <-  rjdfilters:::coefficients_names(-6,6)
+rownames(MM2) <-  rjd3filters:::coefficients_names(-6,6)
 colnames(MM2) <- sprintf("q=%i",0:6)
 plot_coef_ggplot(MM2)
 ```
 
 ```{r asymd2d3,fig.cap="Moyenne mobile asymétriques directes pour l'estimation de la dérivée seconde avec $d=3$"}
 MM2 = data.frame(sapply(0:6, function(x) c(gen_MM(d=3,q=x)[,3], rep(NA, 6-x))))
-rownames(MM2) <-  rjdfilters:::coefficients_names(-6,6)
+rownames(MM2) <-  rjd3filters:::coefficients_names(-6,6)
 colnames(MM2) <- sprintf("q=%i",0:6)
 plot_coef_ggplot(MM2)
 ```
 
 
 ```{r}
-library(rjdfilters)
+library(rjd3filters)
 h <- 6 
 q <- 6
 X_gen <- function(d = 1, p = 6, q = p){
   sapply(0:d, function(exp) seq(-p, q)^exp)
 }
 gen_MM <- function(p=6, q=p, d=2){
-  k = rjdfilters::get_kernel("Henderson", h = h)
+  k = rjd3filters::get_kernel("Henderson", h = h)
   k
   k = c(rev(k$coef[-1]), k$coef[seq(0,q)+1])
   k

@@ -1,6 +1,6 @@
 library(AQLThesis)
 library("future")
-library(rjdfilters)
+library(rjd3filters)
 plan(multisession)
 if(!dir.exists("data_simul/byseriespente_final"))
   dir.create("data_simul/byseriespente_final")
@@ -17,7 +17,7 @@ X_gen <- function(d = 1, p = 6, q = p){
 }
 
 gen_MM <- function(p=6, q=p, d=2){
-  k = rjdfilters::get_kernel("Henderson", h = p)
+  k = rjd3filters::get_kernel("Henderson", h = p)
   k
   k = c(rev(k$coef[-1]), k$coef[seq(0,q)+1])
   k
