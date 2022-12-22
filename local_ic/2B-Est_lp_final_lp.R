@@ -42,11 +42,7 @@ for (method in c("LC","QL")){
         name_file <- gsub(".RDS$", "", basename(s))
         print(name_file)
         data <- readRDS(s)
-        if(method == "LC"){
-          complement = sprintf("_d%i", d)
-        } else {
-          complement = ""
-        }
+        complement = sprintf("_d%i", d)
         
         nom_f_s <- sprintf("results_simul/localic_final/%s_%s_h%i%s.RDS",
                            name_file, tolower(method), h, complement)
@@ -74,13 +70,8 @@ for (method in c("LC","QL")){
           print(s)
           series_s <- lapply(names(data), function(nom_d){
             x <- data[[nom_d]]
-            data_t = data_info[[nom_d]]
-            if(method == "LC"){
-              delta = data_t[[sprintf("d=%i", d)]]
-            } else {
-              delta = data_t[["deriv2"]]
-            }
-            ratio = delta / sqrt(data_t[["sigma2"]])
+            data_t = data_info[[nom_d]][[method]]
+            ratio = data_t[[sprintf("d=%i", d)]] / sqrt(data_t[["sigma2"]])
             icr = 2/(sqrt(pi) * ratio)
             lp_coef = lp_filter2(ic = icr,method = method)
             jfilter(x, lp_coef)
@@ -127,11 +118,7 @@ for (method in c("LC","QL")){
         name_file <- gsub(".RDS$", "", basename(s))
         print(name_file)
         data <- readRDS(s)
-        if(method == "LC"){
-          complement = sprintf("_d%i", d)
-        } else {
-          complement = ""
-        }
+        complement = sprintf("_d%i", d)
         
         nom_f_s <- sprintf("results_nber/localic_final/%s_%s_h%i%s.RDS",
                            name_file, tolower(method), h, complement)
@@ -159,13 +146,8 @@ for (method in c("LC","QL")){
           print(s)
           series_s <- lapply(names(data), function(nom_d){
             x <- data[[nom_d]]
-            data_t = data_info[[nom_d]]
-            if(method == "LC"){
-              delta = data_t[[sprintf("d=%i", d)]]
-            } else {
-              delta = data_t[["deriv2"]]
-            }
-            ratio = delta / sqrt(data_t[["sigma2"]])
+            data_t = data_info[[nom_d]][[method]]
+            ratio = data_t[[sprintf("d=%i", d)]] / sqrt(data_t[["sigma2"]])
             icr = 2/(sqrt(pi) * ratio)
             lp_coef = lp_filter2(ic = icr,method = method)
             jfilter(x, lp_coef)
