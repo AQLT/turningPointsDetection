@@ -35,14 +35,18 @@ gen_MM <- function(p=6, q=p, d=2){
 
 
 MM = lapply(3:6, function(h){
-  list(`d=2` = gen_MM(p=h, d=2)[,2],
-       `d=3` = gen_MM(p = h, d=3)[,2],
-       `deriv2` = gen_MM(p = h, d=3)[,3],
+  list(pente = list(
+    `d=2` = gen_MM(p=h, d=2)[,2],
+    `d=3` = gen_MM(p = h, d=3)[,2]),
+    `deriv2` = list(
+      `d=2` = gen_MM(p=h, d=2)[,3],
+      `d=3` = gen_MM(p = h, d=3)[,3]),
        henderson = lp_filter(horizon = h)$filters.coef[,sprintf("q=%i",h)])
 })
 names(MM) <- sprintf("h=%i", 3:6)
 s = list.files("data_simul/byseries",full.names = TRUE)[1]
 d = 2
+h = 6
 for(s in list.files("data_simul/byseries",full.names = TRUE)){
   print(s)
   for(h in 3:6){
@@ -54,20 +58,27 @@ for(s in list.files("data_simul/byseries",full.names = TRUE)){
     if(!file.exists(new_f)){
       data <- readRDS(s)
       last_est = data[[length(data)]]
-      res2 = zoo::na.locf(jasym_filter(last_est, MM_h[[sprintf("d=%i",2)]],-h))
-      res3 = zoo::na.locf(jasym_filter(last_est, MM_h[[sprintf("d=%i",3)]],-h))
-      resderiv2 = zoo::na.locf(jasym_filter(last_est, MM_h[["deriv2"]],-h))
-      
+      pente_d2 = zoo::na.locf(jasym_filter(last_est, MM_h$pente[[sprintf("d=%i",2)]],-h))
+      pente_d3 = zoo::na.locf(jasym_filter(last_est, MM_h$pente[[sprintf("d=%i",3)]],-h))
+      courbure_d2 = zoo::na.locf(jasym_filter(last_est, MM_h$deriv2[[sprintf("d=%i",2)]],-h))
+      courbure_d3 = zoo::na.locf(jasym_filter(last_est, MM_h$deriv2[[sprintf("d=%i",3)]],-h))
+
       info_fs <- lapply(data, function(x){
         future({
           sigma2 =  mean((x -jasym_filter(x, hend_filter, -h))^2,
                          na.rm = TRUE)
           sigma2 = sigma2/(1- 2*MM_h[["henderson"]]["t"] + sum(MM_h[["henderson"]]^2))
           names(sigma2) <- NULL
-          list(`d=2` = tail(window(res2, end = end(x)), 6),
-               `d=3` = tail(window(res3, end = end(x)), 6),
-               `deriv2` = tail(window(resderiv2, end = end(x)), 6),
-               `sigma2` = sigma2
+          list("LC" = list(
+            `d=2` = tail(window(pente_d2, end = end(x)), 6),
+            `d=3` = tail(window(pente_d3, end = end(x)), 6),
+            `sigma2` = sigma2
+          ),
+          "QL" = list(
+            `d=2` = tail(window(courbure_d2, end = end(x)), 6),
+            `d=3` = tail(window(courbure_d3, end = end(x)), 6),
+            `sigma2` = sigma2
+          )
           )
         }
         )
@@ -89,9 +100,10 @@ for(s in list.files("data/byseries_nber",full.names = TRUE)){
     if(!file.exists(new_f)){
       data <- readRDS(s)
       last_est = data[[length(data)]]
-      res2 = zoo::na.locf(jasym_filter(last_est, MM_h[[sprintf("d=%i",2)]],-h))
-      res3 = zoo::na.locf(jasym_filter(last_est, MM_h[[sprintf("d=%i",3)]],-h))
-      resderiv2 = zoo::na.locf(jasym_filter(last_est, MM_h[["deriv2"]],-h))
+      pente_d2 = zoo::na.locf(jasym_filter(last_est, MM_h$pente[[sprintf("d=%i",2)]],-h))
+      pente_d3 = zoo::na.locf(jasym_filter(last_est, MM_h$pente[[sprintf("d=%i",3)]],-h))
+      courbure_d2 = zoo::na.locf(jasym_filter(last_est, MM_h$deriv2[[sprintf("d=%i",2)]],-h))
+      courbure_d3 = zoo::na.locf(jasym_filter(last_est, MM_h$deriv2[[sprintf("d=%i",3)]],-h))
       
       info_fs <- lapply(data, function(x){
         future({
@@ -99,10 +111,16 @@ for(s in list.files("data/byseries_nber",full.names = TRUE)){
                          na.rm = TRUE)
           sigma2 = sigma2/(1- 2*MM_h[["henderson"]]["t"] + sum(MM_h[["henderson"]]^2))
           names(sigma2) <- NULL
-          list(`d=2` = tail(window(res2, end = end(x)), 6),
-               `d=3` = tail(window(res3, end = end(x)), 6),
-               `deriv2` = tail(window(resderiv2, end = end(x)), 6),
-               `sigma2` = sigma2
+          list("LC" = list(
+            `d=2` = tail(window(pente_d2, end = end(x)), 6),
+            `d=3` = tail(window(pente_d3, end = end(x)), 6),
+            `sigma2` = sigma2
+          ),
+          "QL" = list(
+            `d=2` = tail(window(courbure_d2, end = end(x)), 6),
+            `d=3` = tail(window(courbure_d3, end = end(x)), 6),
+            `sigma2` = sigma2
+          )
           )
         }
         )
